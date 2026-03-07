@@ -111,6 +111,39 @@ function validatePhone(string $phone): bool
     return strlen($cleaned) >= 10;
 }
 
+/** Bot koruması: Gizli alan doluysa (honeypot) true döner = reddet */
+function isHoneypotFilled(array $input): bool
+{
+    $honeypot = trim((string)($input['website'] ?? $input['url'] ?? ''));
+    return $honeypot !== '';
+}
+
+/** IP başına dakikada max talep (spam engeli). Aşımda true döner = reddet */
+function isRateLimitExceeded(int $maxPerMinutes = 5, int $windowMinutes = 15): bool
+{
+    $ip = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? '';
+    if ($ip === '') return false;
+    $ip = trim(explode(',', $ip)[0]);
+    ensureDataDir();
+    $file = DATA_PATH . '/rate_limit.json';
+    $now = time();
+    $cutoff = $now - ($windowMinutes * 60);
+    $data = [];
+    if (file_exists($file)) {
+        $data = json_decode(file_get_contents($file), true) ?: [];
+    }
+    if (!isset($data[$ip]) || !is_array($data[$ip])) {
+        $data[$ip] = [];
+    }
+    $data[$ip] = array_values(array_filter($data[$ip], function ($ts) use ($cutoff) { return $ts > $cutoff; }));
+    if (count($data[$ip]) >= $maxPerMinutes) {
+        return true;
+    }
+    $data[$ip][] = $now;
+    file_put_contents($file, json_encode($data), LOCK_EX);
+    return false;
+}
+
 function ensureDataDir(): void
 {
     if (!is_dir(DATA_PATH)) {

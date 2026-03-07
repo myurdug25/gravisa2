@@ -54,6 +54,7 @@ $pageId = 'satis-teklifi';
     <section class="section">
       <div class="container">
         <form class="form-block" id="satis-form">
+          <input type="text" name="website" value="" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" tabindex="-1" autocomplete="off" aria-hidden="true" />
           <h2 style="margin-bottom:24px; font-size:1.35rem;">İletişim Bilgileri</h2>
           <div class="form-row">
             <label>

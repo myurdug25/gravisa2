@@ -117,6 +117,7 @@ $pageId = 'servis';
             <a href="https://wa.me/905551234567" class="btn btn-whatsapp" target="_blank" rel="noopener" data-site="whatsapp">WhatsApp ile Servis Talebi</a>
 
             <form id="servis-form" class="form-block" style="margin-top: 32px;">
+              <input type="text" name="website" value="" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" tabindex="-1" autocomplete="off" aria-hidden="true" />
               <h3 style="margin-bottom: 16px; font-size: 1.2rem;">Online Servis Talep Formu</h3>
               <div class="form-row">
                 <label>
@@ -131,7 +132,7 @@ $pageId = 'servis';
               <div class="form-row">
                 <label>
                   <span>E-posta</span>
-                  <input type="email" name="email" placeholder="ornek@firma.com" />
+                  <input type="email" name="email" required placeholder="ornek@firma.com" />
                 </label>
                 <label>
                   <span>Servis Türü</span>

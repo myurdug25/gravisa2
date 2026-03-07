@@ -19,6 +19,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $raw = file_get_contents('php://input');
 $input = !empty($_POST) ? $_POST : (is_array(json_decode($raw, true)) ? json_decode($raw, true) : []);
 
+if (isHoneypotFilled($input)) {
+    jsonResponse(['success' => true, 'message' => 'Teklif talebiniz alındı. En kısa sürede size özel teklifimizi ileteceğiz.'], 200);
+}
+if (isRateLimitExceeded()) {
+    jsonResponse(['success' => false, 'message' => 'Çok fazla deneme. Lütfen bir süre sonra tekrar deneyin.'], 429);
+}
+
 $adSoyad = sanitize($input['ad_soyad'] ?? '');
 $email = sanitize($input['email'] ?? '');
 $telefon = sanitize($input['telefon'] ?? '');

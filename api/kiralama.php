@@ -29,6 +29,13 @@ if (!empty($_POST)) {
     $input = is_array($decoded) ? $decoded : [];
 }
 
+if (isHoneypotFilled($input)) {
+    jsonResponse(['success' => true, 'message' => 'Kiralama talebiniz alındı. En kısa sürede sizinle iletişime geçeceğiz.'], 200);
+}
+if (isRateLimitExceeded()) {
+    jsonResponse(['success' => false, 'message' => 'Çok fazla deneme. Lütfen bir süre sonra tekrar deneyin.'], 429);
+}
+
 $adSoyad = sanitize($input['ad_soyad'] ?? '');
 $email = sanitize($input['email'] ?? '');
 $telefon = sanitize($input['telefon'] ?? '');

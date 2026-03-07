@@ -24,3 +24,6 @@ Thumbs.db
 
 # Log
 *.log
+
+# Rate limit state (sunucuda otomatik oluşur)
+data/rate_limit.json

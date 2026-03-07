@@ -145,6 +145,7 @@ $pageId = 'index';
         <h2 class="section-title">Demo Makine Talebi</h2>
         <p class="section-desc">İstediğiniz makineyi sahada denemek için talebinizi iletin.</p>
         <form class="demo-form form-block" id="demo-form">
+          <input type="text" name="website" value="" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" tabindex="-1" autocomplete="off" aria-hidden="true" />
           <div class="form-row">
             <label>
               <span>Ad Soyad</span>
@@ -155,6 +156,10 @@ $pageId = 'index';
               <input type="tel" name="phone" required placeholder="05XX XXX XX XX" />
             </label>
           </div>
+          <label>
+            <span>E-posta</span>
+            <input type="email" name="email" required placeholder="ornek@firma.com" />
+          </label>
           <div class="form-row">
             <label>
               <span>İlgilendiğiniz Makine</span>

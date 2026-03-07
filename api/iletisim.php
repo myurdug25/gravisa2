@@ -19,17 +19,23 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $raw = file_get_contents('php://input');
 $input = !empty($_POST) ? $_POST : (is_array(json_decode($raw, true)) ? json_decode($raw, true) : []);
 
+if (isHoneypotFilled($input)) {
+    jsonResponse(['success' => true, 'message' => 'Mesajınız alındı. En kısa sürede size dönüş yapacağız.'], 200);
+}
+if (isRateLimitExceeded()) {
+    jsonResponse(['success' => false, 'message' => 'Çok fazla deneme. Lütfen bir süre sonra tekrar deneyin.'], 429);
+}
+
 $adSoyad = sanitize($input['ad_soyad'] ?? '');
 $telefon = sanitize($input['telefon'] ?? '');
 $email = sanitize($input['email'] ?? '');
 $konu = sanitize($input['konu'] ?? '');
 $mesaj = sanitize($input['mesaj'] ?? '');
 
-if (empty($adSoyad) || empty($telefon) || empty($konu) || empty($mesaj)) {
-    jsonResponse(['success' => false, 'message' => 'Lütfen zorunlu alanları doldurun.'], 400);
+if (empty($adSoyad) || empty($telefon) || empty($email) || empty($konu) || empty($mesaj)) {
+    jsonResponse(['success' => false, 'message' => 'Lütfen tüm zorunlu alanları (Ad Soyad, Telefon, E-posta, Konu, Mesaj) doldurun.'], 400);
 }
-
-if (!empty($email) && !validateEmail($email)) {
+if (!validateEmail($email)) {
     jsonResponse(['success' => false, 'message' => 'Geçerli bir e-posta adresi girin.'], 400);
 }
 

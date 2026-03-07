@@ -22,6 +22,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $raw = file_get_contents('php://input');
 $input = !empty($_POST) ? $_POST : (is_array(json_decode($raw, true)) ? json_decode($raw, true) : []);
 
+if (isHoneypotFilled($input)) {
+    jsonResponse(['success' => true, 'message' => 'Servis talebiniz alındı. En kısa sürede sizinle iletişime geçeceğiz.'], 200);
+}
+if (isRateLimitExceeded()) {
+    jsonResponse(['success' => false, 'message' => 'Çok fazla deneme. Lütfen bir süre sonra tekrar deneyin.'], 429);
+}
+
 $adSoyad     = sanitize($input['ad_soyad'] ?? '');
 $telefon     = sanitize($input['telefon'] ?? '');
 $email       = sanitize($input['email'] ?? '');
@@ -31,11 +38,10 @@ $makineModel = sanitize($input['makine_model'] ?? '');
 $seriNo      = sanitize($input['seri_no'] ?? '');
 $not         = sanitize($input['not'] ?? '');
 
-if (empty($adSoyad) || empty($telefon) || empty($lokasyon) || empty($servisTuru)) {
-    jsonResponse(['success' => false, 'message' => 'Lütfen Ad Soyad, Telefon, Lokasyon ve Servis Türü alanlarını doldurun.'], 400);
+if (empty($adSoyad) || empty($telefon) || empty($email) || empty($lokasyon) || empty($servisTuru)) {
+    jsonResponse(['success' => false, 'message' => 'Lütfen Ad Soyad, Telefon, E-posta, Lokasyon ve Servis Türü alanlarını doldurun.'], 400);
 }
-
-if (!empty($email) && !validateEmail($email)) {
+if (!validateEmail($email)) {
     jsonResponse(['success' => false, 'message' => 'Geçerli bir e-posta adresi girin.'], 400);
 }
 

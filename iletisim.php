@@ -56,6 +56,7 @@ $pageId = 'iletisim';
         <div class="content-page">
           <div class="form-block" style="max-width: 720px; margin-bottom: 40px;">
             <form id="iletisim-form">
+              <input type="text" name="website" value="" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" tabindex="-1" autocomplete="off" aria-hidden="true" />
               <div class="form-row">
                 <label>
                   <span>Ad Soyad</span>
@@ -68,7 +69,7 @@ $pageId = 'iletisim';
               </div>
               <label>
                 <span>E-posta</span>
-                <input type="email" name="email" placeholder="ornek@firma.com" />
+                <input type="email" name="email" required placeholder="ornek@firma.com" />
               </label>
               <label>
                 <span>Konu</span>
