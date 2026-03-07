@@ -7,6 +7,8 @@ config/.env
 # Geliştirme / import - sunucuda gerekmez
 *.md
 *.txt
+!DEPLOY.txt
+!MAIL-KURULUM.txt
 *.xlsx
 *.py
 1111/

@@ -120,6 +120,9 @@ class Mailer
 
     public function send(): bool
     {
+        if (defined('MAIL_SMTP_HOST') && MAIL_SMTP_HOST !== '') {
+            return $this->sendViaSmtp();
+        }
         $headers = [
             'MIME-Version: 1.0',
             'Content-Type: text/html; charset=UTF-8',
@@ -127,7 +130,64 @@ class Mailer
             'Reply-To: ' . $this->from,
             'X-Mailer: PHP/' . phpversion(),
         ];
-
         return @mail($this->to, $this->subject, $this->body, implode("\r\n", $headers));
+    }
+
+    /** Hostinger vb. SMTP ile gönderim */
+    private function sendViaSmtp(): bool
+    {
+        $host = defined('MAIL_SMTP_HOST') ? MAIL_SMTP_HOST : '';
+        $port = defined('MAIL_SMTP_PORT') ? (int) MAIL_SMTP_PORT : 587;
+        $user = defined('MAIL_SMTP_USER') ? MAIL_SMTP_USER : '';
+        $pass = defined('MAIL_SMTP_PASS') ? MAIL_SMTP_PASS : '';
+        $secure = (defined('MAIL_SMTP_SECURE') && strtolower(MAIL_SMTP_SECURE) === 'ssl') ? 'ssl' : 'tls';
+
+        $errno = 0;
+        $errstr = '';
+        $target = ($secure === 'ssl' && $port == 465 ? 'ssl://' . $host : $host) . ':' . $port;
+        $fp = @stream_socket_client($target, $errno, $errstr, 15, STREAM_CLIENT_CONNECT);
+        if (!$fp) {
+            return false;
+        }
+        stream_set_timeout($fp, 10);
+
+        $read = function () use ($fp) {
+            $r = '';
+            while ($line = fgets($fp, 515)) {
+                $r .= $line;
+                if (strlen($line) < 4 || substr($line, 3, 1) === ' ') break;
+            }
+            return $r;
+        };
+
+        $send = function ($cmd) use ($fp, $read) {
+            fwrite($fp, $cmd . "\r\n");
+            return $read();
+        };
+
+        $read();
+        $send("EHLO " . ($_SERVER['SERVER_NAME'] ?? 'localhost'));
+        if ($secure === 'tls' && $port === 587) {
+            $send("STARTTLS");
+            stream_socket_enable_crypto($fp, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
+            $send("EHLO " . ($_SERVER['SERVER_NAME'] ?? 'localhost'));
+        }
+        if ($user && $pass) {
+            $send("AUTH LOGIN");
+            $send(base64_encode($user));
+            $send(base64_encode($pass));
+        }
+        $send("MAIL FROM:<" . $this->from . ">");
+        $send("RCPT TO:<" . $this->to . ">");
+        $send("DATA");
+        $msg = "From: " . $this->fromName . " <" . $this->from . ">\r\n";
+        $msg .= "To: " . $this->to . "\r\n";
+        $msg .= "Subject: =?UTF-8?B?" . base64_encode($this->subject) . "?=\r\n";
+        $msg .= "MIME-Version: 1.0\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n";
+        $msg .= $this->body . "\r\n.";
+        $send($msg);
+        $send("QUIT");
+        fclose($fp);
+        return true;
     }
 }

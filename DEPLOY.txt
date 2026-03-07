@@ -1,0 +1,140 @@
+================================================================================
+  GRAVİSA - public_html KURULUM REHBERİ
+================================================================================
+
+ADIM 1: public_html İÇİNE GITHUB'DAN KOD ÇEKME
+--------------------------------------------------------------------------------
+
+YÖNTEM A - SSH ile (sunucuda Git varsa):
+
+   ssh kullanici@sunucuadresi.com
+   cd ~/public_html
+   # public_html BOŞSA:
+   git clone https://github.com/myurdug25/gravisa.git .
+   # (Nokta = bu klasöre çek)
+   
+   # public_html DOLUYSA, alt klasöre çek:
+   git clone https://github.com/myurdug25/gravisa.git gravisa
+   
+   VEYA alt klasöre çekmek için:
+   git clone https://github.com/myurdug25/gravisa.git gravisa
+   (Site: site.com/gravisa/ olur)
+
+
+YÖNTEM B - FTP ile (Git yoksa):
+
+   1. https://github.com/myurdug25/gravisa adresine git
+   2. Yeşil "Code" butonuna tıkla → "Download ZIP"
+   3. ZIP'i bilgisayarda aç
+   4. FileZilla / WinSCP ile sunucuya bağlan
+   5. public_html içine gir (veya sitenin kök dizinine)
+   6. ZIP içindeki TÜM dosya ve klasörleri public_html'e sürükle
+      (index.php, admin/, api/, config/, data/, assets/, images/ vb. hepsi)
+
+
+ADIM 2: .env DOSYASINI OLUŞTURMA
+--------------------------------------------------------------------------------
+
+.env dosyası GitHub'da YOK (güvenlik). Siz oluşturacaksınız.
+
+A) cPanel / Plesk Dosya Yöneticisi ile:
+
+   1. public_html/config/ klasörüne gir
+   2. .env.example dosyasına sağ tık → Kopyala
+   3. Yapıştır → İsim: .env
+   4. .env dosyasına sağ tık → Düzenle
+   5. Aşağıdaki değerleri kendi bilgilerinizle değiştirin
+
+
+B) SSH ile:
+
+   cd ~/public_html/config
+   cp .env.example .env
+   nano .env
+   (veya vi .env - düzenleyip kaydedin)
+
+
+.env İÇİNDE MUTLAKA DEĞİŞTİRİLECEKLER:
+
+   APP_ENV=production
+   APP_DEBUG=0
+   APP_URL=https://siteniz.com
+   
+   ADMIN_USER=admin
+   ADMIN_PASS=GucluSifre123!
+   
+   MAIL_TO=info@gravisa.com
+   MAIL_FROM=noreply@gravisa.com
+
+
+ADIM 3: İZİN AYARLARI (chmod)
+--------------------------------------------------------------------------------
+
+Yazılabilir olması gereken klasörler (form kayıtları, ayarlar, görsel yükleme):
+
+   data/                    → Form talepleri, ayarlar, makine listesi
+   images/saha/             → Saha fotoğrafları yükleme
+   assets/uploads/          → Makine görselleri yükleme (içinde machines/ olacak)
+
+
+SSH ile:
+
+   cd ~/public_html
+   
+   chmod 755 data
+   chmod 644 data/*.json
+   
+   mkdir -p images/saha
+   chmod 755 images/saha
+   
+   mkdir -p assets/uploads/machines
+   chmod -R 755 assets/uploads
+
+
+FTP ile (FileZilla):
+
+   data/ klasörüne sağ tık → Dosya izinleri → 755
+   data/ içindeki .json dosyalarına → 644
+   
+   images/saha/ yoksa oluştur → 755
+   assets/uploads/ yoksa oluştur → assets/uploads ve assets/uploads/machines → 755
+
+
+ÖZET - İzin verilecek dosya/klasörler:
+
+   Klasör/Dosya              İzin    Açıklama
+   ------------------------- ------  --------------------------
+   data/                     755     Form kayıtları, ayarlar
+   data/*.json               644     JSON veri dosyaları
+   images/saha/              755     Saha fotoğrafı yükleme
+   assets/uploads/           755     Makine görseli yükleme
+   assets/uploads/machines/  755     (uploads altı)
+
+
+Başka izin ayarlanacak klasör YOK. Sadece yukarıdakiler.
+
+
+ADIM 4: .htaccess REWRİTEBASE
+--------------------------------------------------------------------------------
+
+public_html/.htaccess dosyasını açın. Şu satırı bulun:
+
+   RewriteBase /gravisa/
+
+Sitenize göre değiştirin:
+
+   - Site kökteyse (https://siteniz.com/):     RewriteBase /
+   - Alt dizindeyse (https://site.com/gravisa/): RewriteBase /gravisa/
+
+
+ADIM 5: KONTROL
+--------------------------------------------------------------------------------
+
+   - Ana sayfa: https://siteniz.com/
+   - Admin: https://siteniz.com/admin/
+   - Admin giriş: .env'deki ADMIN_USER ve ADMIN_PASS
+
+   Form çalışmıyorsa → data/ 755 mi?
+   Görsel yüklenmiyorsa → images/saha/ ve assets/uploads/ 755 mi?
+
+================================================================================
