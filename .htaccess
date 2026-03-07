@@ -1,0 +1,39 @@
+# Gravisa - Production kuralları
+# RewriteBase: Site kökündeyse /, alt dizindeyse /gravisa/ yapın (DEPLOY.md)
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /gravisa/
+
+  # Hassas dosya/klasörlere doğrudan erişimi engelle
+  RewriteRule ^\.env - [F,L]
+  RewriteRule ^config/ - [F,L]
+  RewriteRule ^data/ - [F,L]
+  RewriteRule ^includes/ - [F,L]
+
+  # Mevcut dosya veya klasör ise dokunma
+  RewriteCond %{REQUEST_FILENAME} -f
+  RewriteRule ^ - [L]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Temiz URL: .php görünmesin (örn. /iletisim -> iletisim.php)
+  RewriteRule ^(index|iletisim|makineler|satis-teklifi|kiralama|servis|kurumsal|hakkimizda|vizyon-misyon|referanslar|saha-fotograflari|makine-detay)/?$ $1.php [L]
+
+  # Ana sayfa: / veya /index
+  RewriteRule ^$ index.php [L]
+</IfModule>
+
+# Ek güvenlik
+<IfModule mod_headers.c>
+  <FilesMatch "\.(env|json|sql|log|md)$">
+    Header set Access-Control-Allow-Origin "none"
+  </FilesMatch>
+</IfModule>
+
+# .env ve .env.* erişimini engelle (ek önlem)
+<FilesMatch "^\\.env">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+</FilesMatch>

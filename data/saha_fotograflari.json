@@ -1,0 +1,65 @@
+[
+    {
+        "id": 1,
+        "title": "İnşaat Sahasında Ekskavatör",
+        "description": "Proje sahasında çalışan iş makinesi",
+        "img": "images/WhatsApp Image 2026-02-17 at 15.37.57 (1).jpeg",
+        "sort_order": 1
+    },
+    {
+        "id": 2,
+        "title": "Hafriyat Çalışması",
+        "description": "Sahada hafriyat operasyonu",
+        "img": "images/WhatsApp Image 2026-02-17 at 15.37.57 (2).jpeg",
+        "sort_order": 2
+    },
+    {
+        "id": 3,
+        "title": "Şantiye Görünümü",
+        "description": "Aktif inşaat sahası",
+        "img": "images/WhatsApp Image 2026-02-17 at 15.37.57.jpeg",
+        "sort_order": 3
+    },
+    {
+        "id": 4,
+        "title": "Makine Operasyonu",
+        "description": "Sahada çalışan ekipman",
+        "img": "images/WhatsApp Image 2026-02-17 at 15.37.58 (1).jpeg",
+        "sort_order": 4
+    },
+    {
+        "id": 5,
+        "title": "Proje Sahası",
+        "description": "Gravisa iş makineleri ile proje",
+        "img": "images/WhatsApp Image 2026-02-17 at 15.37.58 (2).jpeg",
+        "sort_order": 5
+    },
+    {
+        "id": 6,
+        "title": "Saha Çalışması",
+        "description": "İnşaat ve altyapı projesi",
+        "img": "images/WhatsApp Image 2026-02-17 at 15.37.58 (3).jpeg",
+        "sort_order": 6
+    },
+    {
+        "id": 7,
+        "title": "Makine Parkı",
+        "description": "Sahada konuşlu makineler",
+        "img": "images/WhatsApp Image 2026-02-17 at 15.37.58 (4).jpeg",
+        "sort_order": 7
+    },
+    {
+        "id": 8,
+        "title": "Hafriyat ve Yükleme",
+        "description": "Ekskavatör ve loder koordinasyonu",
+        "img": "images/WhatsApp Image 2026-02-17 at 15.37.58.jpeg",
+        "sort_order": 8
+    },
+    {
+        "id": 9,
+        "title": "Altyapı Projesi",
+        "description": "Yol ve altyapı inşaatı",
+        "img": "images/WhatsApp Image 2026-02-17 at 15.38.12.jpeg",
+        "sort_order": 9
+    }
+]

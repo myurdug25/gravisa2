@@ -1,0 +1,18 @@
+# Hassas yapılandırma (asla commit etmeyin)
+config/.env
+.env
+.env.local
+.env.*.local
+
+# Veri (isteğe bağlı - yedek alıyorsanız kaldırın)
+# data/*.json
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Log
+*.log

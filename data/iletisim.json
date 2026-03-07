@@ -1,0 +1,21 @@
+{
+    "iletisim_20260228214105_15b6d4": {
+        "ad_soyad": "Murat YURDUGÜL",
+        "telefon": "05050491879",
+        "email": "quiper2525@gmail.com",
+        "konu": "Satış Teklifi",
+        "mesaj": "satış teklifi",
+        "created_at": "2026-02-28 21:41:05"
+    },
+    "iletisim_20260228214206_e08c7e": {
+        "ad_soyad": "Murat YURDUGÜL",
+        "telefon": "+90 (505) 049 1879",
+        "email": "quiper2525@gmail.com",
+        "konu": "Kiralama",
+        "mesaj": "kiralama",
+        "created_at": "2026-02-28 21:42:06",
+        "admin_reply": "yok",
+        "replied_at": "2026-03-02 13:17:14",
+        "reply_email_sent": false
+    }
+}

@@ -1,0 +1,896 @@
+<?php
+/**
+ * Admin Panel - Talep Listesi
+ */
+require_once dirname(__DIR__) . '/config/config.php';
+require_once dirname(__DIR__) . '/includes/functions.php';
+require_once dirname(__DIR__) . '/includes/security.php';
+
+secureSessionStart();
+
+if (empty($_SESSION['admin_logged']) || $_SESSION['admin_logged'] !== true) {
+    header('Location: login.php');
+    exit;
+}
+
+// Oturum süresi kontrolü
+if (isset($_SESSION['admin_time']) && (time() - $_SESSION['admin_time']) > SESSION_LIFETIME) {
+    session_destroy();
+    header('Location: login.php');
+    exit;
+}
+$_SESSION['admin_time'] = time();
+
+$tab = $_GET['tab'] ?? 'kiralama';
+$allowedTabs = ['kiralama', 'demo', 'iletisim', 'satis', 'servis', 'makineler', 'saha-fotograflari', 'ayarlar'];
+if (!in_array($tab, $allowedTabs)) $tab = 'kiralama';
+
+$labels = [
+    'kiralama' => 'Kiralama Talepleri',
+    'demo' => 'Demo Talepleri',
+    'iletisim' => 'İletişim Talepleri',
+    'satis' => 'Satış Teklifi Talepleri',
+    'servis' => 'Servis Talepleri',
+    'makineler' => 'Makineler',
+    'saha-fotograflari' => 'Saha Fotoğrafları',
+    'ayarlar' => 'Site Ayarları',
+];
+
+$items = [];
+$settings = getSettings();
+if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') {
+    if (defined('USE_DB') && USE_DB && defined('DB_NAME') && DB_NAME) {
+        require_once dirname(__DIR__) . '/includes/Database.php';
+        $items = Database::getSubmissions($tab);
+    } else {
+        $file = DATA_PATH . '/' . $tab . '.json';
+        if (file_exists($file)) {
+            $items = json_decode(file_get_contents($file), true) ?: [];
+            $items = array_reverse($items, true);
+        }
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel | Gravisa</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; margin: 0; background: #f5f7fa; color: #333; }
+    .admin-header { background: linear-gradient(135deg, #1e5f8a, #164a6e); color: #fff; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+    .admin-header h1 { margin: 0; font-size: 1.35rem; }
+    .admin-header a { color: rgba(255,255,255,0.9); text-decoration: none; font-size: 0.9rem; }
+    .admin-header a:hover { color: #fff; }
+    .admin-nav { background: #fff; padding: 0 32px; border-bottom: 1px solid #e0e0e0; display: flex; gap: 0; }
+    .admin-nav a { padding: 16px 20px; text-decoration: none; color: #666; font-weight: 500; border-bottom: 3px solid transparent; }
+    .admin-nav a:hover { color: #1e5f8a; }
+    .admin-nav a.active { color: #1e5f8a; border-bottom-color: #1e5f8a; }
+    .admin-content { padding: 32px; max-width: 1200px; margin: 0 auto; }
+    .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); border: 1px solid #e8e8e8; overflow: hidden; }
+    .card-header { padding: 20px 24px; border-bottom: 1px solid #eee; font-weight: 700; font-size: 1.1rem; color: #1e5f8a; }
+    .item { padding: 20px 24px; border-bottom: 1px solid #f0f0f0; }
+    .item:last-child { border-bottom: none; }
+    .item:hover { background: #fafafa; }
+    .item-id { font-size: 0.75rem; color: #999; margin-bottom: 8px; }
+    .item-main { font-weight: 600; color: #333; margin-bottom: 4px; }
+    .item-meta { font-size: 0.875rem; color: #666; }
+    .item-date { font-size: 0.8rem; color: #999; margin-top: 8px; }
+    .item-actions { margin-top: 12px; }
+    .btn-sm { display: inline-block; padding: 6px 12px; background: #1e5f8a; color: #fff; border-radius: 6px; font-size: 0.8rem; text-decoration: none; font-family: inherit; border: none; cursor: pointer; }
+    .btn-sm:hover { background: #164a6e; }
+    .btn-sm.secondary { background: #6c757d; }
+    .empty { padding: 48px; text-align: center; color: #999; }
+    .detail-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 24px; }
+    .detail-overlay.show { display: flex; }
+    .detail-box { background: #fff; border-radius: 12px; max-width: 520px; width: 100%; max-height: 90vh; overflow-y: auto; }
+    .detail-box h3 { margin: 0 0 20px; padding: 20px 24px; border-bottom: 1px solid #eee; color: #1e5f8a; }
+    .detail-box .body { padding: 24px; }
+    .detail-row { display: flex; padding: 10px 0; border-bottom: 1px solid #f5f5f5; }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-label { font-weight: 600; width: 140px; flex-shrink: 0; color: #666; font-size: 0.9rem; }
+    .detail-value { color: #333; }
+    .detail-close { padding: 16px 24px; border-top: 1px solid #eee; text-align: right; }
+    .detail-reply { margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; }
+    .detail-reply textarea { width: 100%; min-height: 100px; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; margin-bottom: 10px; }
+    .detail-reply label { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 0.9rem; }
+    .reply-status { font-size: 0.85rem; color: #0a0; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <input type="hidden" id="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>" />
+  <header class="admin-header">
+    <h1>Gravisa Admin Panel</h1>
+    <div>
+      <a href="../">Siteye Git</a>
+      <span style="margin: 0 12px; opacity: 0.6;">|</span>
+      <a href="logout.php">Çıkış</a>
+    </div>
+  </header>
+  <nav class="admin-nav">
+    <?php foreach ($allowedTabs as $t): ?>
+    <a href="?tab=<?= $t ?>" class="<?= $tab === $t ? 'active' : '' ?>"><?= $labels[$t] ?></a>
+    <?php endforeach; ?>
+  </nav>
+  <main class="admin-content">
+    <?php if ($tab === 'ayarlar'): ?>
+    <div class="card">
+      <div class="card-header">Site Ayarları</div>
+      <div class="body" style="padding: 24px;">
+        <form id="settingsForm">
+          <?php echo csrfField(); ?>
+          <div style="display: grid; gap: 20px; max-width: 520px;">
+            <label style="display: block;">
+              <span style="display: block; font-weight: 600; margin-bottom: 6px; color: #555;">İletişim E-postası (sitede görünen)</span>
+              <input type="email" name="contact_email" value="<?= htmlspecialchars($settings['contact_email'] ?? '') ?>" style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px;" />
+            </label>
+            <label style="display: block;">
+              <span style="display: block; font-weight: 600; margin-bottom: 6px; color: #555;">Servis E-postası</span>
+              <input type="email" name="servis_email" value="<?= htmlspecialchars($settings['servis_email'] ?? '') ?>" style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px;" />
+            </label>
+            <label style="display: block;">
+              <span style="display: block; font-weight: 600; margin-bottom: 6px; color: #555;">WhatsApp Numarası (sadece rakam, örn. 905551234567)</span>
+              <input type="text" name="whatsapp_number" value="<?= htmlspecialchars($settings['whatsapp_number'] ?? '') ?>" placeholder="905551234567" style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px;" />
+            </label>
+            <label style="display: block;">
+              <span style="display: block; font-weight: 600; margin-bottom: 6px; color: #555;">Telefon (görünen metin)</span>
+              <input type="text" name="phone_display" value="<?= htmlspecialchars($settings['phone_display'] ?? '') ?>" placeholder="0555 123 45 67" style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px;" />
+            </label>
+            <label style="display: block;">
+              <span style="display: block; font-weight: 600; margin-bottom: 6px; color: #555;">Adres</span>
+              <textarea name="address" rows="3" style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px;"><?= htmlspecialchars($settings['address'] ?? '') ?></textarea>
+            </label>
+            <hr style="border: none; border-top: 1px solid #eee;" />
+            <p style="font-size: 0.9rem; color: #666;">Form talepleri aşağıdaki adrese e-posta ile gönderilir. Boş bırakırsanız config.php içindeki MAIL_TO kullanılır.</p>
+            <label style="display: block;">
+              <span style="display: block; font-weight: 600; margin-bottom: 6px; color: #555;">Taleplerin gönderileceği e-posta (mail_to)</span>
+              <input type="email" name="mail_to" value="<?= htmlspecialchars($settings['mail_to'] ?? '') ?>" placeholder="info@gravisa.com" style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px;" />
+            </label>
+            <label style="display: block;">
+              <span style="display: block; font-weight: 600; margin-bottom: 6px; color: #555;">Gönderen adı (e-postada görünen)</span>
+              <input type="text" name="mail_from_name" value="<?= htmlspecialchars($settings['mail_from_name'] ?? '') ?>" style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px;" />
+            </label>
+            <label style="display: block;">
+              <span style="display: block; font-weight: 600; margin-bottom: 6px; color: #555;">Gönderen e-posta (mail_from)</span>
+              <input type="email" name="mail_from" value="<?= htmlspecialchars($settings['mail_from'] ?? '') ?>" style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px;" />
+            </label>
+            <hr style="border: none; border-top: 1px solid #eee;" />
+            <p style="font-weight: 600; color: #1e5f8a;">SEO Ayarları</p>
+            <label style="display: block;">
+              <span style="display: block; font-weight: 600; margin-bottom: 6px; color: #555;">Site başlığı (marka adı)</span>
+              <input type="text" name="seo_site_title" value="<?= htmlspecialchars($settings['seo_site_title'] ?? 'Gravisa') ?>" placeholder="Gravisa" style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px;" />
+            </label>
+            <label style="display: block;">
+              <span style="display: block; font-weight: 600; margin-bottom: 6px; color: #555;">Varsayılan meta açıklama (tüm sayfalar)</span>
+              <textarea name="seo_default_description" rows="2" style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px;"><?= htmlspecialchars($settings['seo_default_description'] ?? '') ?></textarea>
+            </label>
+            <label style="display: block;">
+              <span style="display: block; font-weight: 600; margin-bottom: 6px; color: #555;">Varsayılan anahtar kelimeler (virgülle ayırın)</span>
+              <input type="text" name="seo_default_keywords" value="<?= htmlspecialchars($settings['seo_default_keywords'] ?? '') ?>" placeholder="iş makineleri, kiralama, satış" style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px;" />
+            </label>
+            <label style="display: block;">
+              <span style="display: block; font-weight: 600; margin-bottom: 6px; color: #555;">Sayfa bazlı SEO (isteğe bağlı JSON)</span>
+              <textarea name="seo_pages" rows="4" placeholder='{"index":{"title":"Ana Sayfa","description":"..."},"iletisim":{"title":"İletişim","description":"..."}}' style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.85rem;"><?= htmlspecialchars($settings['seo_pages'] ?? '') ?></textarea>
+              <span style="font-size: 0.8rem; color: #666;">Sayfa id: index, iletisim, makineler, satis-teklifi, kiralama, servis, kurumsal, hakkimizda, vizyon-misyon, referanslar, saha-fotograflari, makine-detay</span>
+            </label>
+            <div>
+              <button type="submit" class="btn-sm" id="settingsBtn">Kaydet</button>
+              <span id="settingsMsg" style="margin-left: 12px; font-size: 0.9rem;"></span>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <?php elseif ($tab === 'makineler'): ?>
+    <div class="card">
+      <div class="card-header">Makineler</div>
+      <div class="body" style="padding: 24px;">
+        <div style="display: flex; gap: 24px; flex-wrap: wrap;">
+          <div style="flex: 2 1 0; min-width: 320px;">
+            <h3 style="margin-top: 0; margin-bottom: 12px;">Makine Listesi</h3>
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+              <thead>
+                <tr style="background:#f5f7fa;">
+                  <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">ID</th>
+                  <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Tip</th>
+                  <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Firma / Model</th>
+                  <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Yıl</th>
+                  <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Güç</th>
+                  <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Stok</th>
+                  <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Görsel</th>
+                  <th style="text-align:right; padding:8px; border-bottom:1px solid #eee;">İşlem</th>
+                </tr>
+              </thead>
+              <tbody id="machineTableBody">
+                <tr><td colspan="8" style="padding:12px; text-align:center; color:#999;">Yükleniyor...</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="flex: 1 1 0; min-width: 320px;">
+            <h3 style="margin-top: 0; margin-bottom: 12px;">Makine Ekle / Düzenle</h3>
+            <form id="machineForm" enctype="multipart/form-data">
+              <?php echo csrfField(); ?>
+              <input type="hidden" name="id" id="machine_id" value="">
+              <div style="display:flex; flex-direction:column; gap:10px;">
+                <label>
+                  <span style="display:block; font-weight:600; margin-bottom:4px; color:#555;">Tip</span>
+                  <input type="text" name="tip" id="machine_tip" required style="width:100%; padding:8px 10px; border:1px solid #ddd; border-radius:8px;">
+                </label>
+                <label>
+                  <span style="display:block; font-weight:600; margin-bottom:4px; color:#555;">Firma</span>
+                  <input type="text" name="firma" id="machine_firma" required style="width:100%; padding:8px 10px; border:1px solid #ddd; border-radius:8px;">
+                </label>
+                <label>
+                  <span style="display:block; font-weight:600; margin-bottom:4px; color:#555;">Tip / Model</span>
+                  <input type="text" name="tipModel" id="machine_tipModel" required style="width:100%; padding:8px 10px; border:1px solid #ddd; border-radius:8px;">
+                </label>
+                <label>
+                  <span style="display:block; font-weight:600; margin-bottom:4px; color:#555;">Model Yılı</span>
+                  <input type="text" name="modelYil" id="machine_modelYil" style="width:100%; padding:8px 10px; border:1px solid #ddd; border-radius:8px;">
+                </label>
+                <div style="display:flex; gap:8px;">
+                  <label style="flex:2;">
+                    <span style="display:block; font-weight:600; margin-bottom:4px; color:#555;">Güç</span>
+                    <input type="text" name="guc" id="machine_guc" style="width:100%; padding:8px 10px; border:1px solid #ddd; border-radius:8px;">
+                  </label>
+                  <label style="flex:1;">
+                    <span style="display:block; font-weight:600; margin-bottom:4px; color:#555;">Birim</span>
+                    <input type="text" name="gucBirim" id="machine_gucBirim" placeholder="kW / HP" style="width:100%; padding:8px 10px; border:1px solid #ddd; border-radius:8px;">
+                  </label>
+                </div>
+                <label>
+                  <span style="display:block; font-weight:600; margin-bottom:4px; color:#555;">Kapasite</span>
+                  <input type="text" name="kapasite" id="machine_kapasite" style="width:100%; padding:8px 10px; border:1px solid #ddd; border-radius:8px;">
+                </label>
+                <label>
+                  <span style="display:block; font-weight:600; margin-bottom:4px; color:#555;">Şasi Seri No</span>
+                  <input type="text" name="saseSeriNo" id="machine_saseSeriNo" style="width:100%; padding:8px 10px; border:1px solid #ddd; border-radius:8px;">
+                </label>
+                <label>
+                  <span style="display:block; font-weight:600; margin-bottom:4px; color:#555;">Motor Seri No</span>
+                  <input type="text" name="motorSeriNo" id="machine_motorSeriNo" style="width:100%; padding:8px 10px; border:1px solid #ddd; border-radius:8px;">
+                </label>
+                <label>
+                  <span style="display:block; font-weight:600; margin-bottom:4px; color:#555;">Motor Marka</span>
+                  <input type="text" name="motorMarka" id="machine_motorMarka" style="width:100%; padding:8px 10px; border:1px solid #ddd; border-radius:8px;">
+                </label>
+                <label>
+                  <span style="display:block; font-weight:600; margin-bottom:4px; color:#555;">Motor Tip</span>
+                  <input type="text" name="motorTip" id="machine_motorTip" style="width:100%; padding:8px 10px; border:1px solid #ddd; border-radius:8px;">
+                </label>
+                <label style="display:flex; align-items:center; gap:8px;">
+                  <input type="checkbox" name="stok" id="machine_stok" checked>
+                  <span style="font-size:0.9rem; color:#555;">Stokta</span>
+                </label>
+                <label>
+                  <span style="display:block; font-weight:600; margin-bottom:4px; color:#555;">Görsel (JPG / PNG)</span>
+                  <input type="file" name="img" id="machine_img" accept="image/*" style="width:100%; font-size:0.85rem;">
+                  <small id="machine_img_info" style="display:block; margin-top:4px; font-size:0.8rem; color:#777;"></small>
+                </label>
+                <div>
+                  <button type="submit" class="btn-sm" id="machineSaveBtn">Kaydet</button>
+                  <button type="button" class="btn-sm secondary" id="machineResetBtn" style="margin-left:8px;">Temizle</button>
+                  <span id="machineMsg" style="margin-left:8px; font-size:0.85rem;"></span>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <?php elseif ($tab === 'saha-fotograflari'): ?>
+    <div class="card">
+      <div class="card-header">Saha Fotoğrafları</div>
+      <div class="body" style="padding: 24px;">
+        <div style="display: flex; gap: 24px; flex-wrap: wrap;">
+          <div style="flex: 2 1 0; min-width: 320px;">
+            <h3 style="margin-top: 0; margin-bottom: 12px;">Fotoğraf Listesi</h3>
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+              <thead>
+                <tr style="background:#f5f7fa;">
+                  <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">ID</th>
+                  <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Başlık</th>
+                  <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Açıklama</th>
+                  <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Görsel</th>
+                  <th style="text-align:right; padding:8px; border-bottom:1px solid #eee;">İşlem</th>
+                </tr>
+              </thead>
+              <tbody id="sahaTableBody">
+                <tr><td colspan="5" style="padding:12px; text-align:center; color:#999;">Yükleniyor...</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="flex: 1 1 0; min-width: 320px;">
+            <h3 style="margin-top: 0; margin-bottom: 12px;">Fotoğraf Ekle / Düzenle</h3>
+            <form id="sahaForm" enctype="multipart/form-data">
+              <?php echo csrfField(); ?>
+              <input type="hidden" name="id" id="saha_id" value="">
+              <div style="display:flex; flex-direction:column; gap:10px;">
+                <label>
+                  <span style="display:block; font-weight:600; margin-bottom:4px; color:#555;">Başlık</span>
+                  <input type="text" name="title" id="saha_title" required style="width:100%; padding:8px 10px; border:1px solid #ddd; border-radius:8px;">
+                </label>
+                <label>
+                  <span style="display:block; font-weight:600; margin-bottom:4px; color:#555;">Açıklama</span>
+                  <input type="text" name="description" id="saha_description" style="width:100%; padding:8px 10px; border:1px solid #ddd; border-radius:8px;">
+                </label>
+                <label>
+                  <span style="display:block; font-weight:600; margin-bottom:4px; color:#555;">Sıra</span>
+                  <input type="number" name="sort_order" id="saha_sort_order" value="0" style="width:100%; padding:8px 10px; border:1px solid #ddd; border-radius:8px;">
+                </label>
+                <label>
+                  <span style="display:block; font-weight:600; margin-bottom:4px; color:#555;">Görsel (JPG / PNG)</span>
+                  <input type="file" name="img" id="saha_img" accept="image/*" style="width:100%; font-size:0.85rem;">
+                  <small id="saha_img_info" style="display:block; margin-top:4px; font-size:0.8rem; color:#777;"></small>
+                </label>
+                <div>
+                  <button type="submit" class="btn-sm" id="sahaSaveBtn">Kaydet</button>
+                  <button type="button" class="btn-sm secondary" id="sahaResetBtn" style="margin-left:8px;">Temizle</button>
+                  <span id="sahaMsg" style="margin-left:8px; font-size:0.85rem;"></span>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <?php else: ?>
+    <div class="card">
+      <div class="card-header">
+        <?= $labels[$tab] ?>
+        <span style="margin-left:8px; font-size:0.85rem; color:#666;">(Toplam <?= count($items) ?> kayıt)</span>
+        <?php if (!empty($items)): ?>
+        <div style="margin-top:8px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <input type="text" id="requestSearch" placeholder="İsim, e-posta, telefon, konu ara..." style="flex:1; min-width:220px; padding:6px 10px; border-radius:8px; border:1px solid #d0d7de; font-size:0.85rem;">
+          <select id="requestDateFilter" style="padding:6px 10px; border-radius:8px; border:1px solid #d0d7de; font-size:0.85rem;">
+            <option value="all">Tüm tarihler</option>
+            <option value="7">Son 7 gün</option>
+            <option value="30">Son 30 gün</option>
+          </select>
+        </div>
+        <?php endif; ?>
+      </div>
+      <?php if (empty($items)): ?>
+      <div class="empty">Henüz talep bulunmuyor.</div>
+      <?php else: ?>
+      <?php foreach ($items as $id => $data): ?>
+      <?php
+      $main = $data['ad_soyad'] ?? $data['name'] ?? '-';
+      $meta = $data['email'] ?? $data['telefon'] ?? $data['phone'] ?? '';
+      if ($tab === 'kiralama') $meta = ($data['lokasyon'] ?? '') . ' • ' . ($data['sure'] ?? '');
+      elseif ($tab === 'demo') $meta = ($data['machine'] ?? '') . ' • ' . ($data['phone'] ?? '');
+      elseif ($tab === 'iletisim') $meta = ($data['konu'] ?? '') . ' • ' . ($data['telefon'] ?? '');
+      elseif ($tab === 'satis') $meta = ($data['model'] ?? '') . ' • ' . ($data['email'] ?? '');
+      elseif ($tab === 'servis') $meta = ($data['lokasyon'] ?? '') . ' • ' . ($data['servis_turu'] ?? '');
+      $createdAt = $data['created_at'] ?? '';
+      ?>
+      <div class="item" data-request-id="<?= htmlspecialchars($id) ?>" data-main="<?= htmlspecialchars($main) ?>" data-meta="<?= htmlspecialchars($meta) ?>" data-date="<?= htmlspecialchars($createdAt) ?>">
+        <div class="item-id"><?= htmlspecialchars($id) ?></div>
+        <div class="item-main">
+          <?= htmlspecialchars($main) ?>
+        </div>
+        <div class="item-meta">
+          <?= htmlspecialchars($meta) ?>
+        </div>
+        <div class="item-date">
+          <?= htmlspecialchars($createdAt) ?>
+        </div>
+        <div class="item-actions">
+          <button type="button" class="btn-sm" onclick="showDetail(<?= htmlspecialchars(json_encode($id), ENT_QUOTES) ?>, <?= htmlspecialchars(json_encode($data), ENT_QUOTES) ?>)">Detay</button>
+          <button type="button" class="btn-sm secondary" data-delete-request="<?= htmlspecialchars($id) ?>" style="margin-left:8px;">Sil</button>
+        </div>
+      </div>
+      <?php endforeach; ?>
+      <?php endif; ?>
+    </div>
+    <?php endif; ?>
+  </main>
+
+  <div class="detail-overlay" id="detailOverlay">
+    <div class="detail-box">
+      <h3 id="detailTitle">Talep Detayı</h3>
+      <div class="body" id="detailBody"></div>
+      <div class="detail-close">
+        <button type="button" class="btn-sm secondary" onclick="closeDetail()">Kapat</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var currentDetailId = null;
+    var currentDetailData = null;
+    function esc(s) {
+      if (s == null || s === undefined) return '';
+      var d = document.createElement('div');
+      d.textContent = String(s);
+      return d.innerHTML;
+    }
+    function showDetail(id, data) {
+      currentDetailId = id;
+      currentDetailData = data;
+      var labels = {
+        ad_soyad: 'Ad Soyad', name: 'Ad Soyad', email: 'E-posta', telefon: 'Telefon', phone: 'Telefon',
+        firma: 'Firma', lokasyon: 'Adres', sure: 'Kiralama Süresi', operator: 'Operatör',
+        baslangic: 'Başlangıç', bitis: 'Bitiş', model: 'Model', makine_id: 'Makine ID', makine_model: 'Makine Model',
+        adet: 'Adet', machine: 'Makine', date: 'Tarih', note: 'Not', not: 'Ek Notlar',
+        konu: 'Konu', mesaj: 'Mesaj', created_at: 'Tarih',
+        servis_turu: 'Servis Türü', seri_no: 'Seri No / Plaka',
+        admin_reply: 'Verdiğiniz Cevap', replied_at: 'Cevap Tarihi'
+      };
+      var skipKeys = ['created_at', 'reply_email_sent'];
+      var html = '<div class="detail-row"><span class="detail-label">ID</span><span class="detail-value">' + esc(id) + '</span></div>';
+      for (var k in data) {
+        if (skipKeys.indexOf(k) >= 0 || (data[k] === '' && k !== 'admin_reply') || data[k] == null) continue;
+        var lbl = labels[k] || k;
+        html += '<div class="detail-row"><span class="detail-label">' + esc(lbl) + '</span><span class="detail-value">' + esc('' + data[k]).replace(/\n/g, '<br>') + '</span></div>';
+      }
+      html += '<div class="detail-row"><span class="detail-label">Oluşturulma</span><span class="detail-value">' + esc(data.created_at || '') + '</span></div>';
+      html += '<div class="detail-reply"><h4 style="margin: 0 0 12px; font-size: 1rem;">Cevap ver</h4>';
+      html += '<textarea id="replyText" placeholder="Müşteriye yazacağınız cevap...">' + esc(data.admin_reply || '') + '</textarea>';
+      html += '<label><input type="checkbox" id="replySendEmail" /> Müşteriye e-posta ile gönder (e-posta adresi varsa)</label>';
+      html += '<div><button type="button" class="btn-sm" id="replySubmitBtn">Cevabı Kaydet</button><span class="reply-status" id="replyStatus"></span></div></div>';
+      document.getElementById('detailBody').innerHTML = html;
+      document.getElementById('detailOverlay').classList.add('show');
+      document.getElementById('replySubmitBtn').onclick = function() { submitReply(id); };
+    }
+    function submitReply(id) {
+      var reply = document.getElementById('replyText').value.trim();
+      var sendEmail = document.getElementById('replySendEmail').checked;
+      var btn = document.getElementById('replySubmitBtn');
+      var status = document.getElementById('replyStatus');
+      if (!reply) { status.textContent = 'Lütfen cevap metni yazın.'; status.style.color = '#c00'; return; }
+      btn.disabled = true;
+      status.textContent = 'Kaydediliyor...';
+      status.style.color = '';
+      var fd = new FormData();
+      fd.append('id', id);
+      fd.append('reply', reply);
+      fd.append('send_email', sendEmail ? '1' : '0');
+      var csrf = document.getElementById('csrf_token');
+      if (csrf) fd.append('_csrf_token', csrf.value);
+      fetch('../api/admin-reply.php', { method: 'POST', body: fd })
+        .then(function(r) { return r.json(); })
+        .then(function(res) {
+          status.textContent = res.message || (res.success ? 'Kaydedildi.' : 'Hata.');
+          status.style.color = res.success ? '#0a0' : '#c00';
+          if (res.success && currentDetailId === id) {
+            currentDetailData.admin_reply = reply;
+            currentDetailData.replied_at = new Date().toLocaleString('tr-TR');
+          }
+        })
+        .catch(function() { status.textContent = 'Bağlantı hatası.'; status.style.color = '#c00'; })
+        .finally(function() { btn.disabled = false; });
+    }
+    function closeDetail() {
+      document.getElementById('detailOverlay').classList.remove('show');
+      currentDetailId = null;
+      currentDetailData = null;
+    }
+    document.getElementById('detailOverlay').addEventListener('click', function(e) {
+      if (e.target === this) closeDetail();
+    });
+
+    // Talep listesi filtreleme ve silme
+    (function() {
+      var searchInput = document.getElementById('requestSearch');
+      var dateFilter = document.getElementById('requestDateFilter');
+      var csrf = document.getElementById('csrf_token');
+      var headerTextNode = null;
+
+      if (!searchInput && !dateFilter) return;
+
+      var items = Array.prototype.slice.call(document.querySelectorAll('.item[data-request-id]'));
+
+      function parseDate(str) {
+        if (!str) return null;
+        // 'YYYY-MM-DD HH:MM:SS' formatını Date'e çevir
+        var parts = str.split(' ');
+        if (parts.length < 1) return null;
+        var d = parts[0].split('-');
+        if (d.length !== 3) return null;
+        var y = parseInt(d[0], 10),
+            m = parseInt(d[1], 10) - 1,
+            day = parseInt(d[2], 10);
+        return new Date(y, m, day);
+      }
+
+      function applyFilter() {
+        var q = (searchInput ? searchInput.value.toLowerCase() : '').trim();
+        var days = dateFilter ? parseInt(dateFilter.value, 10) : NaN;
+        var now = new Date();
+        var visibleCount = 0;
+
+        items.forEach(function(el) {
+          var main = (el.getAttribute('data-main') || '').toLowerCase();
+          var meta = (el.getAttribute('data-meta') || '').toLowerCase();
+          var dateStr = el.getAttribute('data-date') || '';
+          var dt = parseDate(dateStr);
+
+          var textMatch = !q || main.indexOf(q) !== -1 || meta.indexOf(q) !== -1;
+          var dateMatch = true;
+
+          if (!isNaN(days) && days > 0 && dt instanceof Date && !isNaN(dt.getTime())) {
+            var diffMs = now.getTime() - dt.getTime();
+            var diffDays = diffMs / (1000 * 60 * 60 * 24);
+            dateMatch = diffDays <= days;
+          }
+
+          var show = textMatch && dateMatch;
+          el.style.display = show ? '' : 'none';
+          if (show) visibleCount++;
+        });
+
+        // Toplam kayıt sayısını güncelle
+        var headerSpan = document.querySelector('.card-header span');
+        if (headerSpan) {
+          headerSpan.textContent = '(Toplam ' + visibleCount + ' kayıt)';
+        }
+      }
+
+      if (searchInput) {
+        searchInput.addEventListener('input', function() {
+          applyFilter();
+        });
+      }
+      if (dateFilter) {
+        dateFilter.addEventListener('change', function() {
+          applyFilter();
+        });
+      }
+
+      document.addEventListener('click', function(e) {
+        var btn = e.target.closest('[data-delete-request]');
+        if (!btn) return;
+        var id = btn.getAttribute('data-delete-request');
+        if (!id) return;
+        if (!confirm('Bu talebi silmek istediğinize emin misiniz?')) {
+          return;
+        }
+        btn.disabled = true;
+        var fd = new FormData();
+        fd.append('id', id);
+        fd.append('action', 'delete');
+        if (csrf) fd.append('_csrf_token', csrf.value);
+        fetch('../api/talepler-admin.php', { method: 'POST', body: fd })
+          .then(function(r) { return r.json(); })
+          .then(function(res) {
+            if (!res.success) {
+              alert(res.message || 'Silinirken hata oluştu.');
+              btn.disabled = false;
+              return;
+            }
+            var item = btn.closest('.item[data-request-id]');
+            if (item && item.parentNode) {
+              item.parentNode.removeChild(item);
+              // listeden de çıkar
+              items = items.filter(function(el) { return el !== item; });
+              applyFilter();
+              if (!items.length) {
+                var container = document.querySelector('.card');
+                if (container) {
+                  container.innerHTML = '<div class="empty">Henüz talep bulunmuyor.</div>';
+                }
+              }
+            }
+          })
+          .catch(function() {
+            alert('Bağlantı hatası.');
+            btn.disabled = false;
+          });
+      });
+
+      // İlk yüklemede filtreyi uygula (sayaç doğru başlasın)
+      applyFilter();
+    })();
+    (function() {
+      var f = document.getElementById('settingsForm');
+      if (!f) return;
+      f.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var btn = document.getElementById('settingsBtn');
+        var msg = document.getElementById('settingsMsg');
+        btn.disabled = true;
+        msg.textContent = 'Kaydediliyor...';
+        msg.style.color = '';
+        var fd = new FormData(f);
+        fetch('../api/settings.php', { method: 'POST', body: fd })
+          .then(function(r) { return r.json(); })
+          .then(function(res) {
+            msg.textContent = res.message || '';
+            msg.style.color = res.success ? '#0a0' : '#c00';
+          })
+          .catch(function() { msg.textContent = 'Bağlantı hatası.'; msg.style.color = '#c00'; })
+          .finally(function() { btn.disabled = false; });
+      });
+    })();
+
+    // Makineler yönetimi
+    (function() {
+      var tbody = document.getElementById('machineTableBody');
+      var form = document.getElementById('machineForm');
+      if (!tbody || !form) return;
+
+      var msg = document.getElementById('machineMsg');
+      var saveBtn = document.getElementById('machineSaveBtn');
+      var resetBtn = document.getElementById('machineResetBtn');
+      var imgInfo = document.getElementById('machine_img_info');
+      var csrf = document.getElementById('csrf_token');
+
+      function setMessage(text, ok) {
+        if (!msg) return;
+        msg.textContent = text || '';
+        msg.style.color = ok ? '#0a0' : '#c00';
+      }
+
+      function resetForm() {
+        form.reset();
+        document.getElementById('machine_id').value = '';
+        document.getElementById('machine_img').value = '';
+        if (imgInfo) imgInfo.textContent = '';
+        setMessage('', true);
+      }
+
+      function fillForm(m) {
+        document.getElementById('machine_id').value = m.id || '';
+        document.getElementById('machine_tip').value = m.tip || '';
+        document.getElementById('machine_firma').value = m.firma || '';
+        document.getElementById('machine_tipModel').value = m.tipModel || '';
+        document.getElementById('machine_modelYil').value = m.modelYil || '';
+        document.getElementById('machine_guc').value = m.guc || '';
+        document.getElementById('machine_gucBirim').value = m.gucBirim || '';
+        document.getElementById('machine_kapasite').value = m.kapasite || '';
+        document.getElementById('machine_saseSeriNo').value = m.saseSeriNo || '';
+        document.getElementById('machine_motorSeriNo').value = m.motorSeriNo || '';
+        document.getElementById('machine_motorMarka').value = m.motorMarka || '';
+        document.getElementById('machine_motorTip').value = m.motorTip || '';
+        document.getElementById('machine_stok').checked = !!m.stok;
+        if (imgInfo) imgInfo.textContent = m.img ? ('Mevcut görsel: ' + m.img) : 'Görsel yüklenmemiş.';
+      }
+
+      function renderRows(items) {
+        if (!items || !items.length) {
+          tbody.innerHTML = '<tr><td colspan="8" style="padding:12px; text-align:center; color:#999;">Henüz makine eklenmemiş.</td></tr>';
+          return;
+        }
+        tbody.innerHTML = '';
+        items.forEach(function(m) {
+          var imgPreview = m.img ? '<img src="../' + (m.img || '').replace(/ /g, '%20') + '" alt="" style="width:60px; height:40px; object-fit:cover; border-radius:4px;">' : '-';
+          var tr = document.createElement('tr');
+          tr.innerHTML =
+            '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0; font-size:0.8rem; color:#999;">' + (m.id || '') + '</td>' +
+            '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0;">' + (m.tip || '') + '</td>' +
+            '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0;">' + (m.firma || '') + ' ' + (m.tipModel || '') + '</td>' +
+            '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0;">' + (m.modelYil || '') + '</td>' +
+            '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0;">' + (m.guc || '') + ' ' + (m.gucBirim || '') + '</td>' +
+            '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0;">' + (m.stok ? 'Stokta' : 'Talebe göre') + '</td>' +
+            '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0;">' + imgPreview + '</td>' +
+            '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0; text-align:right;">' +
+              '<button type="button" class="btn-sm" data-edit="' + (m.id || '') + '">Düzenle</button> ' +
+              '<button type="button" class="btn-sm secondary" data-delete="' + (m.id || '') + '">Sil</button>' +
+            '</td>';
+          tbody.appendChild(tr);
+        });
+      }
+
+      function loadMachines() {
+        fetch('../api/makineler-admin.php')
+          .then(function(r) { return r.json(); })
+          .then(function(res) {
+            if (!res.success) {
+              setMessage(res.message || 'Makineler yüklenemedi.', false);
+              return;
+            }
+            renderRows(res.items || []);
+          })
+          .catch(function() {
+            setMessage('Makineler yüklenemedi.', false);
+          });
+      }
+
+      tbody.addEventListener('click', function(e) {
+        var t = e.target;
+        if (t.dataset.edit) {
+          var id = t.dataset.edit;
+          fetch('../api/makineler-admin.php')
+            .then(function(r) { return r.json(); })
+            .then(function(res) {
+              if (!res.success || !Array.isArray(res.items)) return;
+              var m = res.items.find(function(x) { return String(x.id) === String(id); });
+              if (m) {
+                fillForm(m);
+                setMessage('Düzenleme modunda.', true);
+              }
+            });
+        } else if (t.dataset.delete) {
+          if (!confirm('Bu makineyi silmek istediğinize emin misiniz?')) return;
+          var idd = t.dataset.delete;
+          var fd = new FormData();
+          fd.append('action', 'delete');
+          fd.append('id', idd);
+          if (csrf) fd.append('_csrf_token', csrf.value);
+          fetch('../api/makineler-admin.php', { method: 'POST', body: fd })
+            .then(function(r) { return r.json(); })
+            .then(function(res) {
+              setMessage(res.message || (res.success ? 'Silindi.' : 'Silme hatası.'), !!res.success);
+              if (res.success) {
+                renderRows(res.items || []);
+                resetForm();
+              }
+            })
+            .catch(function() { setMessage('Silme işlemi başarısız.', false); });
+        }
+      });
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        saveBtn.disabled = true;
+        setMessage('Kaydediliyor...', true);
+        var fd = new FormData(form);
+        fd.append('action', 'save');
+        // mevcut görsel path'i için gizli alan
+        var existingImg = (imgInfo && imgInfo.textContent.indexOf('Mevcut görsel: ') === 0)
+          ? imgInfo.textContent.replace('Mevcut görsel: ', '')
+          : '';
+        fd.append('img_existing', existingImg);
+        if (csrf) fd.append('_csrf_token', csrf.value);
+        fetch('../api/makineler-admin.php', { method: 'POST', body: fd })
+          .then(function(r) { return r.json(); })
+          .then(function(res) {
+            setMessage(res.message || (res.success ? 'Kaydedildi.' : 'Hata.'), !!res.success);
+            if (res.success) {
+              renderRows(res.items || []);
+              resetForm();
+            }
+          })
+          .catch(function() { setMessage('Kayıt sırasında hata oluştu.', false); })
+          .finally(function() { saveBtn.disabled = false; });
+      });
+
+      if (resetBtn) {
+        resetBtn.addEventListener('click', function() {
+          resetForm();
+        });
+      }
+
+      loadMachines();
+    })();
+
+    // Saha Fotoğrafları yönetimi
+    (function() {
+      var tbody = document.getElementById('sahaTableBody');
+      var form = document.getElementById('sahaForm');
+      if (!tbody || !form) return;
+
+      var msg = document.getElementById('sahaMsg');
+      var saveBtn = document.getElementById('sahaSaveBtn');
+      var resetBtn = document.getElementById('sahaResetBtn');
+      var imgInfo = document.getElementById('saha_img_info');
+      var csrf = document.getElementById('csrf_token');
+
+      function setMessage(text, ok) {
+        if (!msg) return;
+        msg.textContent = text || '';
+        msg.style.color = ok ? '#0a0' : '#c00';
+      }
+
+      function resetForm() {
+        form.reset();
+        document.getElementById('saha_id').value = '';
+        document.getElementById('saha_sort_order').value = '0';
+        document.getElementById('saha_img').value = '';
+        if (imgInfo) imgInfo.textContent = '';
+        setMessage('', true);
+      }
+
+      function fillForm(p) {
+        document.getElementById('saha_id').value = p.id || '';
+        document.getElementById('saha_title').value = p.title || '';
+        document.getElementById('saha_description').value = p.description || '';
+        document.getElementById('saha_sort_order').value = p.sort_order || 0;
+        if (imgInfo) imgInfo.textContent = p.img ? ('Mevcut: ' + p.img) : 'Görsel yüklenmemiş.';
+      }
+
+      function esc(s) {
+        if (s == null || s === undefined) return '';
+        var d = document.createElement('div');
+        d.textContent = String(s);
+        return d.innerHTML;
+      }
+      function safeImg(src) {
+        if (!src || typeof src !== 'string') return '';
+        var t = src.trim().toLowerCase();
+        if (t.indexOf('javascript:') === 0 || t.indexOf('data:') === 0 || t.indexOf('vbscript:') === 0) return '';
+        return src;
+      }
+      function renderRows(items) {
+        if (!items || !items.length) {
+          tbody.innerHTML = '<tr><td colspan="5" style="padding:12px; text-align:center; color:#999;">Henüz fotoğraf eklenmemiş.</td></tr>';
+          return;
+        }
+        items.sort(function(a,b){ return (a.sort_order||0) - (b.sort_order||0); });
+        tbody.innerHTML = '';
+        items.forEach(function(p) {
+          var imgSrc = safeImg(p.img);
+          var imgPreview = imgSrc ? '<img src="../' + esc(imgSrc).replace(/ /g, '%20') + '" alt="" style="width:60px; height:40px; object-fit:cover; border-radius:4px;">' : '-';
+          var tr = document.createElement('tr');
+          tr.innerHTML =
+            '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0; font-size:0.8rem; color:#999;">' + esc(p.id || '') + '</td>' +
+            '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0;">' + esc(p.title || '') + '</td>' +
+            '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0; max-width:180px; overflow:hidden; text-overflow:ellipsis;">' + esc(p.description || '') + '</td>' +
+            '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0;">' + imgPreview + '</td>' +
+            '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0; text-align:right;">' +
+              '<button type="button" class="btn-sm" data-edit="' + esc(p.id || '') + '">Düzenle</button> ' +
+              '<button type="button" class="btn-sm secondary" data-delete="' + esc(p.id || '') + '">Sil</button>' +
+            '</td>';
+          tbody.appendChild(tr);
+        });
+      }
+
+      function loadSaha() {
+        fetch('../api/saha-fotograflari-admin.php')
+          .then(function(r) { return r.json(); })
+          .then(function(res) {
+            if (!res.success) {
+              setMessage(res.message || 'Yüklenemedi.', false);
+              return;
+            }
+            renderRows(res.items || []);
+          })
+          .catch(function() { setMessage('Yüklenemedi.', false); });
+      }
+
+      tbody.addEventListener('click', function(e) {
+        var t = e.target;
+        if (t.dataset.edit) {
+          var id = t.dataset.edit;
+          fetch('../api/saha-fotograflari-admin.php')
+            .then(function(r) { return r.json(); })
+            .then(function(res) {
+              if (!res.success || !Array.isArray(res.items)) return;
+              var p = res.items.find(function(x) { return String(x.id) === String(id); });
+              if (p) { fillForm(p); setMessage('Düzenleme modunda.', true); }
+            });
+        } else if (t.dataset.delete) {
+          if (!confirm('Bu fotoğrafı silmek istediğinize emin misiniz?')) return;
+          var fd = new FormData();
+          fd.append('action', 'delete');
+          fd.append('id', t.dataset.delete);
+          if (csrf) fd.append('_csrf_token', csrf.value);
+          fetch('../api/saha-fotograflari-admin.php', { method: 'POST', body: fd })
+            .then(function(r) { return r.json(); })
+            .then(function(res) {
+              setMessage(res.message || (res.success ? 'Silindi.' : 'Hata.'), !!res.success);
+              if (res.success) { renderRows(res.items || []); resetForm(); }
+            })
+            .catch(function() { setMessage('Silme başarısız.', false); });
+        }
+      });
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        saveBtn.disabled = true;
+        setMessage('Kaydediliyor...', true);
+        var fd = new FormData(form);
+        fd.append('action', 'save');
+        var existingImg = (imgInfo && imgInfo.textContent.indexOf('Mevcut: ') === 0) ? imgInfo.textContent.replace('Mevcut: ', '') : '';
+        fd.append('img_existing', existingImg);
+        if (csrf) fd.append('_csrf_token', csrf.value);
+        fetch('../api/saha-fotograflari-admin.php', { method: 'POST', body: fd })
+          .then(function(r) { return r.json(); })
+          .then(function(res) {
+            setMessage(res.message || (res.success ? 'Kaydedildi.' : 'Hata.'), !!res.success);
+            if (res.success) { renderRows(res.items || []); resetForm(); }
+          })
+          .catch(function() { setMessage('Kayıt hatası.', false); })
+          .finally(function() { saveBtn.disabled = false; });
+      });
+
+      if (resetBtn) resetBtn.addEventListener('click', resetForm);
+      loadSaha();
+    })();
+  </script>
+</body>
+</html>

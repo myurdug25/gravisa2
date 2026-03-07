@@ -1,0 +1,18 @@
+{
+    "kiralama_20260302123310_66d65d": {
+        "ad_soyad": "Murat YURDUGÜL",
+        "email": "muratyurdugul10@gmail.com",
+        "telefon": "5050491879",
+        "lokasyon": "erzurum yıldızkent",
+        "sure": "haftalik",
+        "operator": "operatörsüz",
+        "baslangic": "2026-03-26",
+        "bitis": "2026-03-31",
+        "model": "2",
+        "makine_id": "2",
+        "makine_model": "BPI Böhler PRL-27",
+        "firma": "yok",
+        "not": "",
+        "created_at": "2026-03-02 12:33:10"
+    }
+}
