@@ -207,6 +207,15 @@ function getSettings(): array
     return $merged;
 }
 
+/** WhatsApp/tel için formatlanmış numara (905331447286) */
+function getWaNum(): string
+{
+    $s = getSettings();
+    $n = preg_replace('/\D/', '', $s['whatsapp_number'] ?? '');
+    if ($n && substr($n, 0, 1) !== '9' && strlen($n) >= 10) $n = '9' . $n;
+    return $n ?: '905551234567';
+}
+
 /** Site ayarlarını kaydeder */
 function saveSettings(array $settings): bool
 {
