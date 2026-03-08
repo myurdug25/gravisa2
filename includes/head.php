@@ -24,3 +24,6 @@ $siteSettings = getSettings();
   'phone_display'=>$siteSettings['phone_display']??'',
   'address'=>$siteSettings['address']??''
 ], JSON_UNESCAPED_UNICODE) ?>;</script>
+<script>
+window.showToast=function(m,s){s=s!==false;var o=document.createElement('div');o.className='toast-overlay';o.innerHTML='<div class="toast-box '+(s?'success':'error')+'"><span class="toast-icon">'+(s?'✓':'✕')+'</span><h3 class="toast-title">'+(s?'Talebiniz Alındı':'Hata')+'</h3><p class="toast-message">'+(m||'')+'</p><button type="button" class="toast-btn">Tamam</button></div>';document.body.appendChild(o);var c=function(){o.style.opacity='0';o.style.transition='opacity .2s';setTimeout(function(){o.remove()},200)};o.querySelector('.toast-btn').onclick=c;o.onclick=function(e){if(e.target===o)c()};setTimeout(c,5000)};
+</script>
