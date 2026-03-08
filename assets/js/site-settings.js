@@ -21,14 +21,14 @@
       } else if (key === 'contact_phone') {
         var num = (settings.whatsapp_number || '').replace(/\D/g, '');
         if (num.indexOf('9') !== 0 && num.length >= 10) num = '9' + num;
-        var displayPhone = settings.phone_display || '0555 123 45 67';
-        if (isLink) { el.href = 'tel:+' + (num || '905551234567'); el.textContent = displayPhone; }
+        var displayPhone = settings.phone_display || '';
+        if (isLink) { el.href = 'tel:+' + (num || '905551234567'); el.textContent = displayPhone || el.textContent; }
       } else if (key === 'phone_display') {
         el.textContent = settings.phone_display || val || '';
       } else if (key === 'whatsapp') {
         var wa = (settings.whatsapp_number || '').replace(/\D/g, '');
         if (wa.indexOf('9') !== 0 && wa.length >= 10) wa = '9' + wa;
-        if (isLink) el.href = 'https://wa.me/' + (wa || '905551234567');
+        if (isLink && wa) el.href = 'https://wa.me/' + wa;
       } else if (key === 'address') {
         var safeAddr = (val + '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         el.innerHTML = safeAddr.replace(/\n/g, '<br>');
@@ -38,8 +38,9 @@
   if (window.__siteSettings) {
     applySettings(window.__siteSettings);
   }
-  // Her zaman API'den güncel veriyi çek (cache/sunucu gecikmesi için)
-  fetch('api/settings.php?t=' + Date.now())
+  // Her zaman API'den güncel veriyi çek (mutlaka root'tan - cache bypass)
+  var apiUrl = (window.location.origin || (window.location.protocol + '//' + window.location.host)) + '/api/settings.php?t=' + Date.now();
+  fetch(apiUrl)
     .then(function (r) { return r.json(); })
     .then(applySettings)
     .catch(function () {});

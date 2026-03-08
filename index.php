@@ -320,7 +320,7 @@ $pageId = 'index';
   </footer>
 
   <script src="assets/js/form-api.js?v=2"></script>
-  <script src="assets/js/site-settings.js?v=4"></script>
+  <script src="assets/js/site-settings.js?v=5"></script>
   <script src="assets/js/app.js?v=2"></script>
   <script src="assets/js/app-makineler.js?v=2"></script>
 </body>

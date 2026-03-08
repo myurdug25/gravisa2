@@ -190,6 +190,7 @@ function getSettings(): array
         'seo_pages'     => '', // JSON string: {"index":{"title":"...","description":"..."},...}
     ];
     $file = defined('DATA_PATH') ? DATA_PATH . '/settings.json' : (dirname(__DIR__) . '/data/settings.json');
+    clearstatcache(true, $file);
     if (!file_exists($file)) {
         return $defaults;
     }
