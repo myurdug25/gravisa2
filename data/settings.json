@@ -1,10 +1,10 @@
 {
-  "contact_email": "info@gravisa.com",
-  "servis_email": "servis@gravisa.com",
+  "contact_email": "info@gravisamakina.com.tr",
+  "servis_email": "info@gravisamakina.com.tr",
   "whatsapp_number": "905551234567",
   "phone_display": "0555 123 45 67",
   "address": "Örnek Mah. Sanayi Cad. No:1\nİstanbul, Türkiye",
-  "mail_to": "",
-  "mail_from_name": "Gravisa Web Sitesi",
-  "mail_from": ""
+  "mail_to": "info@gravisamakina.com.tr",
+  "mail_from_name": "Gravisa Makina",
+  "mail_from": "info@gravisamakina.com.tr"
 }

@@ -38,6 +38,12 @@ date_default_timezone_set($env('APP_TIMEZONE', 'Europe/Istanbul'));
 define('MAIL_TO', $env('MAIL_TO', 'info@gravisa.com'));
 define('MAIL_FROM_NAME', $env('MAIL_FROM_NAME', 'Gravisa Web Sitesi'));
 define('MAIL_FROM', $env('MAIL_FROM', 'noreply@gravisa.com'));
+
+// Site iletişim bilgileri (.env'den - admin panel boşsa bunlar kullanılır)
+define('CONTACT_EMAIL', $env('CONTACT_EMAIL', $env('MAIL_TO', '')));
+define('SERVIS_EMAIL_ENV', $env('SERVIS_EMAIL', $env('MAIL_TO', '')));
+define('WHATSAPP_NUMBER', $env('WHATSAPP_NUMBER', ''));
+define('PHONE_DISPLAY', $env('PHONE_DISPLAY', ''));
 define('MAIL_SMTP_HOST', $env('MAIL_SMTP_HOST'));
 define('MAIL_SMTP_PORT', (int) $env('MAIL_SMTP_PORT', '587'));
 define('MAIL_SMTP_USER', $env('MAIL_SMTP_USER'));

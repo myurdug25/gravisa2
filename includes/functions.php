@@ -176,10 +176,10 @@ function saveSubmission(string $type, array $data): string
 function getSettings(): array
 {
     $defaults = [
-        'contact_email' => defined('MAIL_TO') ? MAIL_TO : 'info@gravisa.com',
-        'servis_email'  => 'servis@gravisa.com',
-        'whatsapp_number' => '905551234567',
-        'phone_display' => '0555 123 45 67',
+        'contact_email' => (defined('CONTACT_EMAIL') && CONTACT_EMAIL) ? CONTACT_EMAIL : (defined('MAIL_TO') ? MAIL_TO : 'info@gravisa.com'),
+        'servis_email'  => (defined('SERVIS_EMAIL_ENV') && SERVIS_EMAIL_ENV) ? SERVIS_EMAIL_ENV : 'servis@gravisa.com',
+        'whatsapp_number' => (defined('WHATSAPP_NUMBER') && WHATSAPP_NUMBER) ? WHATSAPP_NUMBER : '905551234567',
+        'phone_display' => (defined('PHONE_DISPLAY') && PHONE_DISPLAY) ? PHONE_DISPLAY : '0555 123 45 67',
         'address'       => 'Örnek Mah. Sanayi Cad. No:1' . "\n" . 'İstanbul, Türkiye',
         'mail_to'       => defined('MAIL_TO') ? MAIL_TO : '',
         'mail_from_name'=> defined('MAIL_FROM_NAME') ? MAIL_FROM_NAME : 'Gravisa Web Sitesi',
@@ -197,7 +197,13 @@ function getSettings(): array
     if (!is_array($saved)) {
         return $defaults;
     }
-    return array_merge($defaults, $saved);
+    $merged = array_merge($defaults, $saved);
+    // Boş değerlerde .env fallback (admin kaydetmemişse .env kullanılır)
+    if (empty(trim($merged['contact_email'] ?? '')) && defined('CONTACT_EMAIL') && CONTACT_EMAIL) $merged['contact_email'] = CONTACT_EMAIL;
+    if (empty(trim($merged['servis_email'] ?? '')) && defined('SERVIS_EMAIL_ENV') && SERVIS_EMAIL_ENV) $merged['servis_email'] = SERVIS_EMAIL_ENV;
+    if (empty(trim($merged['whatsapp_number'] ?? '')) && defined('WHATSAPP_NUMBER') && WHATSAPP_NUMBER) $merged['whatsapp_number'] = WHATSAPP_NUMBER;
+    if (empty(trim($merged['phone_display'] ?? '')) && defined('PHONE_DISPLAY') && PHONE_DISPLAY) $merged['phone_display'] = PHONE_DISPLAY;
+    return $merged;
 }
 
 /** Site ayarlarını kaydeder */
