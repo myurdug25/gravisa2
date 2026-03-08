@@ -131,7 +131,7 @@ $pageId = 'satis-teklifi';
     </div>
   </footer>
 
-  <script src="assets/js/form-api.js?v=2"></script>
+  <script src="assets/js/form-api.js?v=3"></script>
   <script src="assets/js/site-settings.js?v=5"></script>
   <script src="assets/js/app.js?v=2"></script>
   <script src="assets/js/app-makineler.js?v=2"></script>
@@ -228,11 +228,11 @@ $pageId = 'satis-teklifi';
         if (btn) { btn.disabled = true; btn.textContent = 'Gönderiliyor...'; }
         if (typeof window.submitFormToAPI === 'function') {
           window.submitFormToAPI(form, 'api/satis.php')
-            .then(function (msg) { alert(msg); form.reset(); document.getElementById('makine-bilgileri').style.display = 'none'; })
-            .catch(function (err) { alert(err); })
+            .then(function (msg) { if (typeof window.showToast === 'function') window.showToast(msg, true); else alert(msg); form.reset(); document.getElementById('makine-bilgileri').style.display = 'none'; })
+            .catch(function (err) { if (typeof window.showToast === 'function') window.showToast(err, false); else alert(err); })
             .finally(function () { if (btn) { btn.disabled = false; btn.textContent = 'Teklif Talebi Gönder'; } });
         } else {
-          alert('Satış teklifi talebiniz alındı. En kısa sürede size dönüş yapacağız.');
+          if (typeof window.showToast === 'function') window.showToast('Satış teklifi talebiniz alındı. En kısa sürede size dönüş yapacağız.', true); else alert('Satış teklifi talebiniz alındı.');
           form.reset();
           document.getElementById('makine-bilgileri').style.display = 'none';
           if (btn) { btn.disabled = false; btn.textContent = 'Teklif Talebi Gönder'; }

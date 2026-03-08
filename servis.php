@@ -224,7 +224,7 @@ $pageId = 'servis';
     </div>
   </footer>
 
-  <script src="assets/js/form-api.js?v=2"></script>
+  <script src="assets/js/form-api.js?v=3"></script>
   <script src="assets/js/site-settings.js?v=5"></script>
   <script src="assets/js/app.js?v=2"></script>
   <script>
@@ -237,11 +237,11 @@ $pageId = 'servis';
         if (btn) { btn.disabled = true; btn.textContent = 'Gönderiliyor...'; }
         if (typeof window.submitFormToAPI === 'function') {
           window.submitFormToAPI(form, 'api/servis.php')
-            .then(function (msg) { alert(msg); form.reset(); })
-            .catch(function (err) { alert(err); })
+            .then(function (msg) { if (typeof window.showToast === 'function') window.showToast(msg, true); else alert(msg); form.reset(); })
+            .catch(function (err) { if (typeof window.showToast === 'function') window.showToast(err, false); else alert(err); })
             .finally(function () { if (btn) { btn.disabled = false; btn.textContent = 'Servis Talebi Gönder'; } });
         } else {
-          alert('Servis talebiniz alındı. En kısa sürede sizinle iletişime geçeceğiz.');
+          if (typeof window.showToast === 'function') window.showToast('Servis talebiniz alındı. En kısa sürede sizinle iletişime geçeceğiz.', true); else alert('Servis talebiniz alındı.');
           form.reset();
           if (btn) { btn.disabled = false; btn.textContent = 'Servis Talebi Gönder'; }
         }

@@ -872,7 +872,9 @@ a:hover {
 .machine-card-image img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
+  background: var(--color-surface-alt);
   transition: transform 0.4s ease;
 }
 .machine-card:hover .machine-card-image img {
@@ -1535,7 +1537,9 @@ a:hover {
 .machine-detail-image-modern img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
+  background: var(--color-surface-alt);
 }
 
 .machine-detail-badge-modern {
@@ -1696,7 +1700,9 @@ a:hover {
 .machine-detail-image img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
+  background: var(--color-surface-alt);
 }
 .machine-detail-specs {
   list-style: none;
@@ -2056,3 +2062,63 @@ a:hover {
   .machine-card-actions .btn { min-width: 0; width: 100%; }
   .banner-card-body { padding: 18px 16px 22px; }
 }
+
+/* Toast bildirimi - form başarı/hata mesajları */
+.toast-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+  animation: toastFadeIn 0.2s ease;
+}
+.toast-box {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  max-width: 420px;
+  width: 100%;
+  padding: 28px 24px;
+  text-align: center;
+  animation: toastSlideUp 0.3s ease;
+}
+.toast-box.success .toast-icon { color: #0d9488; }
+.toast-box.error .toast-icon { color: #dc2626; }
+.toast-icon {
+  font-size: 2.5rem;
+  margin-bottom: 16px;
+  display: block;
+  font-weight: 700;
+  line-height: 1;
+}
+.toast-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 8px;
+}
+.toast-message {
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  margin: 0 0 20px;
+}
+.toast-btn {
+  display: inline-block;
+  padding: 10px 24px;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.toast-btn:hover { background: var(--color-primary-dark); }
+@keyframes toastFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes toastSlideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }

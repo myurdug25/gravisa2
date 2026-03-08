@@ -191,11 +191,11 @@
       if (btn) { btn.disabled = true; btn.textContent = 'Gönderiliyor...'; }
       if (typeof window.submitFormToAPI === 'function') {
         window.submitFormToAPI(demoForm, 'api/demo.php')
-          .then(function (msg) { alert(msg); demoForm.reset(); })
-          .catch(function (err) { alert(err); })
+          .then(function (msg) { if (typeof window.showToast === 'function') window.showToast(msg, true); else alert(msg); demoForm.reset(); })
+          .catch(function (err) { if (typeof window.showToast === 'function') window.showToast(err, false); else alert(err); })
           .finally(function () { if (btn) { btn.disabled = false; btn.textContent = 'Demo Talebi Gönder'; } });
       } else {
-        alert('Demo talebiniz alındı. En kısa sürede sizinle iletişime geçeceğiz.');
+        if (typeof window.showToast === 'function') window.showToast('Demo talebiniz alındı. En kısa sürede sizinle iletişime geçeceğiz.', true); else alert('Demo talebiniz alındı.');
         demoForm.reset();
         if (btn) { btn.disabled = false; btn.textContent = 'Demo Talebi Gönder'; }
       }
