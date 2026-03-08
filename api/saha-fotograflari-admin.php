@@ -94,12 +94,9 @@ if (!empty($_FILES['img']) && is_uploaded_file($_FILES['img']['tmp_name'])) {
     }
     $origName = $_FILES['img']['name'];
     $ext = strtolower(pathinfo($origName, PATHINFO_EXTENSION));
-    $allowedExt = ['jpg', 'jpeg', 'png', 'webp'];
+    $allowedExt = ['jpg', 'jpeg', 'png', 'webp', 'jfif'];
     if (!in_array($ext, $allowedExt, true)) {
         jsonResponse(['success' => false, 'message' => 'Sadece JPG, PNG veya WEBP yükleyebilirsiniz.']);
-    }
-    if (preg_match('/[^a-zA-Z0-9._-]/', $origName)) {
-        jsonResponse(['success' => false, 'message' => 'Geçersiz dosya adı.']);
     }
     $filename = 'saha_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
     $target = $uploadDir . '/' . $filename;

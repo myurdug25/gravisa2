@@ -210,7 +210,10 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
             </table>
           </div>
           <div style="flex: 1 1 0; min-width: 320px;">
-            <h3 style="margin-top: 0; margin-bottom: 12px;">Makine Ekle / Düzenle</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+              <h3 style="margin: 0;">Makine Ekle / Düzenle</h3>
+              <button type="button" class="btn-sm" id="machineNewBtn">+ Yeni Makine Ekle</button>
+            </div>
             <form id="machineForm" enctype="multipart/form-data">
               <?php echo csrfField(); ?>
               <input type="hidden" name="id" id="machine_id" value="">
@@ -304,7 +307,10 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
             </table>
           </div>
           <div style="flex: 1 1 0; min-width: 320px;">
-            <h3 style="margin-top: 0; margin-bottom: 12px;">Fotoğraf Ekle / Düzenle</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+              <h3 style="margin: 0;">Fotoğraf Ekle / Düzenle</h3>
+              <button type="button" class="btn-sm" id="sahaNewBtn">+ Yeni Saha Fotoğrafı Ekle</button>
+            </div>
             <form id="sahaForm" enctype="multipart/form-data">
               <?php echo csrfField(); ?>
               <input type="hidden" name="id" id="saha_id" value="">
@@ -753,6 +759,11 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
         resetBtn.addEventListener('click', function() {
           resetForm();
         });
+        var newBtn = document.getElementById('machineNewBtn');
+        if (newBtn) newBtn.addEventListener('click', function() {
+          resetForm();
+          document.getElementById('machine_tip').focus();
+        });
       }
 
       loadMachines();
@@ -889,6 +900,11 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
       });
 
       if (resetBtn) resetBtn.addEventListener('click', resetForm);
+      var newBtn = document.getElementById('sahaNewBtn');
+      if (newBtn) newBtn.addEventListener('click', function() {
+        resetForm();
+        document.getElementById('saha_title').focus();
+      });
       loadSaha();
     })();
   </script>

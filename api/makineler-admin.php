@@ -107,9 +107,6 @@ if (!empty($_FILES['img']) && is_uploaded_file($_FILES['img']['tmp_name'])) {
     if (!in_array($ext, $allowedExt, true)) {
         jsonResponse(['success' => false, 'message' => 'Sadece JPG, PNG veya WEBP yükleyebilirsiniz.']);
     }
-    if (preg_match('/[^a-zA-Z0-9._-]/', $origName)) {
-        jsonResponse(['success' => false, 'message' => 'Geçersiz dosya adı.']);
-    }
     $filename = 'machine_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
     $target = $uploadDir . '/' . $filename;
     if (!move_uploaded_file($_FILES['img']['tmp_name'], $target)) {
