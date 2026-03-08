@@ -13,15 +13,16 @@
       if (val === undefined || val === null) return;
       var isLink = el.tagName === 'A';
       if (key === 'contact_email') {
-        if (isLink) el.href = 'mailto:' + val;
+        if (isLink) { el.href = 'mailto:' + val; el.textContent = val || el.textContent; }
         else el.textContent = val;
       } else if (key === 'servis_email') {
-        if (isLink) el.href = 'mailto:' + val;
+        if (isLink) { el.href = 'mailto:' + val; el.textContent = val || el.textContent; }
         else el.textContent = val;
       } else if (key === 'contact_phone') {
         var num = (settings.whatsapp_number || '').replace(/\D/g, '');
         if (num.indexOf('9') !== 0 && num.length >= 10) num = '9' + num;
-        if (isLink) el.href = 'tel:+' + (num || '905551234567');
+        var displayPhone = settings.phone_display || '0555 123 45 67';
+        if (isLink) { el.href = 'tel:+' + (num || '905551234567'); el.textContent = displayPhone; }
       } else if (key === 'phone_display') {
         el.textContent = settings.phone_display || val || '';
       } else if (key === 'whatsapp') {
@@ -36,10 +37,10 @@
   }
   if (window.__siteSettings) {
     applySettings(window.__siteSettings);
-  } else {
-    fetch('api/settings.php?t=' + Date.now())
-      .then(function (r) { return r.json(); })
-      .then(applySettings)
-      .catch(function () {});
   }
+  // Her zaman API'den güncel veriyi çek (cache/sunucu gecikmesi için)
+  fetch('api/settings.php?t=' + Date.now())
+    .then(function (r) { return r.json(); })
+    .then(applySettings)
+    .catch(function () {});
 })();

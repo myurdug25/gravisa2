@@ -146,7 +146,7 @@ $pageId = 'referanslar';
     </div>
   </footer>
 
-  <script src="assets/js/site-settings.js?v=3"></script>
+  <script src="assets/js/site-settings.js?v=4"></script>
   <script src="assets/js/app.js?v=2"></script>
 </body>
 </html>
