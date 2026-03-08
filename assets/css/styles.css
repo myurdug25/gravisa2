@@ -833,9 +833,21 @@ a:hover {
   }
 }
 
-/* Saha fotoğrafları: 3 sütun (9 resim = 3+3+3 düzenli görünüm) */
+/* Saha fotoğrafları: 3 sütun, her resim kendi oranında (boşluk yok) */
 .saha-grid {
   grid-template-columns: repeat(3, 1fr);
+  align-items: start;
+}
+.saha-grid .machine-card-image {
+  aspect-ratio: unset;
+  height: auto;
+}
+.saha-grid .machine-card-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: none;
+  object-position: unset;
 }
 @media (max-width: 900px) {
   .saha-grid {
