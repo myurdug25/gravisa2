@@ -94,11 +94,11 @@
   }
 
   function filterMakineler() {
-    var searchTerm = (searchInput.value || '').toLowerCase();
-    var tipFilter = filterTip.value;
-    var firmaFilter = filterFirma.value;
-    var gucFilter = filterGuc.value;
-    var modelYilFilter = filterModelYil.value;
+    var searchTerm = searchInput ? (searchInput.value || '').toLowerCase() : '';
+    var tipFilter = filterTip ? filterTip.value : '';
+    var firmaFilter = filterFirma ? filterFirma.value : '';
+    var gucFilter = filterGuc ? filterGuc.value : '';
+    var modelYilFilter = filterModelYil ? filterModelYil.value : '';
 
     filteredMakineler = window.makineler.filter(function(m) {
       var matchSearch = !searchTerm || 
@@ -130,7 +130,9 @@
     if (!grid) return;
 
     grid.innerHTML = '';
-    noResults.style.display = filteredMakineler.length === 0 ? 'block' : 'none';
+    if (noResults) {
+      noResults.style.display = filteredMakineler.length === 0 ? 'block' : 'none';
+    }
 
     if (resultsInfo) {
       resultsInfo.textContent = filteredMakineler.length + ' makine bulundu';
@@ -200,11 +202,11 @@
   if (filterModelYil) filterModelYil.addEventListener('change', filterMakineler);
   if (resetFiltersBtn) {
     resetFiltersBtn.addEventListener('click', function() {
-      searchInput.value = '';
-      filterTip.value = '';
-      filterFirma.value = '';
-      filterGuc.value = '';
-      filterModelYil.value = '';
+      if (searchInput) searchInput.value = '';
+      if (filterTip) filterTip.value = '';
+      if (filterFirma) filterFirma.value = '';
+      if (filterGuc) filterGuc.value = '';
+      if (filterModelYil) filterModelYil.value = '';
       filterMakineler();
     });
   }
@@ -235,7 +237,7 @@
 
   // İlk yükleme - API'den makineleri çek, sonra filtreleri doldur ve listele
   loadMachinesFromAPI().then(function() {
-    populateFilters();
+    if (filterTip && filterFirma && filterModelYil) populateFilters();
     renderResults();
   });
 })();

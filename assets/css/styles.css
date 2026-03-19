@@ -863,6 +863,7 @@ a:hover {
 .saha-grid {
   grid-template-columns: repeat(3, 1fr);
   align-items: stretch;
+  grid-auto-rows: 1fr;
 }
 .saha-grid .machine-card {
   display: flex;
@@ -889,10 +890,12 @@ a:hover {
 }
 .saha-grid .machine-card-title {
   flex-shrink: 0;
+  min-height: 2.7em;
 }
 .saha-grid .machine-card-meta {
   flex: 1;
   margin-bottom: 0;
+  min-height: 2.9em;
 }
 @media (max-width: 900px) {
   .saha-grid {

@@ -16,6 +16,7 @@ $siteSettings = getSettings();
 <?php if (!empty($pageKeywords)): ?>
 <meta name="keywords" content="<?= htmlspecialchars($pageKeywords) ?>" />
 <?php endif; ?>
+<link rel="icon" type="image/jpeg" href="<?= (defined('BASE_PATH') ? BASE_PATH : '') ?>/images/IMG_9059.JPG.jpeg" />
 <title><?= htmlspecialchars($pageTitle) ?></title>
 <script>window.basePath='<?= addslashes(defined('BASE_PATH') ? BASE_PATH : '') ?>';window.__siteSettings=<?= json_encode([
   'contact_email'=>$siteSettings['contact_email']??'',
