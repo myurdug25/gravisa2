@@ -1,5 +1,6 @@
-# Gravisa - Production kuralları
-# RewriteBase: Site kökündeyse /, XAMPP'ta localhost/gravisa/ için /gravisa/ yapın (DEPLOY.md)
+# Gravisa - URL rewrite
+# LOCAL (XAMPP): RewriteBase /gravisa/
+# PRODUCTION (public_html kök): RewriteBase /
 
 <IfModule mod_rewrite.c>
   RewriteEngine On

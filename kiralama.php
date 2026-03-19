@@ -10,7 +10,7 @@ $pageId = 'kiralama';
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/assets/css/styles.css" />
+  <link rel="stylesheet" href="<?= BASE_PATH ?>/assets/css/styles.css" />
 </head>
 <body>
   <a href="https://wa.me/<?= getWaNum() ?>" class="whatsapp-float" target="_blank" rel="noopener" aria-label="WhatsApp">
@@ -19,7 +19,7 @@ $pageId = 'kiralama';
 
   <header class="header">
     <div class="container header-inner">
-      <a href="index" class="logo">Gravisa</a>
+      <a href="index" class="logo"><img src="<?= BASE_PATH ?>/images/IMG_9059.JPG.jpeg" alt="Gravisa" /></a>
       <button class="nav-toggle" aria-label="Menü" aria-expanded="false"><span></span><span></span><span></span></button>
       <nav class="nav" id="main-nav">
         <ul>
@@ -159,10 +159,10 @@ $pageId = 'kiralama';
     </div>
   </footer>
 
-<script src="/assets/js/form-api.js?v=3"></script>
-<script src="/assets/js/site-settings.js?v=5"></script>
-<script src="/assets/js/app.js?v=2"></script>
-<script src="/assets/js/app-makineler.js?v=2"></script>
+<script src="<?= BASE_PATH ?>/assets/js/form-api.js?v=3"></script>
+<script src="<?= BASE_PATH ?>/assets/js/site-settings.js?v=5"></script>
+<script src="<?= BASE_PATH ?>/assets/js/app.js?v=2"></script>
+<script src="<?= BASE_PATH ?>/assets/js/app-makineler.js?v=2"></script>
   <script>
     (function () {
       // Makine verilerinin yüklenmesini bekle
@@ -255,7 +255,7 @@ $pageId = 'kiralama';
         var btn = form.querySelector('button[type="submit"]');
         if (btn) { btn.disabled = true; btn.textContent = 'Gönderiliyor...'; }
         if (typeof window.submitFormToAPI === 'function') {
-          window.submitFormToAPI(form, '/api/kiralama.php')
+          window.submitFormToAPI(form, '<?= BASE_PATH ?>/api/kiralama.php')
             .then(function (msg) { if (typeof window.showToast === 'function') window.showToast(msg, true); else alert(msg); form.reset(); document.getElementById('makine-bilgileri').style.display = 'none'; })
             .catch(function (err) { if (typeof window.showToast === 'function') window.showToast(err, false); else alert(err); })
             .finally(function () { if (btn) { btn.disabled = false; btn.textContent = 'Kiralama Talebi Gönder'; } });

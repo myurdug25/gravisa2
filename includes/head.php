@@ -17,7 +17,7 @@ $siteSettings = getSettings();
 <meta name="keywords" content="<?= htmlspecialchars($pageKeywords) ?>" />
 <?php endif; ?>
 <title><?= htmlspecialchars($pageTitle) ?></title>
-<script>window.__siteSettings=<?= json_encode([
+<script>window.basePath='<?= addslashes(defined('BASE_PATH') ? BASE_PATH : '') ?>';window.__siteSettings=<?= json_encode([
   'contact_email'=>$siteSettings['contact_email']??'',
   'servis_email'=>$siteSettings['servis_email']??'',
   'whatsapp_number'=>$siteSettings['whatsapp_number']??'',

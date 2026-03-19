@@ -66,6 +66,16 @@ define('DB_PASS', $env('DB_PASS', ''));
 define('ROOT_PATH', $rootDir);
 define('DATA_PATH', $rootDir . DIRECTORY_SEPARATOR . 'data');
 
+// Web base path: XAMPP'ta /gravisa, production'da '' (kök)
+$envBase = $env('BASE_PATH', null);
+if ($envBase !== null && $envBase !== '') {
+    define('BASE_PATH', '/' . trim($envBase, '/'));
+} else {
+    $script = $_SERVER['SCRIPT_NAME'] ?? $_SERVER['PHP_SELF'] ?? '/index.php';
+    $scriptDir = dirname($script);
+    define('BASE_PATH', ($scriptDir === '/' || $scriptDir === '\\' || $scriptDir === '.') ? '' : rtrim(str_replace('\\', '/', $scriptDir), '/'));
+}
+
 // Ortam
 define('APP_ENV', $env('APP_ENV', 'production'));
 define('APP_DEBUG', $isDebug);

@@ -6,14 +6,15 @@ config/.env
 
 # Geliştirme / import - sunucuda gerekmez
 *.md
+!README.md
 *.txt
 !DEPLOY.txt
-!MAIL-KURULUM.txt
 *.xlsx
 *.py
 1111/
 scripts/
 database/
+test-mail.php
 
 # IDE / OS
 .idea/
@@ -27,3 +28,10 @@ Thumbs.db
 
 # Rate limit state (sunucuda otomatik oluşur)
 data/rate_limit.json
+
+# Form kayıtları (gizlilik - sunucuda oluşur)
+data/kiralama.json
+data/iletisim.json
+data/satis.json
+data/demo.json
+data/servis.json

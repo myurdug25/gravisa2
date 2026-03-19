@@ -1,5 +1,6 @@
 (function () {
   'use strict';
+  var base = (typeof window.basePath === 'string') ? window.basePath : '';
 
   // Makineler API'den yüklenir (api/makineler.php -> data/makineler_admin.json)
   window.makineler = [];
@@ -30,11 +31,12 @@
     if (!src || typeof src !== 'string') return '';
     var t = src.trim().toLowerCase();
     if (t.indexOf('javascript:') === 0 || t.indexOf('data:') === 0 || t.indexOf('vbscript:') === 0) return '';
-    return (src.charAt(0) === '/' ? '' : '/') + src;
+    var p = (src.charAt(0) === '/' ? '' : '/') + src;
+    return base + p;
   }
 
   function loadMachinesFromAPI() {
-    return fetch('/api/makineler.php')
+    return fetch(base + '/api/makineler.php')
       .then(function(r) { return r.json(); })
       .then(function(res) {
         if (!res.success || !Array.isArray(res.items)) return;

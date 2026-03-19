@@ -38,8 +38,9 @@
   if (window.__siteSettings) {
     applySettings(window.__siteSettings);
   }
-  // Her zaman API'den güncel veriyi çek (mutlaka root'tan - cache bypass)
-  var apiUrl = (window.location.origin || (window.location.protocol + '//' + window.location.host)) + '/api/settings.php?t=' + Date.now();
+  // Her zaman API'den güncel veriyi çek (basePath ile local/production uyumlu)
+  var base = (typeof window.basePath === 'string') ? window.basePath : '';
+  var apiUrl = (window.location.origin || (window.location.protocol + '//' + window.location.host)) + base + '/api/settings.php?t=' + Date.now();
   fetch(apiUrl)
     .then(function (r) { return r.json(); })
     .then(applySettings)

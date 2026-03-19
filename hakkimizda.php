@@ -10,7 +10,7 @@ $pageId = 'hakkimizda';
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/assets/css/styles.css" />
+  <link rel="stylesheet" href="<?= BASE_PATH ?>/assets/css/styles.css" />
 </head>
 <body>
   <a href="https://wa.me/<?= getWaNum() ?>" class="whatsapp-float" target="_blank" rel="noopener" aria-label="WhatsApp">
@@ -19,7 +19,7 @@ $pageId = 'hakkimizda';
 
   <header class="header">
     <div class="container header-inner">
-      <a href="index" class="logo">Gravisa</a>
+      <a href="index" class="logo"><img src="<?= BASE_PATH ?>/images/IMG_9059.JPG.jpeg" alt="Gravisa" /></a>
       <button class="nav-toggle" aria-label="Menü" aria-expanded="false"><span></span><span></span><span></span></button>
       <nav class="nav" id="main-nav">
         <ul>
@@ -228,7 +228,7 @@ $pageId = 'hakkimizda';
     </div>
   </footer>
 
-  <script src="/assets/js/site-settings.js?v=5"></script>
-  <script src="/assets/js/app.js?v=2"></script>
+  <script src="<?= BASE_PATH ?>/assets/js/site-settings.js?v=5"></script>
+  <script src="<?= BASE_PATH ?>/assets/js/app.js?v=2"></script>
 </body>
 </html>

@@ -10,7 +10,7 @@ $pageId = 'makine-detay';
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/assets/css/styles.css" />
+  <link rel="stylesheet" href="<?= BASE_PATH ?>/assets/css/styles.css" />
 </head>
 <body>
   <a href="https://wa.me/<?= getWaNum() ?>" class="whatsapp-float" target="_blank" rel="noopener" aria-label="WhatsApp">
@@ -19,7 +19,7 @@ $pageId = 'makine-detay';
 
   <header class="header">
     <div class="container header-inner">
-      <a href="index" class="logo">Gravisa</a>
+      <a href="index" class="logo"><img src="<?= BASE_PATH ?>/images/IMG_9059.JPG.jpeg" alt="Gravisa" /></a>
       <button class="nav-toggle" aria-label="Menü" aria-expanded="false"><span></span><span></span><span></span></button>
       <nav class="nav" id="main-nav">
         <ul>
@@ -85,9 +85,9 @@ $pageId = 'makine-detay';
     </div>
   </footer>
 
-  <script src="/assets/js/site-settings.js?v=5"></script>
-  <script src="/assets/js/app.js?v=2"></script>
-  <script src="/assets/js/app-makineler.js?v=2"></script>
+  <script src="<?= BASE_PATH ?>/assets/js/site-settings.js?v=5"></script>
+  <script src="<?= BASE_PATH ?>/assets/js/app.js?v=2"></script>
+  <script src="<?= BASE_PATH ?>/assets/js/app-makineler.js?v=2"></script>
   <script>
     (function () {
       var params = new URLSearchParams(window.location.search);
@@ -109,11 +109,13 @@ $pageId = 'makine-detay';
         d.textContent = String(s);
         return d.innerHTML;
       }
+      var base = (typeof window.basePath === 'string') ? window.basePath : '';
       function safeImg(src) {
         if (!src || typeof src !== 'string') return '';
         var t = src.trim().toLowerCase();
         if (t.indexOf('javascript:') === 0 || t.indexOf('data:') === 0 || t.indexOf('vbscript:') === 0) return '';
-        return (src.charAt(0) === '/' ? '' : '/') + src;
+        var p = (src.charAt(0) === '/' ? '' : '/') + src;
+        return base + p;
       }
       function renderMakine(makine) {
         if (!makine) {
@@ -180,7 +182,7 @@ $pageId = 'makine-detay';
       container.innerHTML = html;
       }
       
-      fetch('/api/makineler.php')
+      fetch(base + '/api/makineler.php')
         .then(function(r) { return r.json(); })
         .then(function(res) {
           var items = (res && res.success && res.items) ? res.items : [];

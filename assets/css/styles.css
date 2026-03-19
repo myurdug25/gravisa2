@@ -96,7 +96,7 @@ a:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 72px;
+  min-height: 100px;
 }
 
 .logo {
@@ -104,9 +104,25 @@ a:hover {
   font-size: 1.35rem;
   letter-spacing: -0.03em;
   color: var(--color-text);
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+.logo img {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  filter: contrast(1.08) brightness(1.05);
 }
 .logo:hover {
   color: var(--color-primary);
+}
+.logo:hover img {
+  opacity: 0.9;
 }
 
 .nav-toggle {
@@ -833,21 +849,40 @@ a:hover {
   }
 }
 
-/* Saha fotoğrafları: 3 sütun, her resim kendi oranında (boşluk yok) */
+/* Saha fotoğrafları: 3 sütun, kartlar aynı hizada aynı boyda */
 .saha-grid {
   grid-template-columns: repeat(3, 1fr);
-  align-items: start;
+  align-items: stretch;
+}
+.saha-grid .machine-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 .saha-grid .machine-card-image {
-  aspect-ratio: unset;
-  height: auto;
+  aspect-ratio: 4/3;
+  flex-shrink: 0;
+  overflow: hidden;
 }
 .saha-grid .machine-card-image img {
   width: 100%;
-  height: auto;
+  height: 100%;
   display: block;
-  object-fit: none;
-  object-position: unset;
+  object-fit: cover;
+  object-position: center;
+}
+.saha-grid .machine-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.saha-grid .machine-card-title {
+  flex-shrink: 0;
+}
+.saha-grid .machine-card-meta {
+  flex: 1;
+  margin-bottom: 0;
 }
 @media (max-width: 900px) {
   .saha-grid {
@@ -1876,7 +1911,7 @@ a:hover {
   .nav-toggle { display: flex; }
   .nav {
     position: fixed;
-    top: 72px;
+    top: 100px;
     left: 0;
     right: 0;
     background: var(--color-surface);
@@ -2096,8 +2131,18 @@ a:hover {
     right: 20px;
   }
   .whatsapp-float svg { width: 24px; height: 24px; }
-  .machine-card-actions { flex-direction: column; }
-  .machine-card-actions .btn { min-width: 0; width: 100%; }
+  .machine-card-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .machine-card-actions .btn {
+    min-width: 0;
+    margin: 0;
+  }
+  .machine-card-actions .btn:nth-child(3) {
+    grid-column: 1 / -1;
+  }
   .banner-card-body { padding: 18px 16px 22px; }
 }
 

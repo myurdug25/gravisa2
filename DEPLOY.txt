@@ -9,21 +9,21 @@ YÖNTEM A - SSH ile (sunucuda Git varsa):
 
    ssh kullanici@sunucuadresi.com
    cd ~/public_html
-   # public_html BOŞSA:
-   git clone https://github.com/myurdug25/gravisa.git .
-   # (Nokta = bu klasöre çek)
+   # public_html BOŞSA (önerilen):
+   cd ~/public_html
+   git clone https://github.com/myurdug25/gravisa2.git .
+   # (Nokta = bu klasöre çek - KULLANICI yerine kendi GitHub kullanıcı adınızı yazın)
    
-   # public_html DOLUYSA, alt klasöre çek:
-   git clone https://github.com/myurdug25/gravisa.git gravisa
-   
-   VEYA alt klasöre çekmek için:
-   git clone https://github.com/myurdug25/gravisa.git gravisa
-   (Site: site.com/gravisa/ olur)
+   # public_html DOLUYSA, önce yedek alıp temizleyin:
+   # mv public_html public_html.bak
+   # mkdir public_html
+   # cd public_html
+   # git clone https://github.com/myurdug25/gravisa2.git .
 
 
 YÖNTEM B - FTP ile (Git yoksa):
 
-   1. https://github.com/myurdug25/gravisa adresine git
+   1. GitHub repo adresinize gidin (örn. https://github.com/myurdug25/gravisa2)
    2. Yeşil "Code" butonuna tıkla → "Download ZIP"
    3. ZIP'i bilgisayarda aç
    4. FileZilla / WinSCP ile sunucuya bağlan
@@ -117,14 +117,10 @@ Başka izin ayarlanacak klasör YOK. Sadece yukarıdakiler.
 ADIM 4: .htaccess REWRİTEBASE
 --------------------------------------------------------------------------------
 
-public_html/.htaccess dosyasını açın. Şu satırı bulun:
+Varsayılan: RewriteBase /  (public_html kökü için - DEĞİŞTİRMEYİN)
 
+Sadece site alt dizindeyse (https://site.com/gravisa/):
    RewriteBase /gravisa/
-
-Sitenize göre değiştirin:
-
-   - Site kökteyse (https://siteniz.com/):     RewriteBase /
-   - Alt dizindeyse (https://site.com/gravisa/): RewriteBase /gravisa/
 
 
 ADIM 5: KONTROL
