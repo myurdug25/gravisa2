@@ -79,15 +79,15 @@ if (file_exists($sahaFile)) {
             $title = htmlspecialchars($photo['title'] ?? 'Saha Fotoğrafı', ENT_QUOTES, 'UTF-8');
             $desc = htmlspecialchars($photo['description'] ?? '', ENT_QUOTES, 'UTF-8');
           ?>
-          <div class="machine-card">
-            <div class="machine-card-image">
-              <img src="<?= $imgSrcEncoded ?>" alt="<?= $title ?>" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+          <div class="machine-card" style="height:100%;">
+            <div class="machine-card-image" style="aspect-ratio:4/3; overflow:hidden;">
+              <img src="<?= $imgSrcEncoded ?>" alt="<?= $title ?>" loading="lazy" style="width:100%; height:100%; object-fit:cover; object-position:center;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
               <span class="hero-image-fallback" style="display:none; width:100%; height:100%; align-items:center; justify-content:center; background:var(--color-surface-alt); font-size:2rem;">🖼️</span>
             </div>
-            <div class="machine-card-body">
-              <h3 class="machine-card-title"><?= $title ?></h3>
+            <div class="machine-card-body" style="min-height:128px; display:flex; flex-direction:column;">
+              <h3 class="machine-card-title" style="min-height:2.7em;"><?= $title ?></h3>
               <?php if ($desc): ?>
-              <p class="machine-card-meta"><?= $desc ?></p>
+              <p class="machine-card-meta" style="min-height:2.9em; margin-bottom:0;"><?= $desc ?></p>
               <?php endif; ?>
             </div>
           </div>

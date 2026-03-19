@@ -104,28 +104,36 @@ a:hover {
   font-size: 1.35rem;
   letter-spacing: -0.03em;
   color: var(--color-text);
-  display: flex;
+  display: inline-flex;
   align-items: center;
   text-decoration: none;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
 }
 .logo img {
-  width: 72px !important;
-  height: 72px !important;
-  max-width: 72px !important;
-  max-height: 72px !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
   border-radius: 50% !important;
   object-fit: cover !important;
   object-position: center !important;
   display: block;
   box-shadow: 0 2px 12px rgba(0,0,0,0.15);
   filter: contrast(1.08) brightness(1.05);
+  transform: scale(2.1);
+  transform-origin: center;
 }
 @media (max-width: 768px) {
+  .logo {
+    width: 60px;
+    height: 60px;
+  }
   .logo img {
-    width: 60px !important;
-    height: 60px !important;
-    max-width: 60px !important;
-    max-height: 60px !important;
+    transform: scale(2.2);
   }
 }
 .logo:hover {
@@ -887,6 +895,7 @@ a:hover {
   display: flex;
   flex-direction: column;
   min-height: 0;
+  min-height: 128px;
 }
 .saha-grid .machine-card-title {
   flex-shrink: 0;
@@ -2012,13 +2021,15 @@ a:hover {
 
   /* Mobil/tablet: kart aksiyonlarında 2+1 düzen */
   .machine-card-actions {
-    display: grid;
+    display: grid !important;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
   }
   .machine-card-actions .btn {
     min-width: 0;
     margin: 0;
+    width: auto !important;
+    flex: none !important;
   }
   .machine-card-actions .btn:nth-child(3) {
     grid-column: 1 / -1;
@@ -2159,13 +2170,15 @@ a:hover {
   }
   .whatsapp-float svg { width: 24px; height: 24px; }
   .machine-card-actions {
-    display: grid;
+    display: grid !important;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
   }
   .machine-card-actions .btn {
     min-width: 0;
     margin: 0;
+    width: auto !important;
+    flex: none !important;
   }
   .machine-card-actions .btn:nth-child(3) {
     grid-column: 1 / -1;

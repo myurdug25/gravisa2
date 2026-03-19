@@ -117,10 +117,10 @@
             '<h3 class="machine-card-title">' + esc(m.firma) + ' ' + esc(m.tipModel) + '</h3>' +
             '<p class="machine-card-meta">' + esc(metaText || m.kapasite || '') + '</p>' +
             '<p class="machine-card-spec">' + esc(m.kapasite || '') + '</p>' +
-            '<div class="machine-card-actions">' +
+            '<div class="machine-card-actions" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">' +
               '<a href="makine-detay?id=' + esc(m.id) + '" class="btn btn-outline">Detay</a>' +
               '<a href="satis-teklifi?id=' + esc(m.id) + '" class="btn btn-primary">Teklif Al</a>' +
-              '<a href="kiralama?id=' + esc(m.id) + '" class="btn btn-secondary">Kirala</a>' +
+              '<a href="kiralama?id=' + esc(m.id) + '" class="btn btn-secondary" style="grid-column:1 / -1">Kirala</a>' +
             '</div>' +
           '</div>';
         stoktaGrid.appendChild(card);
