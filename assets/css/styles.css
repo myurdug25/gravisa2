@@ -125,7 +125,7 @@ a:hover {
 .logo::before {
   content: '';
   position: absolute;
-  inset: 0;
+  inset: -4px;
   border-radius: inherit;
   background: conic-gradient(
     from 215deg,
@@ -134,21 +134,17 @@ a:hover {
     var(--color-primary) 70%,
     #ffb200 100%
   );
-  z-index: 2;
-  opacity: 1;
+  z-index: -1; /* Halkayı görselin arkasına al */
+  opacity: 0.95;
   pointer-events: none;
-
-  /* Sadece kenar halkası kalsın (orta kısmı tamamen şeffaf) */
-  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 10px), #000 calc(100% - 9px));
-  mask: radial-gradient(farthest-side, transparent calc(100% - 10px), #000 calc(100% - 9px));
 }
 .logo::after {
   content: '';
   position: absolute;
-  inset: 6px;
+  inset: 2px;
   border-radius: inherit;
   background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.32), rgba(0, 0, 0, 0.22));
-  z-index: 1; /* İç parlaklık */
+  z-index: 0; /* İç parlaklık */
   pointer-events: none;
 }
 .logo:hover {
@@ -883,7 +879,6 @@ a:hover {
 .saha-grid {
   grid-template-columns: repeat(3, 1fr);
   align-items: start;
-  gap: 24px;
 }
 .saha-grid .machine-card-image {
   aspect-ratio: unset;
@@ -893,8 +888,8 @@ a:hover {
   width: 100%;
   height: auto;
   display: block;
-  object-fit: contain;
-  object-position: center;
+  object-fit: none;
+  object-position: unset;
 }
 @media (max-width: 900px) {
   .saha-grid {
@@ -904,7 +899,6 @@ a:hover {
 @media (max-width: 480px) {
   .saha-grid {
     grid-template-columns: 1fr;
-    gap: 18px;
   }
 }
 
@@ -2035,20 +2029,8 @@ a:hover {
   .machine-detail-header h1 { font-size: 1.5rem; }
   .machine-detail-meta { flex-direction: column; align-items: flex-start; gap: 12px; }
   .specs-grid { grid-template-columns: 1fr; }
-  .machine-detail-actions-modern {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-    padding-top: 20px;
-  }
-  .machine-detail-actions-modern .btn-large {
-    width: 100%;
-    min-width: 0;
-  }
-  /* 3. buton satırın tamamını kaplasın */
-  .machine-detail-actions-modern a:nth-child(3) {
-    grid-column: 1 / -1;
-  }
+  .machine-detail-actions-modern { flex-direction: column; }
+  .btn-large { width: 100%; }
 
   .catalog-layout {
     grid-template-columns: 1fr;
