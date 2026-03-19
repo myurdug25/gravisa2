@@ -112,6 +112,8 @@ a:hover {
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
+  background: #ffffff;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.12);
 }
 .logo img {
   width: 100% !important;
@@ -119,22 +121,19 @@ a:hover {
   max-width: 100% !important;
   max-height: 100% !important;
   border-radius: 50% !important;
-  object-fit: cover !important;
+  object-fit: contain !important;
   object-position: center !important;
   display: block;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  box-shadow: none;
   filter: contrast(1.08) brightness(1.05);
-  transform: scale(2.1);
-  transform-origin: center;
+  transform: none;
 }
 @media (max-width: 768px) {
   .logo {
     width: 60px;
     height: 60px;
   }
-  .logo img {
-    transform: scale(2.2);
-  }
+  .logo img { transform: none; }
 }
 .logo:hover {
   color: var(--color-primary);
