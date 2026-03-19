@@ -101,6 +101,7 @@ a:hover {
 
 .logo {
   position: relative;
+  z-index: 0; /* pseudo elementlerin görünmesi için stacking context */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -132,7 +133,7 @@ a:hover {
     var(--color-primary) 70%,
     #ffb200 100%
   );
-  z-index: -1;
+  z-index: 0;
   opacity: 0.95;
   pointer-events: none;
 }
@@ -142,7 +143,7 @@ a:hover {
   inset: 2px;
   border-radius: inherit;
   background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.32), rgba(0, 0, 0, 0.22));
-  z-index: -1;
+  z-index: 1;
   pointer-events: none;
 }
 .logo:hover {
