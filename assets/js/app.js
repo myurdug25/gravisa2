@@ -38,12 +38,12 @@
   var heroBg = document.querySelector('.hero-bg');
   if (heroBg) {
     var heroImages = [
-      'assets/hero-1.png',
-      'assets/machine-2.png',
-      'assets/machine-3.png',
-      'assets/machine-4.png',
-      'assets/machine-5.png',
-      'assets/machine-6.png'
+      '/assets/hero-1.png',
+      '/assets/machine-2.png',
+      '/assets/machine-3.png',
+      '/assets/machine-4.png',
+      '/assets/machine-5.png',
+      '/assets/machine-6.png'
     ];
     var currentHeroIndex = 0;
 
@@ -94,7 +94,7 @@
         if (!src || typeof src !== 'string') return '';
         var t = src.trim().toLowerCase();
         if (t.indexOf('javascript:') === 0 || t.indexOf('data:') === 0 || t.indexOf('vbscript:') === 0) return '';
-        return src;
+        return (src.charAt(0) === '/' ? '' : '/') + src;
       }
       stoktaGrid.innerHTML = ''; // Önce temizle
       
@@ -207,7 +207,7 @@
       var btn = demoForm.querySelector('button[type="submit"]');
       if (btn) { btn.disabled = true; btn.textContent = 'Gönderiliyor...'; }
       if (typeof window.submitFormToAPI === 'function') {
-        window.submitFormToAPI(demoForm, 'api/demo.php')
+        window.submitFormToAPI(demoForm, '/api/demo.php')
           .then(function (msg) { if (typeof window.showToast === 'function') window.showToast(msg, true); else alert(msg); demoForm.reset(); })
           .catch(function (err) { if (typeof window.showToast === 'function') window.showToast(err, false); else alert(err); })
           .finally(function () { if (btn) { btn.disabled = false; btn.textContent = 'Demo Talebi Gönder'; } });

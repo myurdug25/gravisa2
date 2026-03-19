@@ -17,7 +17,7 @@ if (file_exists($sahaFile)) {
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="/assets/css/styles.css" />
 </head>
 <body>
   <a href="https://wa.me/<?= getWaNum() ?>" class="whatsapp-float" target="_blank" rel="noopener" aria-label="WhatsApp">
@@ -72,8 +72,9 @@ if (file_exists($sahaFile)) {
           <?php foreach ($sahaPhotos as $photo): ?>
           <?php
             $rawImg = safeImgSrc($photo['img'] ?? '');
-            $imgSrc = htmlspecialchars($rawImg, ENT_QUOTES, 'UTF-8');
-            $imgSrcEncoded = str_replace(' ', '%20', $imgSrc);
+            $path = ($rawImg !== '' && substr($rawImg, 0, 1) === '/') ? $rawImg : '/' . ltrim($rawImg, '/');
+            $imgSrc = htmlspecialchars($path, ENT_QUOTES, 'UTF-8');
+            $imgSrcEncoded = str_replace([' ', '(', ')'], ['%20', '%28', '%29'], $imgSrc);
             $title = htmlspecialchars($photo['title'] ?? 'Saha Fotoğrafı', ENT_QUOTES, 'UTF-8');
             $desc = htmlspecialchars($photo['description'] ?? '', ENT_QUOTES, 'UTF-8');
           ?>
@@ -120,7 +121,7 @@ if (file_exists($sahaFile)) {
     </div>
   </footer>
 
-  <script src="assets/js/site-settings.js?v=5"></script>
-  <script src="assets/js/app.js?v=2"></script>
+  <script src="/assets/js/site-settings.js?v=5"></script>
+  <script src="/assets/js/app.js?v=2"></script>
 </body>
 </html>

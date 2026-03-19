@@ -30,11 +30,11 @@
     if (!src || typeof src !== 'string') return '';
     var t = src.trim().toLowerCase();
     if (t.indexOf('javascript:') === 0 || t.indexOf('data:') === 0 || t.indexOf('vbscript:') === 0) return '';
-    return src;
+    return (src.charAt(0) === '/' ? '' : '/') + src;
   }
 
   function loadMachinesFromAPI() {
-    return fetch('api/makineler.php')
+    return fetch('/api/makineler.php')
       .then(function(r) { return r.json(); })
       .then(function(res) {
         if (!res.success || !Array.isArray(res.items)) return;
@@ -50,7 +50,7 @@
         if (filterModelYil) {
           filterModelYil.innerHTML = '<option value=\"\">Tümü</option>';
         }
-        populateFilters();
+        if (filterTip && filterFirma && filterModelYil) populateFilters();
         renderResults();
       })
       .catch(function() {
@@ -64,6 +64,7 @@
   }
 
   function populateFilters() {
+    if (!filterTip || !filterFirma || !filterModelYil) return;
     var tipler = [...new Set(window.makineler.map(function(m) { return m.tip; }))].sort();
     var firmalar = [...new Set(window.makineler.map(function(m) { return m.firma; }))].sort();
     var modelYillari = [...new Set(window.makineler.map(function(m) { return m.modelYil; }))].sort(function(a, b) { return b - a; });
