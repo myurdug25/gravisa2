@@ -100,13 +100,52 @@ a:hover {
 }
 
 .logo {
-  font-weight: 700;
-  font-size: 1.35rem;
-  letter-spacing: -0.03em;
-  color: var(--color-text);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  border-radius: 999px;
+  overflow: hidden;
+
+  /* Anchor içindeki "Gravisa" yazısını gizle (ekran okuyucular için kalır) */
+  font-size: 0;
+  text-decoration: none;
+
+  /* Şekilli dairesel logo */
+  background: url('../../images/IMG_9059.JPG.jpeg') center/cover no-repeat;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18);
+  flex: 0 0 auto;
+}
+.logo::before {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from 215deg,
+    var(--color-primary) 0%,
+    #ffb200 35%,
+    var(--color-primary) 70%,
+    #ffb200 100%
+  );
+  z-index: -1;
+  opacity: 0.95;
+  pointer-events: none;
+}
+.logo::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border-radius: inherit;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.32), rgba(0, 0, 0, 0.22));
+  z-index: -1;
+  pointer-events: none;
 }
 .logo:hover {
-  color: var(--color-primary);
+  transform: translateY(-1px) scale(1.02);
 }
 
 .nav-toggle {
@@ -1873,6 +1912,13 @@ a:hover {
 }
 
 @media (max-width: 768px) {
+  .logo {
+    width: 46px;
+    height: 46px;
+    /* Mobilde logo alanı dokunmayı başka menü öğelerine kaydırmasın diye devre dışı. */
+    pointer-events: none;
+  }
+
   .nav-toggle { display: flex; }
   .nav {
     position: fixed;
