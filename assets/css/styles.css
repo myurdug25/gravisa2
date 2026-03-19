@@ -2007,6 +2007,20 @@ a:hover {
     font-size: 0.7rem;
   }
 
+  /* Mobil/tablet: kart aksiyonlarında 2+1 düzen */
+  .machine-card-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .machine-card-actions .btn {
+    min-width: 0;
+    margin: 0;
+  }
+  .machine-card-actions .btn:nth-child(3) {
+    grid-column: 1 / -1;
+  }
+
   .stats-row,
   .trust-grid {
     grid-template-columns: repeat(2, 1fr);
