@@ -118,8 +118,8 @@ a:hover {
 .logo img {
   width: auto !important;
   height: auto !important;
-  max-width: 480px !important;
-  max-height: 120px !important;
+  max-width: 520px !important;
+  max-height: 130px !important;
   border-radius: 0 !important;
   object-fit: contain !important;
   object-position: center center !important;
@@ -134,8 +134,8 @@ a:hover {
     height: auto !important;
   }
   .logo img {
-    max-width: 360px !important;
-    max-height: 85px !important;
+    max-width: 320px !important;
+    max-height: 110px !important;
     transform: none;
   }
 }
