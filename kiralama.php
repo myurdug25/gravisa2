@@ -19,7 +19,7 @@ $pageId = 'kiralama';
 
   <header class="header">
     <div class="container header-inner">
-      <a href="index" class="logo"><img src="<?= BASE_PATH ?>/images/Gemini_Generated_Image_sgiznlsgiznlsgiz.png" alt="Gravisa" /></a>
+      <a href="index" class="logo"><img src="<?= BASE_PATH ?>/images/IMG_9059.JPG-removebg-preview.png" alt="Gravisa" /></a>
       <button class="nav-toggle" aria-label="Menü" aria-expanded="false"><span></span><span></span><span></span></button>
       <nav class="nav" id="main-nav">
         <ul>
