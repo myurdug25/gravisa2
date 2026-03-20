@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/config/config.php';
 require_once __DIR__ . '/includes/functions.php';
 $pageId = 'makine-detay';
@@ -81,7 +81,7 @@ $pageId = 'makine-detay';
         <a href="referanslar">Referanslar</a><span>|</span>
         <a href="saha-fotograflari">Saha Fotoğrafları</a>
       </div>
-      <p class="footer-copy">&copy; Gravisa. Tüm hakları saklıdır. Bu site Nfs Soft (nfssoft.com) tarafından yapıldı.</p>
+      <p class="footer-copy">&copy; Gravisa. Tüm hakları saklıdır. Bu site Nfs Soft (<a href="https://nfssoft.com" target="_blank" rel="noopener">nfssoft.com</a>) tarafından yapıldı.</p>
     </div>
   </footer>
 
