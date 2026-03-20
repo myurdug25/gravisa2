@@ -16,7 +16,7 @@ $siteSettings = getSettings();
 <?php if (!empty($pageKeywords)): ?>
 <meta name="keywords" content="<?= htmlspecialchars($pageKeywords) ?>" />
 <?php endif; ?>
-<link rel="icon" type="image/png" href="<?= (defined('BASE_PATH') ? BASE_PATH : '') ?>/assets/gravisa-wordmark-transparent.png" />
+<link rel="icon" type="image/png" href="<?= (defined('BASE_PATH') ? BASE_PATH : '') ?>/images/Gemini_Generated_Image_sgiznlsgiznlsgiz.png" />
 <title><?= htmlspecialchars($pageTitle) ?></title>
 <script>window.basePath='<?= addslashes(defined('BASE_PATH') ? BASE_PATH : '') ?>';window.__siteSettings=<?= json_encode([
   'contact_email'=>$siteSettings['contact_email']??'',

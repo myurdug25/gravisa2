@@ -26,7 +26,7 @@ if (file_exists($sahaFile)) {
 
   <header class="header">
     <div class="container header-inner">
-      <a href="index" class="logo"><img src="<?= BASE_PATH ?>/assets/gravisa-wordmark-transparent.png" alt="Gravisa" /></a>
+      <a href="index" class="logo"><img src="<?= BASE_PATH ?>/images/Gemini_Generated_Image_sgiznlsgiznlsgiz.png" alt="Gravisa" /></a>
       <button class="nav-toggle" aria-label="Menü" aria-expanded="false"><span></span><span></span><span></span></button>
       <nav class="nav" id="main-nav">
         <ul>
