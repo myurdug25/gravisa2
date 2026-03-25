@@ -11,7 +11,7 @@ $pageId = 'index';
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="<?= BASE_PATH ?>/assets/css/styles.css?v=11" />
+  <link rel="stylesheet" href="<?= BASE_PATH ?>/assets/css/styles.css?v=12" />
 </head>
 <body>
   <!-- WhatsApp floating button -->
@@ -21,7 +21,7 @@ $pageId = 'index';
 
   <header class="header">
     <div class="container header-inner">
-      <a href="index" class="logo"><img src="<?= BASE_PATH ?>/images/IMG_9059.JPG-removebg-preview.png" alt="Gravisa" /></a>
+      <a href="index" class="logo logo-text" aria-label="Gravisa">Gravisa</a>
       <button class="nav-toggle" aria-label="Menüyü aç" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>

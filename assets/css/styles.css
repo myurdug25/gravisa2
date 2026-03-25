@@ -115,6 +115,13 @@ a:hover {
   background: transparent !important;
   box-shadow: none !important;
 }
+
+.logo.logo-text {
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  text-transform: none;
+  line-height: 1;
+}
 .logo img {
   width: auto !important;
   height: auto !important;
