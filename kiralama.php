@@ -22,8 +22,8 @@ $pageId = 'kiralama';
   <main>
     <section class="page-hero">
       <div class="container">
-        <h1>Kiralama</h1>
-        <p>Günlük veya aylık, operatörlü veya operatörsüz kiralama seçenekleri. Lokasyon bilginizi paylaşın.</p>
+        <h1><?= htmlspecialchars(t('pages.kiralama.hero_title'), ENT_QUOTES, 'UTF-8') ?></h1>
+        <p><?= htmlspecialchars(t('pages.kiralama.hero_sub'), ENT_QUOTES, 'UTF-8') ?></p>
       </div>
     </section>
 
@@ -31,24 +31,24 @@ $pageId = 'kiralama';
       <div class="container">
         <form class="form-block" id="kiralama-form">
           <input type="text" name="website" value="" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" tabindex="-1" autocomplete="off" aria-hidden="true" />
-          <h2 style="margin-bottom:24px; font-size:1.35rem;">Kiralama Tercihleri</h2>
+          <h2 style="margin-bottom:24px; font-size:1.35rem;"><?= htmlspecialchars(t('pages.kiralama.h_prefs'), ENT_QUOTES, 'UTF-8') ?></h2>
           <div class="form-row">
             <label>
-              <span>Kiralama Süresi</span>
+              <span><?= htmlspecialchars(t('pages.kiralama.label_duration'), ENT_QUOTES, 'UTF-8') ?></span>
               <select name="sure" required>
-                <option value="">Seçiniz</option>
-                <option value="gunluk">Günlük</option>
-                <option value="haftalik">Haftalık</option>
-                <option value="aylik">Aylık</option>
-                <option value="uzun-donem">Uzun Dönem (3+ ay)</option>
+                <option value=""><?= htmlspecialchars(t('pages.kiralama.opt_select'), ENT_QUOTES, 'UTF-8') ?></option>
+                <option value="gunluk"><?= htmlspecialchars(t('pages.kiralama.opt_daily'), ENT_QUOTES, 'UTF-8') ?></option>
+                <option value="haftalik"><?= htmlspecialchars(t('pages.kiralama.opt_weekly'), ENT_QUOTES, 'UTF-8') ?></option>
+                <option value="aylik"><?= htmlspecialchars(t('pages.kiralama.opt_monthly'), ENT_QUOTES, 'UTF-8') ?></option>
+                <option value="uzun-donem"><?= htmlspecialchars(t('pages.kiralama.opt_long'), ENT_QUOTES, 'UTF-8') ?></option>
               </select>
             </label>
             <label>
-              <span>Operatör</span>
+              <span><?= htmlspecialchars(t('pages.kiralama.label_operator'), ENT_QUOTES, 'UTF-8') ?></span>
               <select name="operator" required>
-                <option value="">Seçiniz</option>
-                <option value="operatörlü">Operatörlü</option>
-                <option value="operatörsüz">Operatörsüz</option>
+                <option value=""><?= htmlspecialchars(t('pages.kiralama.opt_select'), ENT_QUOTES, 'UTF-8') ?></option>
+                <option value="operatörlü"><?= htmlspecialchars(t('pages.kiralama.opt_op_with'), ENT_QUOTES, 'UTF-8') ?></option>
+                <option value="operatörsüz"><?= htmlspecialchars(t('pages.kiralama.opt_op_without'), ENT_QUOTES, 'UTF-8') ?></option>
               </select>
             </label>
           </div>
@@ -64,52 +64,52 @@ $pageId = 'kiralama';
             <input type="hidden" name="makine_model" id="makine-model" />
           </div>
           <label>
-            <span>Makine Modeli</span>
+            <span><?= htmlspecialchars(t('pages.kiralama.label_machine_model'), ENT_QUOTES, 'UTF-8') ?></span>
             <select name="model" id="kiralama-model">
-              <option value="">Makine seçiniz (opsiyonel)</option>
+              <option value=""><?= htmlspecialchars(t('pages.kiralama.select_model_placeholder'), ENT_QUOTES, 'UTF-8') ?></option>
             </select>
           </label>
 
-          <h2 style="margin: 32px 0 24px; font-size: 1.35rem;">Lokasyon & İletişim</h2>
+          <h2 style="margin: 32px 0 24px; font-size: 1.35rem;"><?= htmlspecialchars(t('pages.kiralama.h_location'), ENT_QUOTES, 'UTF-8') ?></h2>
           <label>
-            <span>Şantiye / Çalışma Adresi</span>
-            <input type="text" name="lokasyon" required placeholder="İl, ilçe, mahalle veya tam adres" />
+            <span><?= htmlspecialchars(t('pages.kiralama.label_site'), ENT_QUOTES, 'UTF-8') ?></span>
+            <input type="text" name="lokasyon" required placeholder="<?= htmlspecialchars(t('pages.kiralama.ph_site'), ENT_QUOTES, 'UTF-8') ?>" />
           </label>
           <div class="form-row">
             <label>
-              <span>Başlangıç Tarihi</span>
+              <span><?= htmlspecialchars(t('pages.kiralama.label_start'), ENT_QUOTES, 'UTF-8') ?></span>
               <input type="date" name="baslangic" />
             </label>
             <label>
-              <span>Bitiş Tarihi (Tahmini)</span>
+              <span><?= htmlspecialchars(t('pages.kiralama.label_end'), ENT_QUOTES, 'UTF-8') ?></span>
               <input type="date" name="bitis" />
             </label>
           </div>
           <div class="form-row">
             <label>
-              <span>Ad Soyad</span>
-              <input type="text" name="ad_soyad" required placeholder="Adınız Soyadınız" />
+              <span><?= htmlspecialchars(t('pages.kiralama.label_name'), ENT_QUOTES, 'UTF-8') ?></span>
+              <input type="text" name="ad_soyad" required placeholder="<?= htmlspecialchars(t('pages.kiralama.ph_name'), ENT_QUOTES, 'UTF-8') ?>" />
             </label>
             <label>
-              <span>E-posta</span>
-              <input type="email" name="email" required placeholder="ornek@email.com" />
+              <span><?= htmlspecialchars(t('pages.kiralama.label_email'), ENT_QUOTES, 'UTF-8') ?></span>
+              <input type="email" name="email" required placeholder="<?= htmlspecialchars(t('pages.kiralama.ph_email'), ENT_QUOTES, 'UTF-8') ?>" />
             </label>
           </div>
           <div class="form-row">
             <label>
-              <span>Telefon</span>
-              <input type="tel" name="telefon" required placeholder="05XX XXX XX XX" />
+              <span><?= htmlspecialchars(t('pages.kiralama.label_phone'), ENT_QUOTES, 'UTF-8') ?></span>
+              <input type="tel" name="telefon" required placeholder="<?= htmlspecialchars(t('pages.kiralama.ph_phone'), ENT_QUOTES, 'UTF-8') ?>" />
             </label>
             <label>
-              <span>Firma / Ünvan (Opsiyonel)</span>
-              <input type="text" name="firma" placeholder="Firma adı" />
+              <span><?= htmlspecialchars(t('pages.kiralama.label_company'), ENT_QUOTES, 'UTF-8') ?></span>
+              <input type="text" name="firma" placeholder="<?= htmlspecialchars(t('pages.kiralama.ph_company'), ENT_QUOTES, 'UTF-8') ?>" />
             </label>
           </div>
           <label>
-            <span>Ek Notlar</span>
-            <textarea name="not" rows="3" placeholder="Özel talepler..."></textarea>
+            <span><?= htmlspecialchars(t('pages.kiralama.label_notes'), ENT_QUOTES, 'UTF-8') ?></span>
+            <textarea name="not" rows="3" placeholder="<?= htmlspecialchars(t('pages.kiralama.ph_notes'), ENT_QUOTES, 'UTF-8') ?>"></textarea>
           </label>
-          <button type="submit" class="btn btn-primary">Kiralama Talebi Gönder</button>
+          <button type="submit" class="btn btn-primary"><?= htmlspecialchars(t('pages.kiralama.btn_submit'), ENT_QUOTES, 'UTF-8') ?></button>
         </form>
       </div>
     </section>
@@ -123,6 +123,11 @@ $pageId = 'kiralama';
 <script src="<?= BASE_PATH ?>/assets/js/app-makineler.js?v=4"></script>
   <script>
     (function () {
+      var FORM = <?= json_encode([
+        'sending' => t('js.sending'),
+        'btnSubmit' => t('pages.kiralama.btn_submit'),
+        'toastFallback' => t('pages.kiralama.toast_fallback'),
+      ], JSON_UNESCAPED_UNICODE) ?>;
       // Makine verilerinin yüklenmesini bekle
       function initKiralama() {
         // Makine verilerini global scope'tan al
@@ -211,17 +216,17 @@ $pageId = 'kiralama';
         e.preventDefault();
         var form = this;
         var btn = form.querySelector('button[type="submit"]');
-        if (btn) { btn.disabled = true; btn.textContent = 'Gönderiliyor...'; }
+        if (btn) { btn.disabled = true; btn.textContent = FORM.sending; }
         if (typeof window.submitFormToAPI === 'function') {
           window.submitFormToAPI(form, '<?= BASE_PATH ?>/api/kiralama.php')
             .then(function (msg) { if (typeof window.showToast === 'function') window.showToast(msg, true); else alert(msg); form.reset(); document.getElementById('makine-bilgileri').style.display = 'none'; })
             .catch(function (err) { if (typeof window.showToast === 'function') window.showToast(err, false); else alert(err); })
-            .finally(function () { if (btn) { btn.disabled = false; btn.textContent = 'Kiralama Talebi Gönder'; } });
+            .finally(function () { if (btn) { btn.disabled = false; btn.textContent = FORM.btnSubmit; } });
         } else {
-          if (typeof window.showToast === 'function') window.showToast('Kiralama talebiniz alındı. En kısa sürede size dönüş yapacağız.', true); else alert('Kiralama talebiniz alındı.');
+          if (typeof window.showToast === 'function') window.showToast(FORM.toastFallback, true); else alert(FORM.toastFallback);
           form.reset();
           document.getElementById('makine-bilgileri').style.display = 'none';
-          if (btn) { btn.disabled = false; btn.textContent = 'Kiralama Talebi Gönder'; }
+          if (btn) { btn.disabled = false; btn.textContent = FORM.btnSubmit; }
         }
       });
       }

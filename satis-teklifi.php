@@ -22,8 +22,8 @@ $pageId = 'satis-teklifi';
   <main>
     <section class="page-hero">
       <div class="container">
-        <h1>Satış Teklifi</h1>
-        <p>Firma bilgilerinizi ve ihtiyacınızı belirtin; size özel satış teklifini iletelim.</p>
+        <h1><?= htmlspecialchars(t('pages.satis_teklifi.hero_title'), ENT_QUOTES, 'UTF-8') ?></h1>
+        <p><?= htmlspecialchars(t('pages.satis_teklifi.hero_sub'), ENT_QUOTES, 'UTF-8') ?></p>
       </div>
     </section>
 
@@ -31,29 +31,29 @@ $pageId = 'satis-teklifi';
       <div class="container">
         <form class="form-block" id="satis-form">
           <input type="text" name="website" value="" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" tabindex="-1" autocomplete="off" aria-hidden="true" />
-          <h2 style="margin-bottom:24px; font-size:1.35rem;">İletişim Bilgileri</h2>
+          <h2 style="margin-bottom:24px; font-size:1.35rem;"><?= htmlspecialchars(t('pages.satis_teklifi.h_contact'), ENT_QUOTES, 'UTF-8') ?></h2>
           <div class="form-row">
             <label>
-              <span>Ad Soyad</span>
-              <input type="text" name="ad_soyad" required placeholder="Adınız Soyadınız" />
+              <span><?= htmlspecialchars(t('pages.satis_teklifi.label_name'), ENT_QUOTES, 'UTF-8') ?></span>
+              <input type="text" name="ad_soyad" required placeholder="<?= htmlspecialchars(t('pages.satis_teklifi.ph_name'), ENT_QUOTES, 'UTF-8') ?>" />
             </label>
             <label>
-              <span>E-posta</span>
-              <input type="email" name="email" required placeholder="ornek@email.com" />
+              <span><?= htmlspecialchars(t('pages.satis_teklifi.label_email'), ENT_QUOTES, 'UTF-8') ?></span>
+              <input type="email" name="email" required placeholder="<?= htmlspecialchars(t('pages.satis_teklifi.ph_email'), ENT_QUOTES, 'UTF-8') ?>" />
             </label>
           </div>
           <div class="form-row">
             <label>
-              <span>Telefon</span>
-              <input type="tel" name="telefon" required placeholder="05XX XXX XX XX" />
+              <span><?= htmlspecialchars(t('pages.satis_teklifi.label_phone'), ENT_QUOTES, 'UTF-8') ?></span>
+              <input type="tel" name="telefon" required placeholder="<?= htmlspecialchars(t('pages.satis_teklifi.ph_phone'), ENT_QUOTES, 'UTF-8') ?>" />
             </label>
             <label>
-              <span>Firma / Ünvan (Opsiyonel)</span>
-              <input type="text" name="firma" placeholder="Firma adı" />
+              <span><?= htmlspecialchars(t('pages.satis_teklifi.label_company'), ENT_QUOTES, 'UTF-8') ?></span>
+              <input type="text" name="firma" placeholder="<?= htmlspecialchars(t('pages.satis_teklifi.ph_company'), ENT_QUOTES, 'UTF-8') ?>" />
             </label>
           </div>
 
-          <h2 style="margin: 32px 0 24px; font-size: 1.35rem;">Makine Bilgileri</h2>
+          <h2 style="margin: 32px 0 24px; font-size: 1.35rem;"><?= htmlspecialchars(t('pages.satis_teklifi.h_machine'), ENT_QUOTES, 'UTF-8') ?></h2>
           <div id="makine-bilgileri" class="makine-preview" style="display: none; background: var(--color-surface-alt); padding: 20px; border-radius: var(--radius); margin-bottom: 24px; border: 2px solid var(--color-primary);">
             <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 12px;">
               <img id="makine-resim" src="" alt="" style="width: 80px; height: 60px; object-fit: cover; border-radius: var(--radius);" />
@@ -67,21 +67,21 @@ $pageId = 'satis-teklifi';
           </div>
           <div class="form-row">
             <label>
-              <span>İlgilendiğiniz Model</span>
+              <span><?= htmlspecialchars(t('pages.satis_teklifi.label_model'), ENT_QUOTES, 'UTF-8') ?></span>
               <select name="model" id="satis-model">
-                <option value="">Makine seçiniz (opsiyonel)</option>
+                <option value=""><?= htmlspecialchars(t('pages.satis_teklifi.select_model_placeholder'), ENT_QUOTES, 'UTF-8') ?></option>
               </select>
             </label>
             <label>
-              <span>Adet</span>
+              <span><?= htmlspecialchars(t('pages.satis_teklifi.label_qty'), ENT_QUOTES, 'UTF-8') ?></span>
               <input type="number" name="adet" min="1" value="1" />
             </label>
           </div>
           <label>
-            <span>Ek Notlar</span>
-            <textarea name="not" rows="4" placeholder="Özel talepler veya sorularınız..."></textarea>
+            <span><?= htmlspecialchars(t('pages.satis_teklifi.label_notes'), ENT_QUOTES, 'UTF-8') ?></span>
+            <textarea name="not" rows="4" placeholder="<?= htmlspecialchars(t('pages.satis_teklifi.ph_notes'), ENT_QUOTES, 'UTF-8') ?>"></textarea>
           </label>
-          <button type="submit" class="btn btn-primary">Teklif Talebi Gönder</button>
+          <button type="submit" class="btn btn-primary"><?= htmlspecialchars(t('pages.satis_teklifi.btn_submit'), ENT_QUOTES, 'UTF-8') ?></button>
         </form>
       </div>
     </section>
@@ -95,6 +95,11 @@ $pageId = 'satis-teklifi';
   <script src="<?= BASE_PATH ?>/assets/js/app-makineler.js?v=4"></script>
   <script>
     (function () {
+      var FORM = <?= json_encode([
+        'sending' => t('js.sending'),
+        'btnSubmit' => t('pages.satis_teklifi.btn_submit'),
+        'toastFallback' => t('pages.satis_teklifi.toast_fallback'),
+      ], JSON_UNESCAPED_UNICODE) ?>;
       // Makine verilerinin yüklenmesini bekle
       function initSatis() {
         // Makine verilerini global scope'tan al
@@ -183,17 +188,17 @@ $pageId = 'satis-teklifi';
         e.preventDefault();
         var form = this;
         var btn = form.querySelector('button[type="submit"]');
-        if (btn) { btn.disabled = true; btn.textContent = 'Gönderiliyor...'; }
+        if (btn) { btn.disabled = true; btn.textContent = FORM.sending; }
         if (typeof window.submitFormToAPI === 'function') {
           window.submitFormToAPI(form, '<?= BASE_PATH ?>/api/satis.php')
             .then(function (msg) { if (typeof window.showToast === 'function') window.showToast(msg, true); else alert(msg); form.reset(); document.getElementById('makine-bilgileri').style.display = 'none'; })
             .catch(function (err) { if (typeof window.showToast === 'function') window.showToast(err, false); else alert(err); })
-            .finally(function () { if (btn) { btn.disabled = false; btn.textContent = 'Teklif Talebi Gönder'; } });
+            .finally(function () { if (btn) { btn.disabled = false; btn.textContent = FORM.btnSubmit; } });
         } else {
-          if (typeof window.showToast === 'function') window.showToast('Satış teklifi talebiniz alındı. En kısa sürede size dönüş yapacağız.', true); else alert('Satış teklifi talebiniz alındı.');
+          if (typeof window.showToast === 'function') window.showToast(FORM.toastFallback, true); else alert(FORM.toastFallback);
           form.reset();
           document.getElementById('makine-bilgileri').style.display = 'none';
-          if (btn) { btn.disabled = false; btn.textContent = 'Teklif Talebi Gönder'; }
+          if (btn) { btn.disabled = false; btn.textContent = FORM.btnSubmit; }
         }
       });
       }

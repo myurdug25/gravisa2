@@ -22,8 +22,8 @@ $pageId = 'servis';
   <main>
     <section class="page-hero">
       <div class="container">
-        <h1>Servis & Yedek Parça</h1>
-        <p>Geniş servis ağımız, mobil servis imkânı ve orijinal yedek parça temini ile yanınızdayız.</p>
+        <h1><?= htmlspecialchars(t('pages.servis.hero_title'), ENT_QUOTES, 'UTF-8') ?></h1>
+        <p><?= htmlspecialchars(t('pages.servis.hero_sub'), ENT_QUOTES, 'UTF-8') ?></p>
       </div>
     </section>
 
@@ -32,145 +32,145 @@ $pageId = 'servis';
         <div class="features-grid" style="margin-bottom: 48px;">
           <div class="feature-card">
             <div class="feature-icon-wrap">🔧</div>
-            <h3>Servis Ağı</h3>
-            <p>Türkiye genelinde yetkili servis noktalarımız ile bakım ve onarım hizmeti sunuyoruz. Periyodik bakım ve arıza müdahaleleri için 7/24 destek.</p>
+            <h3><?= htmlspecialchars(t('pages.servis.feat_net_h'), ENT_QUOTES, 'UTF-8') ?></h3>
+            <p><?= htmlspecialchars(t('pages.servis.feat_net_p'), ENT_QUOTES, 'UTF-8') ?></p>
             <ul>
-              <li>Periyodik bakım hizmetleri</li>
-              <li>Arıza tespit ve onarım</li>
-              <li>Teknik destek ve danışmanlık</li>
+              <li><?= htmlspecialchars(t('pages.servis.feat_net_li1'), ENT_QUOTES, 'UTF-8') ?></li>
+              <li><?= htmlspecialchars(t('pages.servis.feat_net_li2'), ENT_QUOTES, 'UTF-8') ?></li>
+              <li><?= htmlspecialchars(t('pages.servis.feat_net_li3'), ENT_QUOTES, 'UTF-8') ?></li>
             </ul>
           </div>
           <div class="feature-card">
             <div class="feature-icon-wrap">🚛</div>
-            <h3>Mobil Servis</h3>
-            <p>Sahada veya şantiyenizde mobil servis ekibimizle hızlı müdahale. Randevu alarak makinenizin bulunduğu lokasyonda servis.</p>
+            <h3><?= htmlspecialchars(t('pages.servis.feat_mob_h'), ENT_QUOTES, 'UTF-8') ?></h3>
+            <p><?= htmlspecialchars(t('pages.servis.feat_mob_p'), ENT_QUOTES, 'UTF-8') ?></p>
             <ul>
-              <li>Sahada servis hizmeti</li>
-              <li>Hızlı müdahale garantisi</li>
-              <li>Uzman teknik ekip</li>
+              <li><?= htmlspecialchars(t('pages.servis.feat_mob_li1'), ENT_QUOTES, 'UTF-8') ?></li>
+              <li><?= htmlspecialchars(t('pages.servis.feat_mob_li2'), ENT_QUOTES, 'UTF-8') ?></li>
+              <li><?= htmlspecialchars(t('pages.servis.feat_mob_li3'), ENT_QUOTES, 'UTF-8') ?></li>
             </ul>
           </div>
           <div class="feature-card">
             <div class="feature-icon-wrap">⚙️</div>
-            <h3>Yedek Parça</h3>
-            <p>Orijinal ve uyumlu yedek parça temini. Stok takibi ve hızlı tedarik. Sipariş için bizi arayın veya WhatsApp üzerinden yazın.</p>
+            <h3><?= htmlspecialchars(t('pages.servis.feat_parts_h'), ENT_QUOTES, 'UTF-8') ?></h3>
+            <p><?= htmlspecialchars(t('pages.servis.feat_parts_p'), ENT_QUOTES, 'UTF-8') ?></p>
             <ul>
-              <li>Orijinal yedek parça</li>
-              <li>Hızlı tedarik garantisi</li>
-              <li>Stok takibi</li>
+              <li><?= htmlspecialchars(t('pages.servis.feat_parts_li1'), ENT_QUOTES, 'UTF-8') ?></li>
+              <li><?= htmlspecialchars(t('pages.servis.feat_parts_li2'), ENT_QUOTES, 'UTF-8') ?></li>
+              <li><?= htmlspecialchars(t('pages.servis.feat_parts_li3'), ENT_QUOTES, 'UTF-8') ?></li>
             </ul>
           </div>
           <div class="feature-card">
             <div class="feature-icon-wrap">🛡️</div>
-            <h3>Garanti</h3>
-            <p>Satın aldığınız makinelerde ürün garantisi; yaptığımız işlerde işçilik garantisi. Garanti koşulları satış sözleşmesinde belirtilir.</p>
+            <h3><?= htmlspecialchars(t('pages.servis.feat_warr_h'), ENT_QUOTES, 'UTF-8') ?></h3>
+            <p><?= htmlspecialchars(t('pages.servis.feat_warr_p'), ENT_QUOTES, 'UTF-8') ?></p>
             <ul>
-              <li>Ürün garantisi</li>
-              <li>İşçilik garantisi</li>
-              <li>Şeffaf garanti koşulları</li>
+              <li><?= htmlspecialchars(t('pages.servis.feat_warr_li1'), ENT_QUOTES, 'UTF-8') ?></li>
+              <li><?= htmlspecialchars(t('pages.servis.feat_warr_li2'), ENT_QUOTES, 'UTF-8') ?></li>
+              <li><?= htmlspecialchars(t('pages.servis.feat_warr_li3'), ENT_QUOTES, 'UTF-8') ?></li>
             </ul>
           </div>
         </div>
 
         <div class="two-col-grid" style="margin-bottom: 48px;">
           <div class="service-detail-card">
-            <h2>Servis Talebi</h2>
-            <p>Arıza veya bakım talebinizi aşağıdaki formdan iletebilirsiniz. 7/24 teknik destek hattımızdan da bize ulaşabilirsiniz.</p>
+            <h2><?= htmlspecialchars(t('pages.servis.block_request_h'), ENT_QUOTES, 'UTF-8') ?></h2>
+            <p><?= htmlspecialchars(t('pages.servis.block_request_p'), ENT_QUOTES, 'UTF-8') ?></p>
             <a href="tel:+<?= getWaNum() ?>" class="contact-quick-link">
               <span class="contact-quick-icon">📞</span>
               <div>
-                <strong>Servis Hattı</strong>
+                <strong><?= htmlspecialchars(t('pages.servis.label_service_line'), ENT_QUOTES, 'UTF-8') ?></strong>
                 <span><?= htmlspecialchars($siteSettings['phone_display'] ?? '') ?></span>
               </div>
             </a>
             <a href="mailto:<?= htmlspecialchars($siteSettings['servis_email'] ?? $siteSettings['contact_email'] ?? '') ?>" class="contact-quick-link">
               <span class="contact-quick-icon">✉️</span>
               <div>
-                <strong>E-posta</strong>
+                <strong><?= htmlspecialchars(t('pages.servis.label_email_short'), ENT_QUOTES, 'UTF-8') ?></strong>
                 <span><?= htmlspecialchars($siteSettings['servis_email'] ?? $siteSettings['contact_email'] ?? '') ?></span>
               </div>
             </a>
-            <a href="https://wa.me/<?= getWaNum() ?>" class="btn btn-whatsapp" target="_blank" rel="noopener">WhatsApp ile Servis Talebi</a>
+            <a href="https://wa.me/<?= getWaNum() ?>" class="btn btn-whatsapp" target="_blank" rel="noopener"><?= htmlspecialchars(t('pages.servis.btn_whatsapp_service'), ENT_QUOTES, 'UTF-8') ?></a>
 
             <form id="servis-form" class="form-block" style="margin-top: 32px;">
               <input type="text" name="website" value="" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" tabindex="-1" autocomplete="off" aria-hidden="true" />
-              <h3 style="margin-bottom: 16px; font-size: 1.2rem;">Online Servis Talep Formu</h3>
+              <h3 style="margin-bottom: 16px; font-size: 1.2rem;"><?= htmlspecialchars(t('pages.servis.form_online_h'), ENT_QUOTES, 'UTF-8') ?></h3>
               <div class="form-row">
                 <label>
-                  <span>Ad Soyad</span>
-                  <input type="text" name="ad_soyad" required placeholder="Adınız Soyadınız" />
+                  <span><?= htmlspecialchars(t('pages.servis.label_name'), ENT_QUOTES, 'UTF-8') ?></span>
+                  <input type="text" name="ad_soyad" required placeholder="<?= htmlspecialchars(t('pages.servis.ph_name'), ENT_QUOTES, 'UTF-8') ?>" />
                 </label>
                 <label>
-                  <span>Telefon</span>
-                  <input type="tel" name="telefon" required placeholder="05XX XXX XX XX" />
+                  <span><?= htmlspecialchars(t('pages.servis.label_phone'), ENT_QUOTES, 'UTF-8') ?></span>
+                  <input type="tel" name="telefon" required placeholder="<?= htmlspecialchars(t('pages.servis.ph_phone'), ENT_QUOTES, 'UTF-8') ?>" />
                 </label>
               </div>
               <div class="form-row">
                 <label>
-                  <span>E-posta</span>
-                  <input type="email" name="email" required placeholder="ornek@firma.com" />
+                  <span><?= htmlspecialchars(t('pages.servis.label_email'), ENT_QUOTES, 'UTF-8') ?></span>
+                  <input type="email" name="email" required placeholder="<?= htmlspecialchars(t('pages.servis.ph_email'), ENT_QUOTES, 'UTF-8') ?>" />
                 </label>
                 <label>
-                  <span>Servis Türü</span>
+                  <span><?= htmlspecialchars(t('pages.servis.label_servis_turu'), ENT_QUOTES, 'UTF-8') ?></span>
                   <select name="servis_turu" required>
-                    <option value="">Seçiniz</option>
-                    <option value="periyodik">Periyodik Bakım</option>
-                    <option value="ariza">Arıza / Onarım</option>
-                    <option value="yedek">Yedek Parça</option>
-                    <option value="diger">Diğer</option>
+                    <option value=""><?= htmlspecialchars(t('pages.servis.opt_select'), ENT_QUOTES, 'UTF-8') ?></option>
+                    <option value="periyodik"><?= htmlspecialchars(t('pages.servis.opt_periyodik'), ENT_QUOTES, 'UTF-8') ?></option>
+                    <option value="ariza"><?= htmlspecialchars(t('pages.servis.opt_ariza'), ENT_QUOTES, 'UTF-8') ?></option>
+                    <option value="yedek"><?= htmlspecialchars(t('pages.servis.opt_yedek'), ENT_QUOTES, 'UTF-8') ?></option>
+                    <option value="diger"><?= htmlspecialchars(t('pages.servis.opt_diger'), ENT_QUOTES, 'UTF-8') ?></option>
                   </select>
                 </label>
               </div>
               <div class="form-row">
                 <label>
-                  <span>Makine Modeli</span>
-                  <input type="text" name="makine_model" placeholder="Örn: Caterpillar 950 GC" />
+                  <span><?= htmlspecialchars(t('pages.servis.label_makine_model'), ENT_QUOTES, 'UTF-8') ?></span>
+                  <input type="text" name="makine_model" placeholder="<?= htmlspecialchars(t('pages.servis.ph_makine_model'), ENT_QUOTES, 'UTF-8') ?>" />
                 </label>
                 <label>
-                  <span>Seri No / Plaka</span>
-                  <input type="text" name="seri_no" placeholder="Opsiyonel" />
+                  <span><?= htmlspecialchars(t('pages.servis.label_seri'), ENT_QUOTES, 'UTF-8') ?></span>
+                  <input type="text" name="seri_no" placeholder="<?= htmlspecialchars(t('pages.servis.ph_seri'), ENT_QUOTES, 'UTF-8') ?>" />
                 </label>
               </div>
               <label>
-                <span>Lokasyon / Şantiye Adresi</span>
-                <input type="text" name="lokasyon" required placeholder="İl, ilçe, şantiye veya çalışma adresi" />
+                <span><?= htmlspecialchars(t('pages.servis.label_lokasyon'), ENT_QUOTES, 'UTF-8') ?></span>
+                <input type="text" name="lokasyon" required placeholder="<?= htmlspecialchars(t('pages.servis.ph_lokasyon'), ENT_QUOTES, 'UTF-8') ?>" />
               </label>
               <label>
-                <span>Arıza / Talep Açıklaması</span>
-                <textarea name="not" rows="3" required placeholder="Kısaca problemi ve talebinizi açıklayın..."></textarea>
+                <span><?= htmlspecialchars(t('pages.servis.label_aciklama'), ENT_QUOTES, 'UTF-8') ?></span>
+                <textarea name="not" rows="3" required placeholder="<?= htmlspecialchars(t('pages.servis.ph_aciklama'), ENT_QUOTES, 'UTF-8') ?>"></textarea>
               </label>
-              <button type="submit" class="btn btn-primary">Servis Talebi Gönder</button>
+              <button type="submit" class="btn btn-primary"><?= htmlspecialchars(t('pages.servis.btn_submit'), ENT_QUOTES, 'UTF-8') ?></button>
             </form>
           </div>
           <div class="service-process-card">
-            <h2>Servis Süreci</h2>
+            <h2><?= htmlspecialchars(t('pages.servis.process_h'), ENT_QUOTES, 'UTF-8') ?></h2>
             <div class="process-steps">
               <div class="process-step">
                 <span class="process-step-num">1</span>
                 <div>
-                  <strong>Talebinizi İletin</strong>
-                  <span>Telefon, e-posta veya WhatsApp üzerinden bize ulaşın</span>
+                  <strong><?= htmlspecialchars(t('pages.servis.step1_t'), ENT_QUOTES, 'UTF-8') ?></strong>
+                  <span><?= htmlspecialchars(t('pages.servis.step1_d'), ENT_QUOTES, 'UTF-8') ?></span>
                 </div>
               </div>
               <div class="process-step">
                 <span class="process-step-num">2</span>
                 <div>
-                  <strong>Randevu Alın</strong>
-                  <span>Uygun tarih ve saat için randevu oluşturun</span>
+                  <strong><?= htmlspecialchars(t('pages.servis.step2_t'), ENT_QUOTES, 'UTF-8') ?></strong>
+                  <span><?= htmlspecialchars(t('pages.servis.step2_d'), ENT_QUOTES, 'UTF-8') ?></span>
                 </div>
               </div>
               <div class="process-step">
                 <span class="process-step-num">3</span>
                 <div>
-                  <strong>Servis Yapılır</strong>
-                  <span>Uzman ekibimiz tarafından servis gerçekleştirilir</span>
+                  <strong><?= htmlspecialchars(t('pages.servis.step3_t'), ENT_QUOTES, 'UTF-8') ?></strong>
+                  <span><?= htmlspecialchars(t('pages.servis.step3_d'), ENT_QUOTES, 'UTF-8') ?></span>
                 </div>
               </div>
               <div class="process-step">
                 <span class="process-step-num">4</span>
                 <div>
-                  <strong>Garanti</strong>
-                  <span>Yapılan işler için garanti belgesi verilir</span>
+                  <strong><?= htmlspecialchars(t('pages.servis.step4_t'), ENT_QUOTES, 'UTF-8') ?></strong>
+                  <span><?= htmlspecialchars(t('pages.servis.step4_d'), ENT_QUOTES, 'UTF-8') ?></span>
                 </div>
               </div>
             </div>
@@ -188,21 +188,26 @@ $pageId = 'servis';
   <script>
     (function () {
       var J = window.__GRAVISA_JS || {};
+      var FORM = <?= json_encode([
+        'sending' => t('js.sending'),
+        'toastFallback' => t('pages.servis.toast_fallback'),
+        'btnSubmit' => t('pages.servis.btn_submit'),
+      ], JSON_UNESCAPED_UNICODE) ?>;
       var form = document.getElementById('servis-form');
       if (!form) return;
       var submitLabel = form.querySelector('button[type="submit"]');
-      var defaultSubmit = submitLabel ? submitLabel.textContent : 'Gönder';
+      var defaultSubmit = submitLabel ? submitLabel.textContent : FORM.btnSubmit;
       form.addEventListener('submit', function (e) {
         e.preventDefault();
         var btn = form.querySelector('button[type="submit"]');
-        if (btn) { btn.disabled = true; btn.textContent = J.sending || 'Gönderiliyor...'; }
+        if (btn) { btn.disabled = true; btn.textContent = J.sending || FORM.sending; }
         if (typeof window.submitFormToAPI === 'function') {
           window.submitFormToAPI(form, '<?= BASE_PATH ?>/api/servis.php')
             .then(function (msg) { if (typeof window.showToast === 'function') window.showToast(msg, true); else alert(msg); form.reset(); })
             .catch(function (err) { if (typeof window.showToast === 'function') window.showToast(err, false); else alert(err); })
             .finally(function () { if (btn) { btn.disabled = false; btn.textContent = defaultSubmit; } });
         } else {
-          if (typeof window.showToast === 'function') window.showToast('Servis talebiniz alındı. En kısa sürede sizinle iletişime geçeceğiz.', true); else alert('Servis talebiniz alındı.');
+          if (typeof window.showToast === 'function') window.showToast(FORM.toastFallback, true); else alert(FORM.toastFallback);
           form.reset();
           if (btn) { btn.disabled = false; btn.textContent = defaultSubmit; }
         }
