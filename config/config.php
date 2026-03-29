@@ -76,6 +76,9 @@ if ($envBase !== null && $envBase !== '') {
     define('BASE_PATH', ($scriptDir === '/' || $scriptDir === '\\' || $scriptDir === '.') ? '' : rtrim(str_replace('\\', '/', $scriptDir), '/'));
 }
 
+require_once $rootDir . '/includes/i18n.php';
+gravisa_init_lang();
+
 // Ortam
 define('APP_ENV', $env('APP_ENV', 'production'));
 define('APP_DEBUG', $isDebug);

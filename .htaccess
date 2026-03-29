@@ -6,6 +6,10 @@
   RewriteEngine On
   RewriteBase /
 
+  # Çoklu dil: /tr/ ve /en/ öneki (localhost alt klasör kullanıyorsanız RewriteBase'i /gravisa/ yapın)
+  RewriteRule ^(tr|en)/?$ index.php [L,QSA]
+  RewriteRule ^(tr|en)/(index|iletisim|makineler|satis-teklifi|kiralama|servis|kurumsal|hakkimizda|vizyon-misyon|referanslar|saha-fotograflari|makine-detay)/?$ $2.php [L,QSA]
+
   # Hassas dosya/klasörlere doğrudan erişimi engelle
   RewriteRule ^\.env - [F,L]
   RewriteRule ^config/ - [F,L]

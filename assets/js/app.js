@@ -1,6 +1,11 @@
 (function () {
   'use strict';
 
+  var J = window.__GRAVISA_JS || {};
+  function langPath(slug) {
+    return typeof window.gravisaLangPath === 'function' ? window.gravisaLangPath(slug) : slug;
+  }
+
   // Mobil menü
   var navToggle = document.querySelector('.nav-toggle');
   var nav = document.querySelector('#main-nav');
@@ -104,10 +109,10 @@
         var card = document.createElement('article');
         card.className = 'machine-card';
         var metaText = '';
-        if (m.modelYil) metaText += 'Model: ' + m.modelYil;
+        if (m.modelYil) metaText += (J.model || 'Model') + ': ' + m.modelYil;
         if (m.guc) {
           if (metaText) metaText += ' • ';
-          metaText += 'Güç: ' + m.guc + ' ' + m.gucBirim;
+          metaText += (J.power || 'Güç') + ': ' + m.guc + ' ' + m.gucBirim;
         }
         var imgSrc = safeImg(m.img);
         card.innerHTML =
@@ -118,9 +123,9 @@
             '<p class="machine-card-meta">' + esc(metaText || m.kapasite || '') + '</p>' +
             '<p class="machine-card-spec">' + esc(m.kapasite || '') + '</p>' +
             '<div class="machine-card-actions" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">' +
-              '<a href="makine-detay?id=' + esc(m.id) + '" class="btn btn-outline">Detay</a>' +
-              '<a href="satis-teklifi?id=' + esc(m.id) + '" class="btn btn-primary">Teklif Al</a>' +
-              '<a href="kiralama?id=' + esc(m.id) + '" class="btn btn-secondary" style="grid-column:1 / -1">Kirala</a>' +
+              '<a href="' + esc(langPath('makine-detay')) + '?id=' + esc(m.id) + '" class="btn btn-outline">' + esc(J.detail || 'Detay') + '</a>' +
+              '<a href="' + esc(langPath('satis-teklifi')) + '?id=' + esc(m.id) + '" class="btn btn-primary">' + esc(J.getQuote || 'Teklif Al') + '</a>' +
+              '<a href="' + esc(langPath('kiralama')) + '?id=' + esc(m.id) + '" class="btn btn-secondary" style="grid-column:1 / -1">' + esc(J.rent || 'Kirala') + '</a>' +
             '</div>' +
           '</div>';
         stoktaGrid.appendChild(card);
@@ -147,7 +152,7 @@
     var options = list ? list.querySelectorAll('.custom-select-option') : [];
 
     function updateTrigger(text, value) {
-      if (trigger) trigger.textContent = text || 'Seçiniz';
+      if (trigger) trigger.textContent = text || (J.select || 'Seçiniz');
       if (input) input.value = value || '';
       if (input) input.setAttribute('data-value', value || '');
       options.forEach(function (opt) {
@@ -191,7 +196,7 @@
       var inp = document.getElementById('machine-select-input');
       var listEl = document.getElementById('machine-select-list');
       if (wrap && trig && inp && listEl) {
-        trig.textContent = 'Seçiniz';
+        trig.textContent = J.select || 'Seçiniz';
         inp.value = '';
         listEl.querySelectorAll('.custom-select-option').forEach(function (opt) {
           opt.classList.toggle('is-selected', (opt.getAttribute('data-value') || '') === '');
@@ -207,16 +212,16 @@
         return;
       }
       var btn = demoForm.querySelector('button[type="submit"]');
-      if (btn) { btn.disabled = true; btn.textContent = 'Gönderiliyor...'; }
+      if (btn) { btn.disabled = true; btn.textContent = J.sending || 'Gönderiliyor...'; }
       if (typeof window.submitFormToAPI === 'function') {
         window.submitFormToAPI(demoForm, base + '/api/demo.php')
           .then(function (msg) { if (typeof window.showToast === 'function') window.showToast(msg, true); else alert(msg); demoForm.reset(); })
           .catch(function (err) { if (typeof window.showToast === 'function') window.showToast(err, false); else alert(err); })
-          .finally(function () { if (btn) { btn.disabled = false; btn.textContent = 'Demo Talebi Gönder'; } });
+          .finally(function () { if (btn) { btn.disabled = false; btn.textContent = J.demoSubmit || 'Demo Talebi Gönder'; } });
       } else {
         if (typeof window.showToast === 'function') window.showToast('Demo talebiniz alındı. En kısa sürede sizinle iletişime geçeceğiz.', true); else alert('Demo talebiniz alındı.');
         demoForm.reset();
-        if (btn) { btn.disabled = false; btn.textContent = 'Demo Talebi Gönder'; }
+        if (btn) { btn.disabled = false; btn.textContent = J.demoSubmit || 'Demo Talebi Gönder'; }
       }
     });
   }

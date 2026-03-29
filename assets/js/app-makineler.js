@@ -1,6 +1,14 @@
 (function () {
   'use strict';
   var base = (typeof window.basePath === 'string') ? window.basePath : '';
+  var J = window.__GRAVISA_JS || {};
+  function langPath(slug) {
+    return typeof window.gravisaLangPath === 'function' ? window.gravisaLangPath(slug) : slug;
+  }
+  function fmtResults(n) {
+    var tpl = J.resultsCount || '%d makine bulundu';
+    return String(tpl).replace('%d', String(n));
+  }
 
   // Makineler API'den yüklenir (api/makineler.php -> data/makineler_admin.json)
   window.makineler = [];
@@ -135,7 +143,7 @@
     }
 
     if (resultsInfo) {
-      resultsInfo.textContent = filteredMakineler.length + ' makine bulundu';
+      resultsInfo.textContent = fmtResults(filteredMakineler.length);
     }
 
     filteredMakineler.forEach(function(m) {
@@ -152,12 +160,12 @@
       '<div class="machine-card-body">' +
         '<div class="machine-card-badge">' + escapeHtml(m.tip) + '</div>' +
         '<h3 class="machine-card-title">' + escapeHtml(m.firma) + ' ' + escapeHtml(m.tipModel) + '</h3>' +
-        '<p class="machine-card-meta">Model: ' + escapeHtml(m.modelYil) + ' &bull; Güç: ' + escapeHtml(m.guc) + ' ' + escapeHtml(m.gucBirim) + '</p>' +
+        '<p class="machine-card-meta">' + escapeHtml(J.model || 'Model') + ': ' + escapeHtml(m.modelYil) + ' &bull; ' + escapeHtml(J.power || 'Güç') + ': ' + escapeHtml(m.guc) + ' ' + escapeHtml(m.gucBirim) + '</p>' +
         '<p class="machine-card-spec">' + escapeHtml(m.kapasite) + '</p>' +
         '<div class="machine-card-actions" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">' +
-          '<a href="makine-detay?id=' + escapeHtml(m.id) + '" class="btn btn-outline">Detay</a>' +
-          '<a href="satis-teklifi?id=' + escapeHtml(m.id) + '" class="btn btn-primary">Teklif Al</a>' +
-          '<a href="kiralama?id=' + escapeHtml(m.id) + '" class="btn btn-secondary" style="grid-column:1 / -1">Kirala</a>' +
+          '<a href="' + escapeHtml(langPath('makine-detay')) + '?id=' + escapeHtml(m.id) + '" class="btn btn-outline">' + escapeHtml(J.detail || 'Detay') + '</a>' +
+          '<a href="' + escapeHtml(langPath('satis-teklifi')) + '?id=' + escapeHtml(m.id) + '" class="btn btn-primary">' + escapeHtml(J.getQuote || 'Teklif Al') + '</a>' +
+          '<a href="' + escapeHtml(langPath('kiralama')) + '?id=' + escapeHtml(m.id) + '" class="btn btn-secondary" style="grid-column:1 / -1">' + escapeHtml(J.rent || 'Kirala') + '</a>' +
         '</div>' +
       '</div>';
     return article;
