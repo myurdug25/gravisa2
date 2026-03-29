@@ -2095,7 +2095,8 @@ a:hover {
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.2s ease, visibility 0.2s ease;
-    z-index: 115;
+    /* Overlay, drawer/header'ın ALTINDA olmalı ki header içindeki drawer gizlenmesin */
+    z-index: 90;
   }
   body.nav-open .nav-overlay {
     opacity: 1;
