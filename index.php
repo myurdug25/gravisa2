@@ -58,7 +58,7 @@ $pageId = 'index';
           </div>
           <div class="banner-card-media" aria-hidden="true">
             <div class="hero-image-frame">
-              <img src="<?= BASE_PATH ?>/images/WhatsApp Image 2026-02-17 at 15.37.57 (2).jpeg" alt="<?= htmlspecialchars(t('pages.index.img_machine_alt'), ENT_QUOTES, 'UTF-8') ?>" onerror="this.style.display='none'" />
+              <img src="<?= BASE_PATH ?>/images/IMG_9059.JPG.jpeg" alt="<?= htmlspecialchars(t('pages.index.img_machine_alt'), ENT_QUOTES, 'UTF-8') ?>" onerror="this.style.display='none'" />
               <span class="hero-image-fallback">🚜</span>
             </div>
           </div>

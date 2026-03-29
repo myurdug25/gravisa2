@@ -38,97 +38,75 @@ $pageId = 'hakkimizda';
 
           <!-- Önsöz -->
           <div class="content-block" style="margin-bottom: 48px;">
-            <h2 class="content-block-title">Çözüm Ortaklığında Yeni Bir Standart: Gravisa</h2>
-            <p class="content-block-text">
-              Modern inşaat ve altyapı dünyası, her geçen gün daha karmaşık, daha hızlı ve daha hatasız operasyonlar gerektiriyor. Projelerin başarıya ulaşması; doğru zamanda, doğru teknik özelliklere sahip ve sorunsuz çalışan iş makinelerinin varlığına bağlıdır. Gravisa olarak biz, sektördeki bu kritik ihtiyacı profesyonel bir ekosistemle karşılamak üzere kurulduk.
-            </p>
-            <p class="content-block-text">
-              Elinizdeki bu katalog, sunduğumuz geniş hizmet yelpazesinin, teknik kabiliyetlerimizin ve kalite anlayışımızın bir özetidir. Katalog içerisinde bulacağınız her bir makine; titiz bir ekspertiz sürecinden geçmiş, bakımları en yüksek standartlarda yapılmış ve yüksek çalışma verimliliği vaat eden modellerden seçilmiştir. Satış ve kiralama departmanlarımız, projenizin ölçeği ne olursa olsun size en optimize maliyet-fayda dengesini sunmak için uzmanlaşmıştır.
-            </p>
-            <p class="content-block-text">
-              Sadece makine tedarik eden bir firma olmanın ötesinde; teknik destek, yedek parça danışmanlığı ve operasyonel rehberlik hizmetlerimizle, işinizin her aşamasında 'çözüm merkezi' olma misyonunu üstleniyoruz. Amacımız, müşterilerimizin iş makineleriyle ilgili tüm kaygılarını ortadan kaldırmak ve onların tamamen kendi uzmanlık alanlarına odaklanmalarını sağlamaktır.
-            </p>
-            <p class="content-block-text">
-              Bu kataloğu incelediğinizde, sadece donanım değil, aynı zamanda kurumsal bir disiplin ve güçlü bir satış sonrası hizmet taahhüdü bulacaksınız. İhtiyaç duyduğunuz her an, uzman ekibimizle projelerinizin hızına hız katmaya hazırız.
-            </p>
-            <p class="content-block-text" style="font-weight: 600; color: var(--color-primary);">Gravisa Ailesi Olarak Başarılar Dileriz.</p>
+            <h2 class="content-block-title"><?= htmlspecialchars(t('pages.hakkimizda.preface_h'), ENT_QUOTES, 'UTF-8') ?></h2>
+            <p class="content-block-text"><?= htmlspecialchars(t('pages.hakkimizda.preface_p1'), ENT_QUOTES, 'UTF-8') ?></p>
+            <p class="content-block-text"><?= htmlspecialchars(t('pages.hakkimizda.preface_p2'), ENT_QUOTES, 'UTF-8') ?></p>
+            <p class="content-block-text"><?= htmlspecialchars(t('pages.hakkimizda.preface_p3'), ENT_QUOTES, 'UTF-8') ?></p>
+            <p class="content-block-text"><?= htmlspecialchars(t('pages.hakkimizda.preface_p4'), ENT_QUOTES, 'UTF-8') ?></p>
+            <p class="content-block-text" style="font-weight: 600; color: var(--color-primary);"><?= htmlspecialchars(t('pages.hakkimizda.preface_sign'), ENT_QUOTES, 'UTF-8') ?></p>
           </div>
 
           <!-- Başkanın Mesajı -->
           <div class="content-block content-block-highlight" style="margin-bottom: 48px;">
-            <h2 class="content-block-title">Başkanın Mesajı</h2>
+            <h2 class="content-block-title"><?= htmlspecialchars(t('pages.hakkimizda.president_h'), ENT_QUOTES, 'UTF-8') ?></h2>
             <p class="content-block-text" style="font-style: italic; font-size: 1.05rem;">
-              "Değerli İş Ortaklarımız ve Paydaşlarımız;<br><br>
-              Ağır sanayi ve inşaat sektörü, bir ülkenin kalkınma yolculuğundaki en temel taşlardan biridir. Bizler, bu büyük çarkın işleyişine güç katmak, projelerinizi sadece makinelerle değil, güven ve tecrübeyle desteklemek amacıyla yola çıktık. İş makineleri sektöründe geçirdiğimiz yıllar boyunca öğrendiğimiz en önemli ders; doğru ekipmanın sadece bir araç değil, projenin kalbi olduğudur.<br><br>
-              Şirketimizi kurarken temel motivasyonumuz, sektördeki 'güven' ve 'kesintisiz hizmet' ihtiyacına profesyonel bir yanıt vermekti. Bugün, alım-satım ve kiralama süreçlerinde sadece bir ticari partner değil, her zorlu saha koşulunda yanınızda duran bir yol arkadaşı olmayı hedefliyoruz. Bizim için başarı; sadece teslim ettiğimiz makinelerin sayısı değil, o makinelerin çalıştığı şantiyelerde yükselen değerler ve sizlerin yüzündeki memnuniyettir.<br><br>
-              Teknolojinin hızla dönüştüğü günümüzde, makine parkurumuzu sürekli güncelliyor ve dünya standartlarını yerel tecrübemizle harmanlıyoruz. Dürüstlükten ödün vermeyen ticaret anlayışımızla, her el sıkışmamızın arkasında durmaya devam edeceğiz. Bu katalog, sadece sunduğumuz makinelerin bir dökümü değil; işimize olan tutkumuzun ve sizlere verdiğimiz sözün bir yansımasıdır.<br><br>
-              Bizlere güvenen, enerjimize ortak olan tüm dostlarımıza ve özveriyle çalışan ekibimize teşekkürlerimi sunarım. Daha büyük projelerde, daha güçlü yarınlarda birlikte yürümek dileğiyle."
+              "<?= nl2br(htmlspecialchars(t('pages.hakkimizda.president_quote'), ENT_QUOTES, 'UTF-8')) ?>"
             </p>
-            <p style="margin: 24px 0 0; font-weight: 700; color: var(--color-primary);">Ahmet Burak GÜLEÇ</p>
-            <p style="margin: 4px 0 0; font-size: 0.9rem; color: var(--color-text-muted);">Yönetim Kurulu Başkanı</p>
+            <p style="margin: 24px 0 0; font-weight: 700; color: var(--color-primary);"><?= htmlspecialchars(t('pages.hakkimizda.president_name'), ENT_QUOTES, 'UTF-8') ?></p>
+            <p style="margin: 4px 0 0; font-size: 0.9rem; color: var(--color-text-muted);"><?= htmlspecialchars(t('pages.hakkimizda.president_title'), ENT_QUOTES, 'UTF-8') ?></p>
           </div>
 
           <!-- Bizim Hikayemiz -->
           <div class="content-block" style="margin-bottom: 48px;">
-            <h2 class="content-block-title">İşinize Güç, Projenize Değer Katıyoruz</h2>
-            <p class="content-block-subtitle">Başarının Temeli: Bizim Hikayemiz</p>
-            <p class="content-block-text">
-              Gravisa, inşaat ve ağır sanayi sektörünün kalbinde, sahanın tozunu yutmuş, zorlukları bizzat tecrübe etmiş bir vizyonun eseri olarak kuruldu. Yolculuğumuz, sadece iş makinesi alıp satmak değil; Türkiye'nin yükselen projelerine güç katmak, altyapı ve üstyapı çalışmalarında karşılaşılan operasyonel engelleri profesyonel çözümlerle aşmak hedefiyle başladı.
-            </p>
-            <p class="content-block-text">
-              Kuruluşumuzdan itibaren temel ilkemiz; "Doğru makine, doğru proje ile buluştuğunda başarı kaçınılmazdır" anlayışı oldu. Sektördeki derin tecrübemizi, modern dünyanın hızıyla birleştirerek kısa sürede iş makinesi alım-satım ve kiralama alanında güvenin adresi haline geldik. Bizim için her bir makine, sadece bir metal yığını değil; bir barajın temeli, bir yolun başlangıcı veya bir şehrin silüetini değiştiren bir yapının en sadık yardımcısıdır.
-            </p>
-            <p class="content-block-text">
-              Gravisa olarak, parkurumuzdaki her bir iş makinesini titizlikle seçiyor, en zorlu saha koşullarında dahi yüksek performans sergileyecek kondisyonda tutuyoruz. Kiralama süreçlerimizde esneklik ve hızı, satış süreçlerimizde ise şeffaflık ve dürüstlüğü merkeze alıyoruz. Biliyoruz ki; iş makineleri sektörü sadece bir ticaret alanı değil, bir güven köprüsüdür. Bu köprünün her iki ucunda da memnuniyeti ve sürdürülebilirliği sağlamak en büyük önceliğimizdir.
-            </p>
-            <p class="content-block-text">
-              Bugün, genişleyen makine parkurumuz, uzman teknik ekibimiz ve çözüm odaklı yaklaşımımızla sektörün dinamik gücü olarak yolumuza devam ediyoruz. Sadece bugünün projelerini değil, yarının dünyasını inşa edecek olan profesyonellere omuz veriyoruz. Geçmişimizden aldığımız güçle, geleceğe sağlam adımlarla yürüyor; her yeni projede iş ortaklarımızın yükünü hafifletmenin gururunu yaşıyoruz.
-            </p>
-            <p class="content-block-text" style="font-weight: 600; color: var(--color-primary);">Siz hayal edin, biz o hayalleri gerçeğe dönüştürecek gücü sahaya indirelim.</p>
-            <p class="content-block-text" style="font-weight: 600;">Gravisa: Güçlü Yarınların Sarsılmaz Temeli.</p>
+            <h2 class="content-block-title"><?= htmlspecialchars(t('pages.hakkimizda.story_h'), ENT_QUOTES, 'UTF-8') ?></h2>
+            <p class="content-block-subtitle"><?= htmlspecialchars(t('pages.hakkimizda.story_sub'), ENT_QUOTES, 'UTF-8') ?></p>
+            <p class="content-block-text"><?= htmlspecialchars(t('pages.hakkimizda.story_p1'), ENT_QUOTES, 'UTF-8') ?></p>
+            <p class="content-block-text"><?= htmlspecialchars(t('pages.hakkimizda.story_p2'), ENT_QUOTES, 'UTF-8') ?></p>
+            <p class="content-block-text"><?= htmlspecialchars(t('pages.hakkimizda.story_p3'), ENT_QUOTES, 'UTF-8') ?></p>
+            <p class="content-block-text"><?= htmlspecialchars(t('pages.hakkimizda.story_p4'), ENT_QUOTES, 'UTF-8') ?></p>
+            <p class="content-block-text" style="font-weight: 600; color: var(--color-primary);"><?= htmlspecialchars(t('pages.hakkimizda.story_tag1'), ENT_QUOTES, 'UTF-8') ?></p>
+            <p class="content-block-text" style="font-weight: 600;"><?= htmlspecialchars(t('pages.hakkimizda.story_tag2'), ENT_QUOTES, 'UTF-8') ?></p>
             <div class="content-stats-grid">
               <div style="text-align: center; padding: 24px; background: var(--color-surface-alt); border-radius: var(--radius);">
                 <strong style="display: block; font-size: 2rem; color: var(--color-primary); margin-bottom: 8px;">15+</strong>
-                <span style="color: var(--color-text-muted); font-size: 0.9rem;">Yıl Deneyim</span>
+                <span style="color: var(--color-text-muted); font-size: 0.9rem;"><?= htmlspecialchars(t('pages.hakkimizda.stat_years'), ENT_QUOTES, 'UTF-8') ?></span>
               </div>
               <div style="text-align: center; padding: 24px; background: var(--color-surface-alt); border-radius: var(--radius);">
                 <strong style="display: block; font-size: 2rem; color: var(--color-primary); margin-bottom: 8px;">500+</strong>
-                <span style="color: var(--color-text-muted); font-size: 0.9rem;">Proje</span>
+                <span style="color: var(--color-text-muted); font-size: 0.9rem;"><?= htmlspecialchars(t('pages.hakkimizda.stat_projects'), ENT_QUOTES, 'UTF-8') ?></span>
               </div>
               <div style="text-align: center; padding: 24px; background: var(--color-surface-alt); border-radius: var(--radius);">
                 <strong style="display: block; font-size: 2rem; color: var(--color-primary); margin-bottom: 8px;">319+</strong>
-                <span style="color: var(--color-text-muted); font-size: 0.9rem;">Makine</span>
+                <span style="color: var(--color-text-muted); font-size: 0.9rem;"><?= htmlspecialchars(t('pages.hakkimizda.stat_machines'), ENT_QUOTES, 'UTF-8') ?></span>
               </div>
             </div>
           </div>
 
           <!-- Neden Biz? -->
           <div class="content-block" style="margin-bottom: 48px;">
-            <h2 class="content-block-title">Neden Biz?</h2>
-            <p class="content-block-subtitle">Gücümüzü Tecrübemizden, Hızımızı Teknolojimizden Alıyoruz</p>
-            <p class="content-block-text">
-              İş makineleri sektörü, sadece metal ve hidrolikten ibaret değildir; bu sektör bir zaman ve maliyet yönetimi sanatıdır. İşte bizi rakiplerimizden ayıran ve projelerinizin vazgeçilmez bir parçası yapan temel farklarımız:
-            </p>
+            <h2 class="content-block-title"><?= htmlspecialchars(t('pages.hakkimizda.why_h'), ENT_QUOTES, 'UTF-8') ?></h2>
+            <p class="content-block-subtitle"><?= htmlspecialchars(t('pages.hakkimizda.why_sub'), ENT_QUOTES, 'UTF-8') ?></p>
+            <p class="content-block-text"><?= htmlspecialchars(t('pages.hakkimizda.why_intro'), ENT_QUOTES, 'UTF-8') ?></p>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 28px;">
               <div style="padding: 28px; background: var(--color-surface); border-radius: var(--radius-lg); border: 1px solid var(--color-border); border-left: 4px solid var(--color-primary);">
-                <h3 style="font-size: 1.15rem; margin: 0 0 12px; color: var(--color-text);">Bütünleşik Çözüm Kapasitesi</h3>
-                <p style="margin: 0; color: var(--color-text-muted); line-height: 1.7; font-size: 0.9375rem;">Sadece makine satmıyor veya kiralamıyoruz. Projenizin büyüklüğüne, zemin yapısına ve bütçesine en uygun makineyi belirlemek için teknik danışmanlık sağlıyoruz. Alım, satım ve kiralama süreçlerinin tamamını tek çatı altında toplayarak operasyonel yükünüzü hafifletiyoruz.</p>
+                <h3 style="font-size: 1.15rem; margin: 0 0 12px; color: var(--color-text);"><?= htmlspecialchars(t('pages.hakkimizda.why1_h'), ENT_QUOTES, 'UTF-8') ?></h3>
+                <p style="margin: 0; color: var(--color-text-muted); line-height: 1.7; font-size: 0.9375rem;"><?= htmlspecialchars(t('pages.hakkimizda.why1_p'), ENT_QUOTES, 'UTF-8') ?></p>
               </div>
               <div style="padding: 28px; background: var(--color-surface); border-radius: var(--radius-lg); border: 1px solid var(--color-border); border-left: 4px solid var(--color-primary);">
-                <h3 style="font-size: 1.15rem; margin: 0 0 12px; color: var(--color-text);">Kusursuz Makine Parkuru ve Bakım Standartları</h3>
-                <p style="margin: 0; color: var(--color-text-muted); line-height: 1.7; font-size: 0.9375rem;">Portföyümüzdeki tüm makineler, en zorlu saha koşullarında dahi maksimum performans gösterecek şekilde periyodik olarak uzman teknisyenlerimizce denetlenir. "Sıfır Arıza" vizyonuyla hareket ederek, işinizin durmasına değil, hızlanmasına odaklanıyoruz.</p>
+                <h3 style="font-size: 1.15rem; margin: 0 0 12px; color: var(--color-text);"><?= htmlspecialchars(t('pages.hakkimizda.why2_h'), ENT_QUOTES, 'UTF-8') ?></h3>
+                <p style="margin: 0; color: var(--color-text-muted); line-height: 1.7; font-size: 0.9375rem;"><?= htmlspecialchars(t('pages.hakkimizda.why2_p'), ENT_QUOTES, 'UTF-8') ?></p>
               </div>
               <div style="padding: 28px; background: var(--color-surface); border-radius: var(--radius-lg); border: 1px solid var(--color-border); border-left: 4px solid var(--color-primary);">
-                <h3 style="font-size: 1.15rem; margin: 0 0 12px; color: var(--color-text);">Hızlı ve Yerinde Teknik Destek</h3>
-                <p style="margin: 0; color: var(--color-text-muted); line-height: 1.7; font-size: 0.9375rem;">Şantiyede geçen her dakikanın maliyetinin farkındayız. Herhangi bir teknik aksaklık durumunda, mobil servis ekiplerimizle en kısa sürede müdahale ederek projenizin aksamasının önüne geçiyoruz.</p>
+                <h3 style="font-size: 1.15rem; margin: 0 0 12px; color: var(--color-text);"><?= htmlspecialchars(t('pages.hakkimizda.why3_h'), ENT_QUOTES, 'UTF-8') ?></h3>
+                <p style="margin: 0; color: var(--color-text-muted); line-height: 1.7; font-size: 0.9375rem;"><?= htmlspecialchars(t('pages.hakkimizda.why3_p'), ENT_QUOTES, 'UTF-8') ?></p>
               </div>
               <div style="padding: 28px; background: var(--color-surface); border-radius: var(--radius-lg); border: 1px solid var(--color-border); border-left: 4px solid var(--color-primary);">
-                <h3 style="font-size: 1.15rem; margin: 0 0 12px; color: var(--color-text);">Şeffaf ve Adil Ticaret Anlayışı</h3>
-                <p style="margin: 0; color: var(--color-text-muted); line-height: 1.7; font-size: 0.9375rem;">İster ikinci el alım-satım olsun ister uzun dönem kiralama; tüm süreçlerimizde şeffaf ekspertiz raporları ve net sözleşmelerle ilerliyoruz. Sürpriz maliyetlere yer vermeyen, dürüst fiyatlandırma politikamızla güven inşa ediyoruz.</p>
+                <h3 style="font-size: 1.15rem; margin: 0 0 12px; color: var(--color-text);"><?= htmlspecialchars(t('pages.hakkimizda.why4_h'), ENT_QUOTES, 'UTF-8') ?></h3>
+                <p style="margin: 0; color: var(--color-text-muted); line-height: 1.7; font-size: 0.9375rem;"><?= htmlspecialchars(t('pages.hakkimizda.why4_p'), ENT_QUOTES, 'UTF-8') ?></p>
               </div>
               <div style="padding: 28px; background: var(--color-surface); border-radius: var(--radius-lg); border: 1px solid var(--color-border); border-left: 4px solid var(--color-primary);">
-                <h3 style="font-size: 1.15rem; margin: 0 0 12px; color: var(--color-text);">Finansal Esneklik</h3>
-                <p style="margin: 0; color: var(--color-text-muted); line-height: 1.7; font-size: 0.9375rem;">Yatırım planlarınıza göre şekillenen esnek ödeme seçenekleri ve kiralama modelleri sunarak, sermayenizi en verimli şekilde kullanmanıza olanak tanıyoruz.</p>
+                <h3 style="font-size: 1.15rem; margin: 0 0 12px; color: var(--color-text);"><?= htmlspecialchars(t('pages.hakkimizda.why5_h'), ENT_QUOTES, 'UTF-8') ?></h3>
+                <p style="margin: 0; color: var(--color-text-muted); line-height: 1.7; font-size: 0.9375rem;"><?= htmlspecialchars(t('pages.hakkimizda.why5_p'), ENT_QUOTES, 'UTF-8') ?></p>
               </div>
             </div>
           </div>
@@ -136,44 +114,44 @@ $pageId = 'hakkimizda';
           <!-- Çalışma Alanlarımız -->
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-bottom: 48px; align-items: start;">
             <div>
-              <h2 style="font-size: 1.75rem; margin: 0 0 24px; color: var(--color-text);">Çalışma Alanlarımız</h2>
+              <h2 style="font-size: 1.75rem; margin: 0 0 24px; color: var(--color-text);"><?= htmlspecialchars(t('pages.hakkimizda.areas_h'), ENT_QUOTES, 'UTF-8') ?></h2>
               <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 16px;">
                 <li style="display: flex; align-items: center; gap: 12px;">
                   <span style="width: 8px; height: 8px; background: var(--color-primary); border-radius: 50%;"></span>
-                  <span style="color: var(--color-text);">İnşaat ve Altyapı Projeleri</span>
+                  <span style="color: var(--color-text);"><?= htmlspecialchars(t('pages.hakkimizda.area1'), ENT_QUOTES, 'UTF-8') ?></span>
                 </li>
                 <li style="display: flex; align-items: center; gap: 12px;">
                   <span style="width: 8px; height: 8px; background: var(--color-primary); border-radius: 50%;"></span>
-                  <span style="color: var(--color-text);">Madencilik ve Taş Ocakları</span>
+                  <span style="color: var(--color-text);"><?= htmlspecialchars(t('pages.hakkimizda.area2'), ENT_QUOTES, 'UTF-8') ?></span>
                 </li>
                 <li style="display: flex; align-items: center; gap: 12px;">
                   <span style="width: 8px; height: 8px; background: var(--color-primary); border-radius: 50%;"></span>
-                  <span style="color: var(--color-text);">Tünel ve Metro İnşaatları</span>
+                  <span style="color: var(--color-text);"><?= htmlspecialchars(t('pages.hakkimizda.area3'), ENT_QUOTES, 'UTF-8') ?></span>
                 </li>
                 <li style="display: flex; align-items: center; gap: 12px;">
                   <span style="width: 8px; height: 8px; background: var(--color-primary); border-radius: 50%;"></span>
-                  <span style="color: var(--color-text);">Endüstriyel Tesisler</span>
+                  <span style="color: var(--color-text);"><?= htmlspecialchars(t('pages.hakkimizda.area4'), ENT_QUOTES, 'UTF-8') ?></span>
                 </li>
                 <li style="display: flex; align-items: center; gap: 12px;">
                   <span style="width: 8px; height: 8px; background: var(--color-primary); border-radius: 50%;"></span>
-                  <span style="color: var(--color-text);">Tarım ve Ormancılık</span>
+                  <span style="color: var(--color-text);"><?= htmlspecialchars(t('pages.hakkimizda.area5'), ENT_QUOTES, 'UTF-8') ?></span>
                 </li>
               </ul>
             </div>
             <div style="background: var(--color-surface-alt); padding: 40px; border-radius: var(--radius-lg); border: 1px solid var(--color-border);">
-              <h3 style="font-size: 1.25rem; margin: 0 0 20px; color: var(--color-text);">Vizyon & Misyon</h3>
-              <p style="margin: 0 0 16px; color: var(--color-text-muted); line-height: 1.7; font-size: 0.9375rem;">Misyonumuz ve vizyonumuz hakkında detaylı bilgi için Vizyon & Misyon sayfamızı inceleyebilirsiniz.</p>
-              <a href="vizyon-misyon" class="btn btn-outline">Vizyon & Misyon</a>
+              <h3 style="font-size: 1.25rem; margin: 0 0 20px; color: var(--color-text);"><?= htmlspecialchars(t('pages.hakkimizda.vm_h'), ENT_QUOTES, 'UTF-8') ?></h3>
+              <p style="margin: 0 0 16px; color: var(--color-text-muted); line-height: 1.7; font-size: 0.9375rem;"><?= htmlspecialchars(t('pages.hakkimizda.vm_p'), ENT_QUOTES, 'UTF-8') ?></p>
+              <a href="vizyon-misyon" class="btn btn-outline"><?= htmlspecialchars(t('pages.hakkimizda.vm_btn'), ENT_QUOTES, 'UTF-8') ?></a>
             </div>
           </div>
 
           <div style="margin-top: 48px; padding: 32px; background: linear-gradient(135deg, var(--color-primary-soft) 0%, var(--color-accent-soft) 100%); border-radius: var(--radius-lg); text-align: center;">
-            <h3 style="font-size: 1.5rem; margin: 0 0 16px; color: var(--color-text);">Bizimle Çalışmak İster misiniz?</h3>
-            <p style="margin: 0 0 24px; color: var(--color-text-muted);">Projelerinizde güvenilir bir çözüm ortağı arıyorsanız bizimle iletişime geçin.</p>
+            <h3 style="font-size: 1.5rem; margin: 0 0 16px; color: var(--color-text);"><?= htmlspecialchars(t('pages.hakkimizda.cta_h'), ENT_QUOTES, 'UTF-8') ?></h3>
+            <p style="margin: 0 0 24px; color: var(--color-text-muted);"><?= htmlspecialchars(t('pages.hakkimizda.cta_p'), ENT_QUOTES, 'UTF-8') ?></p>
             <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
-              <a href="satis-teklifi" class="btn btn-primary">Satış Teklifi Al</a>
-              <a href="kiralama" class="btn btn-secondary">Kiralama Yap</a>
-              <a href="iletisim" class="btn btn-outline">İletişime Geç</a>
+              <a href="satis-teklifi" class="btn btn-primary"><?= htmlspecialchars(t('pages.hakkimizda.cta_sales'), ENT_QUOTES, 'UTF-8') ?></a>
+              <a href="kiralama" class="btn btn-secondary"><?= htmlspecialchars(t('pages.hakkimizda.cta_rent'), ENT_QUOTES, 'UTF-8') ?></a>
+              <a href="iletisim" class="btn btn-outline"><?= htmlspecialchars(t('pages.hakkimizda.cta_contact'), ENT_QUOTES, 'UTF-8') ?></a>
             </div>
           </div>
 
