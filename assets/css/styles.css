@@ -2054,6 +2054,9 @@ a:hover {
     width: 100%;
     padding: 14px 16px;
   }
+  /* Mobilde dropdown tetikleyicide ekstra sağ padding merkezlemeyi bozmasın */
+  .nav-dropdown > a { padding-right: 16px; }
+  .nav-dropdown > a::after { right: 16px; }
 
   /* Mobil: Kurumsal dropdown – tıklanınca açılır */
   .nav-dropdown ul {
