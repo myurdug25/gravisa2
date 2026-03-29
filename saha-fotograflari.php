@@ -29,22 +29,22 @@ if (file_exists($sahaFile)) {
   <main>
     <section class="page-hero">
       <div class="container">
-        <h1>Saha Fotoğrafları</h1>
-        <p>Makinelerimizin projelerdeki görünümü. Sahada çekilen gerçek fotoğraflarımız.</p>
+        <h1><?= htmlspecialchars(t('pages.saha_fotograflari.hero_title'), ENT_QUOTES, 'UTF-8') ?></h1>
+        <p><?= htmlspecialchars(t('pages.saha_fotograflari.hero_sub'), ENT_QUOTES, 'UTF-8') ?></p>
       </div>
     </section>
 
     <section class="section">
       <div class="container">
         <nav class="breadcrumb" style="margin-bottom: 32px;">
-          <a href="index">Ana Sayfa</a><span>/</span>
-          <a href="kurumsal">Kurumsal</a><span>/</span>
-          <span>Saha Fotoğrafları</span>
+          <a href="<?= htmlspecialchars(gravisa_url(''), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.home'), ENT_QUOTES, 'UTF-8') ?></a><span>/</span>
+          <a href="<?= htmlspecialchars(gravisa_url('kurumsal'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.corporate'), ENT_QUOTES, 'UTF-8') ?></a><span>/</span>
+          <span><?= htmlspecialchars(t('pages.saha_fotograflari.hero_title'), ENT_QUOTES, 'UTF-8') ?></span>
         </nav>
 
         <div class="machine-grid saha-grid" id="saha-fotograflari-grid">
           <?php if (empty($sahaPhotos)): ?>
-          <p style="grid-column: 1/-1; text-align: center; color: var(--color-text-muted); padding: 40px;">Henüz saha fotoğrafı eklenmemiş. Admin panelden ekleyebilirsiniz.</p>
+          <p style="grid-column: 1/-1; text-align: center; color: var(--color-text-muted); padding: 40px;"><?= htmlspecialchars(t('pages.corp_common.empty_saha'), ENT_QUOTES, 'UTF-8') ?></p>
           <?php else: ?>
           <?php foreach ($sahaPhotos as $photo): ?>
           <?php
@@ -53,7 +53,7 @@ if (file_exists($sahaFile)) {
             $path = (defined('BASE_PATH') ? BASE_PATH : '') . $path;
             $imgSrc = htmlspecialchars($path, ENT_QUOTES, 'UTF-8');
             $imgSrcEncoded = str_replace([' ', '(', ')'], ['%20', '%28', '%29'], $imgSrc);
-            $title = htmlspecialchars($photo['title'] ?? 'Saha Fotoğrafı', ENT_QUOTES, 'UTF-8');
+            $title = htmlspecialchars($photo['title'] ?? t('pages.corp_common.photo_alt_default'), ENT_QUOTES, 'UTF-8');
             $desc = htmlspecialchars($photo['description'] ?? '', ENT_QUOTES, 'UTF-8');
           ?>
           <div class="machine-card" style="height:100%;">
@@ -73,7 +73,7 @@ if (file_exists($sahaFile)) {
         </div>
 
         <p style="text-align: center; margin-top: 40px;">
-          <a href="kurumsal" class="btn btn-outline">← Kurumsal sayfasına dön</a>
+          <a href="<?= htmlspecialchars(gravisa_url('kurumsal'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline"><?= htmlspecialchars(t('pages.corp_common.back_corporate'), ENT_QUOTES, 'UTF-8') ?></a>
         </p>
       </div>
     </section>

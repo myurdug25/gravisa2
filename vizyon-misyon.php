@@ -22,8 +22,8 @@ $pageId = 'vizyon-misyon';
   <main>
     <section class="page-hero">
       <div class="container">
-        <h1>Vizyon & Misyon</h1>
-        <p>Nereye gidiyoruz ve nasıl bir hizmet anlayışıyla çalışıyoruz.</p>
+        <h1><?= htmlspecialchars(t('pages.vizyon_misyon.hero_title'), ENT_QUOTES, 'UTF-8') ?></h1>
+        <p><?= htmlspecialchars(t('pages.vizyon_misyon.hero_sub'), ENT_QUOTES, 'UTF-8') ?></p>
       </div>
     </section>
 
@@ -31,55 +31,49 @@ $pageId = 'vizyon-misyon';
       <div class="container">
         <div class="content-page content-page--wide">
           <nav class="breadcrumb">
-            <a href="index">Ana Sayfa</a><span>/</span>
-            <a href="kurumsal">Kurumsal</a><span>/</span>
-            <span>Vizyon & Misyon</span>
+            <a href="<?= htmlspecialchars(gravisa_url(''), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.home'), ENT_QUOTES, 'UTF-8') ?></a><span>/</span>
+            <a href="<?= htmlspecialchars(gravisa_url('kurumsal'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.corporate'), ENT_QUOTES, 'UTF-8') ?></a><span>/</span>
+            <span><?= htmlspecialchars(t('pages.vizyon_misyon.hero_title'), ENT_QUOTES, 'UTF-8') ?></span>
           </nav>
 
           <div class="content-block" style="margin-bottom: 48px;">
-            <h2 class="content-block-title">Misyonumuz</h2>
-            <p class="content-block-text">
-              İş makineleri alım, satım ve kiralama sektöründe faaliyet gösteren bir kuruluş olarak temel görevimiz; inşaat, madencilik, lojistik ve altyapı projelerinde ihtiyaç duyulan yüksek performanslı ekipmanları, en yüksek kalite standartlarında ve güvenilir bir ticaret zeminiyle sunmaktır. Sadece bir tedarikçi değil, müşterilerimizin projelerini kendi projemiz gibi sahiplenen bir çözüm ortağı olma vizyonuyla hareket ediyoruz. Satış öncesi doğru ekspertiz, satış sonrası kesintisiz destek ve dürüst fiyatlandırma politikamızla, iş ortaklarımızın operasyonel risklerini minimize ederek, projelerinin her aşamasında sürdürülebilir bir verimlilik sağlamayı taahhüt ediyoruz.
-            </p>
+            <h2 class="content-block-title"><?= htmlspecialchars(t('pages.vizyon_misyon.mission_h'), ENT_QUOTES, 'UTF-8') ?></h2>
+            <p class="content-block-text"><?= htmlspecialchars(t('pages.vizyon_misyon.mission_p'), ENT_QUOTES, 'UTF-8') ?></p>
           </div>
 
           <div class="content-block" style="margin-bottom: 48px;">
-            <h2 class="content-block-title">Vizyonumuz</h2>
-            <p class="content-block-text">
-              Sektördeki teknolojik dönüşümü ve pazar dinamiklerini yakından takip ederek, iş makineleri dendiğinde akla gelen ilk "güven simgesi" haline gelmek. Hizmet kalitemizi sürekli geliştirerek, yerel pazardaki liderliğimizi uluslararası standartlarla taçlandırmayı hedefliyoruz. Yenilikçi yatırım modellerimiz ve geniş makine parkurumuzla, ülkemizin kalkınmasına yön veren dev projelerin vazgeçilmez bir parçası olmak; dürüstlükten ödün vermeyen duruşumuzla sektörün referans noktası olarak anılmaktır.
-            </p>
+            <h2 class="content-block-title"><?= htmlspecialchars(t('pages.vizyon_misyon.vision_h'), ENT_QUOTES, 'UTF-8') ?></h2>
+            <p class="content-block-text"><?= htmlspecialchars(t('pages.vizyon_misyon.vision_p'), ENT_QUOTES, 'UTF-8') ?></p>
           </div>
 
-          <h2 class="content-block-title" style="margin-top: 48px;">Değerlerimiz</h2>
-          <p class="content-block-text" style="margin-bottom: 24px;">İşimizin Temelindeki Sarsılmaz İlkeler</p>
-          <p class="content-block-text">
-            Şirketimizin başarısı, sadece cirolarımızla değil, savunduğumuz değerlerin ne kadar arkasında durduğumuzla ölçülür. Biz, her bir projede şu beş temel değeri rehber ediniyoruz:
-          </p>
+          <h2 class="content-block-title" style="margin-top: 48px;"><?= htmlspecialchars(t('pages.vizyon_misyon.values_h'), ENT_QUOTES, 'UTF-8') ?></h2>
+          <p class="content-block-text" style="margin-bottom: 24px;"><?= htmlspecialchars(t('pages.vizyon_misyon.values_sub'), ENT_QUOTES, 'UTF-8') ?></p>
+          <p class="content-block-text"><?= htmlspecialchars(t('pages.vizyon_misyon.values_intro'), ENT_QUOTES, 'UTF-8') ?></p>
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 28px; margin-bottom: 48px;">
             <div style="padding: 28px; background: var(--color-surface); border-radius: var(--radius-lg); border: 1px solid var(--color-border); border-left: 4px solid var(--color-primary);">
-              <h3 style="font-size: 1.15rem; margin: 0 0 12px; color: var(--color-text);">Dürüstlük ve Şeffaflık</h3>
-              <p style="margin: 0; color: var(--color-text-muted); line-height: 1.7; font-size: 0.9375rem;">Ticari faaliyetlerimizin merkezinde "güven" yer alır. Müşterilerimizle kurduğumuz ilişkilerde, makinenin çalışma saatinden teknik geçmişine kadar her bilgiyi tüm açıklığıyla paylaşırız. Söz verdiğimiz tarihte, söz verdiğimiz kalitede hizmet sunmak bizim için bir tercihten ziyade zorunluluktur.</p>
+              <h3 style="font-size: 1.15rem; margin: 0 0 12px; color: var(--color-text);"><?= htmlspecialchars(t('pages.vizyon_misyon.v1_h'), ENT_QUOTES, 'UTF-8') ?></h3>
+              <p style="margin: 0; color: var(--color-text-muted); line-height: 1.7; font-size: 0.9375rem;"><?= htmlspecialchars(t('pages.vizyon_misyon.v1_p'), ENT_QUOTES, 'UTF-8') ?></p>
             </div>
             <div style="padding: 28px; background: var(--color-surface); border-radius: var(--radius-lg); border: 1px solid var(--color-border); border-left: 4px solid var(--color-primary);">
-              <h3 style="font-size: 1.15rem; margin: 0 0 12px; color: var(--color-text);">Sürekli Yenilikçilik</h3>
-              <p style="margin: 0; color: var(--color-text-muted); line-height: 1.7; font-size: 0.9375rem;">İş makineleri dünyası hızla dijitalleşiyor ve verimlilik odaklı hale geliyor. Biz de bu değişime ayak uydurarak makine parkurumuzu en yeni teknolojilerle güncelliyor, yakıt tasarrufu yüksek ve çevre dostu modelleri bünyemize katıyoruz. Geleneksel iş yapış biçimlerini modern çözümlerle harmanlayarak sektöre yön veriyoruz.</p>
+              <h3 style="font-size: 1.15rem; margin: 0 0 12px; color: var(--color-text);"><?= htmlspecialchars(t('pages.vizyon_misyon.v2_h'), ENT_QUOTES, 'UTF-8') ?></h3>
+              <p style="margin: 0; color: var(--color-text-muted); line-height: 1.7; font-size: 0.9375rem;"><?= htmlspecialchars(t('pages.vizyon_misyon.v2_p'), ENT_QUOTES, 'UTF-8') ?></p>
             </div>
             <div style="padding: 28px; background: var(--color-surface); border-radius: var(--radius-lg); border: 1px solid var(--color-border); border-left: 4px solid var(--color-primary);">
-              <h3 style="font-size: 1.15rem; margin: 0 0 12px; color: var(--color-text);">Önce Emniyet ve İş Güvenliği</h3>
-              <p style="margin: 0; color: var(--color-text-muted); line-height: 1.7; font-size: 0.9375rem;">İş makineleri büyük güç demektir ve bu güç, yüksek sorumluluk gerektirir. Sunduğumuz her makinenin iş güvenliği standartlarına %100 uyumlu olmasını sağlıyor, operatör eğitimlerine ve periyodik bakımlara azami özen gösteriyoruz. Hem çalışanlarımızın hem de müşterilerimizin sahadaki güvenliği en büyük önceliğimizdir.</p>
+              <h3 style="font-size: 1.15rem; margin: 0 0 12px; color: var(--color-text);"><?= htmlspecialchars(t('pages.vizyon_misyon.v3_h'), ENT_QUOTES, 'UTF-8') ?></h3>
+              <p style="margin: 0; color: var(--color-text-muted); line-height: 1.7; font-size: 0.9375rem;"><?= htmlspecialchars(t('pages.vizyon_misyon.v3_p'), ENT_QUOTES, 'UTF-8') ?></p>
             </div>
             <div style="padding: 28px; background: var(--color-surface); border-radius: var(--radius-lg); border: 1px solid var(--color-border); border-left: 4px solid var(--color-primary);">
-              <h3 style="font-size: 1.15rem; margin: 0 0 12px; color: var(--color-text);">Müşteri Odaklılık ve Ortak Başarı</h3>
-              <p style="margin: 0; color: var(--color-text-muted); line-height: 1.7; font-size: 0.9375rem;">Müşterilerimizi sadece birer "alıcı" olarak değil, uzun vadeli iş ortaklarımız olarak görüyoruz. Sizin projenizin başarısı, bizim referansımızdır. İhtiyaçlarınıza özel çözümler üreterek, her aşamada yanınızda duruyor ve beklentilerinizin ötesine geçmeyi hedefliyoruz.</p>
+              <h3 style="font-size: 1.15rem; margin: 0 0 12px; color: var(--color-text);"><?= htmlspecialchars(t('pages.vizyon_misyon.v4_h'), ENT_QUOTES, 'UTF-8') ?></h3>
+              <p style="margin: 0; color: var(--color-text-muted); line-height: 1.7; font-size: 0.9375rem;"><?= htmlspecialchars(t('pages.vizyon_misyon.v4_p'), ENT_QUOTES, 'UTF-8') ?></p>
             </div>
             <div style="padding: 28px; background: var(--color-surface); border-radius: var(--radius-lg); border: 1px solid var(--color-border); border-left: 4px solid var(--color-primary);">
-              <h3 style="font-size: 1.15rem; margin: 0 0 12px; color: var(--color-text);">Sürdürülebilirlik ve Sorumluluk</h3>
-              <p style="margin: 0; color: var(--color-text-muted); line-height: 1.7; font-size: 0.9375rem;">Gelecek nesillere yaşanabilir bir dünya bırakma bilinciyle hareket ediyoruz. Operasyonlarımızda kaynak kullanımını optimize ediyor, düşük emisyonlu makinelerimizle çevresel etkiyi minimize etmeye gayret gösteriyoruz. Topluma ve çevreye karşı sorumlu bir marka olmanın gururunu yaşıyoruz.</p>
+              <h3 style="font-size: 1.15rem; margin: 0 0 12px; color: var(--color-text);"><?= htmlspecialchars(t('pages.vizyon_misyon.v5_h'), ENT_QUOTES, 'UTF-8') ?></h3>
+              <p style="margin: 0; color: var(--color-text-muted); line-height: 1.7; font-size: 0.9375rem;"><?= htmlspecialchars(t('pages.vizyon_misyon.v5_p'), ENT_QUOTES, 'UTF-8') ?></p>
             </div>
           </div>
 
           <p style="margin-top: 32px;">
-            <a href="kurumsal" class="btn btn-outline">← Kurumsal sayfasına dön</a>
+            <a href="<?= htmlspecialchars(gravisa_url('kurumsal'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline"><?= htmlspecialchars(t('pages.corp_common.back_corporate'), ENT_QUOTES, 'UTF-8') ?></a>
           </p>
         </div>
       </div>

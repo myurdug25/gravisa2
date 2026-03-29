@@ -268,6 +268,64 @@
                 "link_more": "Detaylı bilgi →",
                 "link_refs": "Referansları incele →",
                 "link_photos": "Fotoğrafları gör →"
+            },
+            "corp_common": {
+                "back_corporate": "← Kurumsal sayfasına dön",
+                "empty_saha": "Henüz saha fotoğrafı eklenmemiş. Admin panelden ekleyebilirsiniz.",
+                "photo_alt_default": "Saha fotoğrafı"
+            },
+            "referanslar": {
+                "hero_title": "Referanslar",
+                "hero_sub": "Birlikte çalıştığımız kurum ve projelerden bazıları.",
+                "card_const_t": "İnşaat Firmaları",
+                "card_const_p": "Büyük ölçekli konut ve altyapı projelerinde makine tedarikçisi olarak yer aldık. Ekskavatör ve loder kiralama referanslarımız bulunmaktadır.",
+                "tag_housing": "Konut Projeleri",
+                "tag_infra": "Altyapı",
+                "tag_exc": "Ekskavatör",
+                "card_public_t": "Kamu Projeleri",
+                "card_public_p": "Belediye ve kamu kurumlarına kiralama ve satış hizmeti verdik. Yol, kanalizasyon ve peyzaj projelerinde ekipman desteği sağladık.",
+                "tag_muni": "Belediye",
+                "tag_public": "Kamu",
+                "tag_road": "Yol Projeleri",
+                "card_mine_t": "Maden & Taş Ocakları",
+                "card_mine_p": "Agrega ve maden sahalarında ekskavatör ve loder kiralama referanslarımız bulunmaktadır. Uzun dönem kiralama anlaşmalarıyla hizmet verdik.",
+                "tag_mine": "Maden",
+                "tag_agg": "Agrega",
+                "tag_longrent": "Uzun Dönem",
+                "stats_title": "Referans İstatistikleri",
+                "stat_projects": "Tamamlanan Proje",
+                "stat_clients": "Mutlu Müşteri",
+                "stat_years": "Yıl Deneyim",
+                "stat_satisfaction": "Memnuniyet Oranı"
+            },
+            "vizyon_misyon": {
+                "hero_title": "Vizyon & Misyon",
+                "hero_sub": "Nereye gidiyoruz ve nasıl bir hizmet anlayışıyla çalışıyoruz.",
+                "mission_h": "Misyonumuz",
+                "mission_p": "İş makineleri alım, satım ve kiralama sektöründe faaliyet gösteren bir kuruluş olarak temel görevimiz; inşaat, madencilik, lojistik ve altyapı projelerinde ihtiyaç duyulan yüksek performanslı ekipmanları, en yüksek kalite standartlarında ve güvenilir bir ticaret zeminiyle sunmaktır. Sadece bir tedarikçi değil, müşterilerimizin projelerini kendi projemiz gibi sahiplenen bir çözüm ortağı olma vizyonuyla hareket ediyoruz. Satış öncesi doğru ekspertiz, satış sonrası kesintisiz destek ve dürüst fiyatlandırma politikamızla, iş ortaklarımızın operasyonel risklerini minimize ederek, projelerinin her aşamasında sürdürülebilir bir verimlilik sağlamayı taahhüt ediyoruz.",
+                "vision_h": "Vizyonumuz",
+                "vision_p": "Sektördeki teknolojik dönüşümü ve pazar dinamiklerini yakından takip ederek, iş makineleri dendiğinde akla gelen ilk \"güven simgesi\" haline gelmek. Hizmet kalitemizi sürekli geliştirerek, yerel pazardaki liderliğimizi uluslararası standartlarla taçlandırmayı hedefliyoruz. Yenilikçi yatırım modellerimiz ve geniş makine parkurumuzla, ülkemizin kalkınmasına yön veren dev projelerin vazgeçilmez bir parçası olmak; dürüstlükten ödün vermeyen duruşumuzla sektörün referans noktası olarak anılmaktır.",
+                "values_h": "Değerlerimiz",
+                "values_sub": "İşimizin Temelindeki Sarsılmaz İlkeler",
+                "values_intro": "Şirketimizin başarısı, sadece cirolarımızla değil, savunduğumuz değerlerin ne kadar arkasında durduğumuzla ölçülür. Biz, her bir projede şu beş temel değeri rehber ediniyoruz:",
+                "v1_h": "Dürüstlük ve Şeffaflık",
+                "v1_p": "Ticari faaliyetlerimizin merkezinde \"güven\" yer alır. Müşterilerimizle kurduğumuz ilişkilerde, makinenin çalışma saatinden teknik geçmişine kadar her bilgiyi tüm açıklığıyla paylaşırız. Söz verdiğimiz tarihte, söz verdiğimiz kalitede hizmet sunmak bizim için bir tercihten ziyade zorunluluktur.",
+                "v2_h": "Sürekli Yenilikçilik",
+                "v2_p": "İş makineleri dünyası hızla dijitalleşiyor ve verimlilik odaklı hale geliyor. Biz de bu değişime ayak uydurarak makine parkurumuzu en yeni teknolojilerle güncelliyor, yakıt tasarrufu yüksek ve çevre dostu modelleri bünyemize katıyoruz. Geleneksel iş yapış biçimlerini modern çözümlerle harmanlayarak sektöre yön veriyoruz.",
+                "v3_h": "Önce Emniyet ve İş Güvenliği",
+                "v3_p": "İş makineleri büyük güç demektir ve bu güç, yüksek sorumluluk gerektirir. Sunduğumuz her makinenin iş güvenliği standartlarına %100 uyumlu olmasını sağlıyor, operatör eğitimlerine ve periyodik bakımlara azami özen gösteriyoruz. Hem çalışanlarımızın hem de müşterilerimizin sahadaki güvenliği en büyük önceliğimizdir.",
+                "v4_h": "Müşteri Odaklılık ve Ortak Başarı",
+                "v4_p": "Müşterilerimizi sadece birer \"alıcı\" olarak değil, uzun vadeli iş ortaklarımız olarak görüyoruz. Sizin projenizin başarısı, bizim referansımızdır. İhtiyaçlarınıza özel çözümler üreterek, her aşamada yanınızda duruyor ve beklentilerinizin ötesine geçmeyi hedefliyoruz.",
+                "v5_h": "Sürdürülebilirlik ve Sorumluluk",
+                "v5_p": "Gelecek nesillere yaşanabilir bir dünya bırakma bilinciyle hareket ediyoruz. Operasyonlarımızda kaynak kullanımını optimize ediyor, düşük emisyonlu makinelerimizle çevresel etkiyi minimize etmeye gayret gösteriyoruz. Topluma ve çevreye karşı sorumlu bir marka olmanın gururunu yaşıyoruz."
+            },
+            "saha_fotograflari": {
+                "hero_title": "Saha Fotoğrafları",
+                "hero_sub": "Makinelerimizin projelerdeki görünümü. Sahada çekilen gerçek fotoğraflarımız."
+            },
+            "hakkimizda": {
+                "hero_title": "Hakkımızda",
+                "hero_sub": "İş makineleri satış ve kiralama alanında güvenilir çözüm ortağınız Gravisa’nın hikayesi ve değerleri."
             }
         }
     },
@@ -540,6 +598,64 @@
                 "link_more": "Learn more →",
                 "link_refs": "View references →",
                 "link_photos": "View photos →"
+            },
+            "corp_common": {
+                "back_corporate": "← Back to Corporate",
+                "empty_saha": "No site photos yet. You can add them from the admin panel.",
+                "photo_alt_default": "Site photo"
+            },
+            "referanslar": {
+                "hero_title": "References",
+                "hero_sub": "A selection of institutions and projects we have worked with.",
+                "card_const_t": "Construction companies",
+                "card_const_p": "We supplied equipment for large-scale residential and infrastructure projects, including excavator and loader rentals.",
+                "tag_housing": "Residential projects",
+                "tag_infra": "Infrastructure",
+                "tag_exc": "Excavator",
+                "card_public_t": "Public sector",
+                "card_public_p": "We provided rental and sales services to municipalities and public bodies, supporting road, sewer and landscaping projects.",
+                "tag_muni": "Municipal",
+                "tag_public": "Public",
+                "tag_road": "Road projects",
+                "card_mine_t": "Mining & quarries",
+                "card_mine_p": "Excavator and loader rentals for aggregate and mining sites, including long-term rental agreements.",
+                "tag_mine": "Mining",
+                "tag_agg": "Aggregate",
+                "tag_longrent": "Long-term rental",
+                "stats_title": "Reference highlights",
+                "stat_projects": "Projects completed",
+                "stat_clients": "Satisfied clients",
+                "stat_years": "Years of experience",
+                "stat_satisfaction": "Satisfaction rate"
+            },
+            "vizyon_misyon": {
+                "hero_title": "Vision & mission",
+                "hero_sub": "Where we are headed and how we approach every partnership.",
+                "mission_h": "Our mission",
+                "mission_p": "As a company active in sales and rental of construction equipment, our core role is to deliver high-performance machinery for construction, mining, logistics and infrastructure with the highest quality standards and a trustworthy trading framework. We aim to be more than a supplier: a partner that treats your projects as our own. Through accurate pre-sales inspection, uninterrupted after-sales support and honest pricing, we help reduce operational risk and sustain productivity at every stage.",
+                "vision_h": "Our vision",
+                "vision_p": "To become the first name that comes to mind for reliability in construction equipment by following technology and market change closely. We continuously improve our service quality and align local leadership with international benchmarks. With innovative investment models and a broad fleet, we aspire to be an integral part of major projects that shape national development—and to be recognized across the industry for integrity.",
+                "values_h": "Our values",
+                "values_sub": "The principles behind how we work",
+                "values_intro": "Our success is measured not only by revenue but by how faithfully we uphold the values we stand for. On every project we are guided by five pillars:",
+                "v1_h": "Integrity & transparency",
+                "v1_p": "Trust sits at the heart of our business. We share information openly—from machine hours to technical history—and deliver on the date and quality we promise.",
+                "v2_h": "Continuous innovation",
+                "v2_p": "Our industry is rapidly digitizing and demanding higher efficiency. We renew our fleet with modern technology, fuel-efficient and lower-impact models, combining proven practices with new solutions.",
+                "v3_h": "Safety first",
+                "v3_p": "Heavy equipment means great power and great responsibility. We ensure our machines meet occupational safety standards, prioritise operator training and maintenance, and protect people on site.",
+                "v4_h": "Customer focus & shared success",
+                "v4_p": "We see clients as long-term partners, not one-off buyers. Your project’s success is our reference. We tailor solutions and aim to exceed expectations at every step.",
+                "v5_h": "Sustainability & responsibility",
+                "v5_p": "We act with awareness of the world we leave behind. We optimize resource use and favour lower-emission equipment where possible, striving to be a responsible brand for society and the environment."
+            },
+            "saha_fotograflari": {
+                "hero_title": "Site photos",
+                "hero_sub": "Our machines in action on real projects—photos from the field."
+            },
+            "hakkimizda": {
+                "hero_title": "About us",
+                "hero_sub": "The story and values of Gravisa, your trusted partner for construction equipment sales and rental."
             }
         }
     }

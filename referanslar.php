@@ -22,82 +22,82 @@ $pageId = 'referanslar';
   <main>
     <section class="page-hero">
       <div class="container">
-        <h1>Referanslar</h1>
-        <p>Birlikte çalıştığımız kurum ve projelerden bazıları.</p>
+        <h1><?= htmlspecialchars(t('pages.referanslar.hero_title'), ENT_QUOTES, 'UTF-8') ?></h1>
+        <p><?= htmlspecialchars(t('pages.referanslar.hero_sub'), ENT_QUOTES, 'UTF-8') ?></p>
       </div>
     </section>
 
     <section class="section">
       <div class="container">
         <nav class="breadcrumb" style="margin-bottom: 32px;">
-          <a href="index">Ana Sayfa</a><span>/</span>
-          <a href="kurumsal">Kurumsal</a><span>/</span>
-          <span>Referanslar</span>
+          <a href="<?= htmlspecialchars(gravisa_url(''), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.home'), ENT_QUOTES, 'UTF-8') ?></a><span>/</span>
+          <a href="<?= htmlspecialchars(gravisa_url('kurumsal'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.corporate'), ENT_QUOTES, 'UTF-8') ?></a><span>/</span>
+          <span><?= htmlspecialchars(t('pages.referanslar.hero_title'), ENT_QUOTES, 'UTF-8') ?></span>
         </nav>
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; margin-bottom: 48px;">
           <div style="padding: 40px; background: var(--color-surface); border-radius: var(--radius-lg); border: 1px solid var(--color-border); border-top: 4px solid var(--color-primary);">
             <div style="width: 64px; height: 64px; background: var(--color-primary-soft); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; font-size: 2rem;">🏗️</div>
-            <h3 style="font-size: 1.5rem; margin: 0 0 16px; color: var(--color-text);">İnşaat Firmaları</h3>
-            <p style="margin: 0 0 20px; color: var(--color-text-muted); line-height: 1.7;">Büyük ölçekli konut ve altyapı projelerinde makine tedarikçisi olarak yer aldık. Ekskavatör ve loder kiralama referanslarımız bulunmaktadır.</p>
+            <h3 style="font-size: 1.5rem; margin: 0 0 16px; color: var(--color-text);"><?= htmlspecialchars(t('pages.referanslar.card_const_t'), ENT_QUOTES, 'UTF-8') ?></h3>
+            <p style="margin: 0 0 20px; color: var(--color-text-muted); line-height: 1.7;"><?= htmlspecialchars(t('pages.referanslar.card_const_p'), ENT_QUOTES, 'UTF-8') ?></p>
             <div style="padding-top: 20px; border-top: 1px solid var(--color-border);">
               <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                <span style="padding: 6px 12px; background: var(--color-surface-alt); border-radius: var(--radius); font-size: 0.85rem; color: var(--color-text-muted);">Konut Projeleri</span>
-                <span style="padding: 6px 12px; background: var(--color-surface-alt); border-radius: var(--radius); font-size: 0.85rem; color: var(--color-text-muted);">Altyapı</span>
-                <span style="padding: 6px 12px; background: var(--color-surface-alt); border-radius: var(--radius); font-size: 0.85rem; color: var(--color-text-muted);">Ekskavatör</span>
+                <span style="padding: 6px 12px; background: var(--color-surface-alt); border-radius: var(--radius); font-size: 0.85rem; color: var(--color-text-muted);"><?= htmlspecialchars(t('pages.referanslar.tag_housing'), ENT_QUOTES, 'UTF-8') ?></span>
+                <span style="padding: 6px 12px; background: var(--color-surface-alt); border-radius: var(--radius); font-size: 0.85rem; color: var(--color-text-muted);"><?= htmlspecialchars(t('pages.referanslar.tag_infra'), ENT_QUOTES, 'UTF-8') ?></span>
+                <span style="padding: 6px 12px; background: var(--color-surface-alt); border-radius: var(--radius); font-size: 0.85rem; color: var(--color-text-muted);"><?= htmlspecialchars(t('pages.referanslar.tag_exc'), ENT_QUOTES, 'UTF-8') ?></span>
               </div>
             </div>
           </div>
           <div style="padding: 40px; background: var(--color-surface); border-radius: var(--radius-lg); border: 1px solid var(--color-border); border-top: 4px solid var(--color-accent);">
             <div style="width: 64px; height: 64px; background: var(--color-accent-soft); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; font-size: 2rem;">🏛️</div>
-            <h3 style="font-size: 1.5rem; margin: 0 0 16px; color: var(--color-text);">Kamu Projeleri</h3>
-            <p style="margin: 0 0 20px; color: var(--color-text-muted); line-height: 1.7;">Belediye ve kamu kurumlarına kiralama ve satış hizmeti verdik. Yol, kanalizasyon ve peyzaj projelerinde ekipman desteği sağladık.</p>
+            <h3 style="font-size: 1.5rem; margin: 0 0 16px; color: var(--color-text);"><?= htmlspecialchars(t('pages.referanslar.card_public_t'), ENT_QUOTES, 'UTF-8') ?></h3>
+            <p style="margin: 0 0 20px; color: var(--color-text-muted); line-height: 1.7;"><?= htmlspecialchars(t('pages.referanslar.card_public_p'), ENT_QUOTES, 'UTF-8') ?></p>
             <div style="padding-top: 20px; border-top: 1px solid var(--color-border);">
               <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                <span style="padding: 6px 12px; background: var(--color-surface-alt); border-radius: var(--radius); font-size: 0.85rem; color: var(--color-text-muted);">Belediye</span>
-                <span style="padding: 6px 12px; background: var(--color-surface-alt); border-radius: var(--radius); font-size: 0.85rem; color: var(--color-text-muted);">Kamu</span>
-                <span style="padding: 6px 12px; background: var(--color-surface-alt); border-radius: var(--radius); font-size: 0.85rem; color: var(--color-text-muted);">Yol Projeleri</span>
+                <span style="padding: 6px 12px; background: var(--color-surface-alt); border-radius: var(--radius); font-size: 0.85rem; color: var(--color-text-muted);"><?= htmlspecialchars(t('pages.referanslar.tag_muni'), ENT_QUOTES, 'UTF-8') ?></span>
+                <span style="padding: 6px 12px; background: var(--color-surface-alt); border-radius: var(--radius); font-size: 0.85rem; color: var(--color-text-muted);"><?= htmlspecialchars(t('pages.referanslar.tag_public'), ENT_QUOTES, 'UTF-8') ?></span>
+                <span style="padding: 6px 12px; background: var(--color-surface-alt); border-radius: var(--radius); font-size: 0.85rem; color: var(--color-text-muted);"><?= htmlspecialchars(t('pages.referanslar.tag_road'), ENT_QUOTES, 'UTF-8') ?></span>
               </div>
             </div>
           </div>
           <div style="padding: 40px; background: var(--color-surface); border-radius: var(--radius-lg); border: 1px solid var(--color-border); border-top: 4px solid var(--color-primary);">
             <div style="width: 64px; height: 64px; background: var(--color-primary-soft); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; font-size: 2rem;">⛏️</div>
-            <h3 style="font-size: 1.5rem; margin: 0 0 16px; color: var(--color-text);">Maden & Taş Ocakları</h3>
-            <p style="margin: 0 0 20px; color: var(--color-text-muted); line-height: 1.7;">Agrega ve maden sahalarında ekskavatör ve loder kiralama referanslarımız bulunmaktadır. Uzun dönem kiralama anlaşmalarıyla hizmet verdik.</p>
+            <h3 style="font-size: 1.5rem; margin: 0 0 16px; color: var(--color-text);"><?= htmlspecialchars(t('pages.referanslar.card_mine_t'), ENT_QUOTES, 'UTF-8') ?></h3>
+            <p style="margin: 0 0 20px; color: var(--color-text-muted); line-height: 1.7;"><?= htmlspecialchars(t('pages.referanslar.card_mine_p'), ENT_QUOTES, 'UTF-8') ?></p>
             <div style="padding-top: 20px; border-top: 1px solid var(--color-border);">
               <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                <span style="padding: 6px 12px; background: var(--color-surface-alt); border-radius: var(--radius); font-size: 0.85rem; color: var(--color-text-muted);">Maden</span>
-                <span style="padding: 6px 12px; background: var(--color-surface-alt); border-radius: var(--radius); font-size: 0.85rem; color: var(--color-text-muted);">Agrega</span>
-                <span style="padding: 6px 12px; background: var(--color-surface-alt); border-radius: var(--radius); font-size: 0.85rem; color: var(--color-text-muted);">Uzun Dönem</span>
+                <span style="padding: 6px 12px; background: var(--color-surface-alt); border-radius: var(--radius); font-size: 0.85rem; color: var(--color-text-muted);"><?= htmlspecialchars(t('pages.referanslar.tag_mine'), ENT_QUOTES, 'UTF-8') ?></span>
+                <span style="padding: 6px 12px; background: var(--color-surface-alt); border-radius: var(--radius); font-size: 0.85rem; color: var(--color-text-muted);"><?= htmlspecialchars(t('pages.referanslar.tag_agg'), ENT_QUOTES, 'UTF-8') ?></span>
+                <span style="padding: 6px 12px; background: var(--color-surface-alt); border-radius: var(--radius); font-size: 0.85rem; color: var(--color-text-muted);"><?= htmlspecialchars(t('pages.referanslar.tag_longrent'), ENT_QUOTES, 'UTF-8') ?></span>
               </div>
             </div>
           </div>
         </div>
 
         <div style="padding: 40px; background: linear-gradient(135deg, var(--color-primary-soft) 0%, rgba(13, 148, 136, 0.05) 100%); border-radius: var(--radius-lg); border: 1px solid var(--color-border); margin-bottom: 32px;">
-          <h3 style="font-size: 1.75rem; margin: 0 0 20px; color: var(--color-text); text-align: center;">Referans İstatistikleri</h3>
+          <h3 style="font-size: 1.75rem; margin: 0 0 20px; color: var(--color-text); text-align: center;"><?= htmlspecialchars(t('pages.referanslar.stats_title'), ENT_QUOTES, 'UTF-8') ?></h3>
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 32px;">
             <div style="text-align: center;">
               <div style="font-size: 3rem; font-weight: 800; color: var(--color-primary); margin-bottom: 8px;">150+</div>
-              <div style="color: var(--color-text-muted); font-weight: 600;">Tamamlanan Proje</div>
+              <div style="color: var(--color-text-muted); font-weight: 600;"><?= htmlspecialchars(t('pages.referanslar.stat_projects'), ENT_QUOTES, 'UTF-8') ?></div>
             </div>
             <div style="text-align: center;">
               <div style="font-size: 3rem; font-weight: 800; color: var(--color-primary); margin-bottom: 8px;">80+</div>
-              <div style="color: var(--color-text-muted); font-weight: 600;">Mutlu Müşteri</div>
+              <div style="color: var(--color-text-muted); font-weight: 600;"><?= htmlspecialchars(t('pages.referanslar.stat_clients'), ENT_QUOTES, 'UTF-8') ?></div>
             </div>
             <div style="text-align: center;">
               <div style="font-size: 3rem; font-weight: 800; color: var(--color-primary); margin-bottom: 8px;">15+</div>
-              <div style="color: var(--color-text-muted); font-weight: 600;">Yıl Deneyim</div>
+              <div style="color: var(--color-text-muted); font-weight: 600;"><?= htmlspecialchars(t('pages.referanslar.stat_years'), ENT_QUOTES, 'UTF-8') ?></div>
             </div>
             <div style="text-align: center;">
               <div style="font-size: 3rem; font-weight: 800; color: var(--color-primary); margin-bottom: 8px;">%98</div>
-              <div style="color: var(--color-text-muted); font-weight: 600;">Memnuniyet Oranı</div>
+              <div style="color: var(--color-text-muted); font-weight: 600;"><?= htmlspecialchars(t('pages.referanslar.stat_satisfaction'), ENT_QUOTES, 'UTF-8') ?></div>
             </div>
           </div>
         </div>
 
         <p style="text-align: center; margin-top: 40px;">
-          <a href="kurumsal" class="btn btn-outline">← Kurumsal sayfasına dön</a>
+          <a href="<?= htmlspecialchars(gravisa_url('kurumsal'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline"><?= htmlspecialchars(t('pages.corp_common.back_corporate'), ENT_QUOTES, 'UTF-8') ?></a>
         </p>
       </div>
     </section>

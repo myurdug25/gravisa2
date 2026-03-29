@@ -22,8 +22,8 @@ $pageId = 'hakkimizda';
   <main>
     <section class="page-hero">
       <div class="container">
-        <h1>Hakkımızda</h1>
-        <p>İş makineleri satış ve kiralama alanında güvenilir çözüm ortağınız Gravisa’nın hikayesi ve değerleri.</p>
+        <h1><?= htmlspecialchars(t('pages.hakkimizda.hero_title'), ENT_QUOTES, 'UTF-8') ?></h1>
+        <p><?= htmlspecialchars(t('pages.hakkimizda.hero_sub'), ENT_QUOTES, 'UTF-8') ?></p>
       </div>
     </section>
 
@@ -31,9 +31,9 @@ $pageId = 'hakkimizda';
       <div class="container">
         <div class="content-page content-page--wide">
           <nav class="breadcrumb">
-            <a href="index">Ana Sayfa</a><span>/</span>
-            <a href="kurumsal">Kurumsal</a><span>/</span>
-            <span>Hakkımızda</span>
+            <a href="<?= htmlspecialchars(gravisa_url(''), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.home'), ENT_QUOTES, 'UTF-8') ?></a><span>/</span>
+            <a href="<?= htmlspecialchars(gravisa_url('kurumsal'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.corporate'), ENT_QUOTES, 'UTF-8') ?></a><span>/</span>
+            <span><?= htmlspecialchars(t('pages.hakkimizda.hero_title'), ENT_QUOTES, 'UTF-8') ?></span>
           </nav>
 
           <!-- Önsöz -->
@@ -178,7 +178,7 @@ $pageId = 'hakkimizda';
           </div>
 
           <p style="margin-top: 32px; text-align: center;">
-            <a href="kurumsal" class="btn btn-outline">← Kurumsal sayfasına dön</a>
+            <a href="<?= htmlspecialchars(gravisa_url('kurumsal'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline"><?= htmlspecialchars(t('pages.corp_common.back_corporate'), ENT_QUOTES, 'UTF-8') ?></a>
           </p>
         </div>
       </div>
