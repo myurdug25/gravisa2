@@ -9,18 +9,47 @@
   // Mobil menü
   var navToggle = document.querySelector('.nav-toggle');
   var nav = document.querySelector('#main-nav');
+  var navOverlay = document.querySelector('[data-nav-overlay]');
+  function setNavOpen(open) {
+    if (!navToggle || !nav) return;
+    nav.classList.toggle('is-open', open);
+    navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    document.body.classList.toggle('nav-open', open);
+    if (navOverlay) {
+      if (open) navOverlay.removeAttribute('hidden');
+      else navOverlay.setAttribute('hidden', '');
+    }
+    if (!open) {
+      var dd = document.querySelector('.nav-dropdown.is-open');
+      if (dd) {
+        dd.classList.remove('is-open');
+        var ddl = dd.querySelector('a');
+        if (ddl) ddl.setAttribute('aria-expanded', 'false');
+      }
+    }
+  }
   if (navToggle && nav) {
     navToggle.addEventListener('click', function () {
-      var open = nav.classList.toggle('is-open');
-      navToggle.setAttribute('aria-expanded', open);
+      var open = !nav.classList.contains('is-open');
+      setNavOpen(open);
     });
-    document.addEventListener('click', function (e) {
-      if (nav.classList.contains('is-open') && !nav.contains(e.target) && !navToggle.contains(e.target)) {
-        nav.classList.remove('is-open');
-        navToggle.setAttribute('aria-expanded', 'false');
-        var dd = document.querySelector('.nav-dropdown.is-open');
-        if (dd) { dd.classList.remove('is-open'); }
+    if (navOverlay) {
+      navOverlay.addEventListener('click', function () { setNavOpen(false); });
+    }
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && nav.classList.contains('is-open')) setNavOpen(false);
+    });
+    nav.addEventListener('click', function (e) {
+      var a = e.target && e.target.closest ? e.target.closest('a') : null;
+      if (!a) return;
+      if (a.closest('.nav-dropdown') && a.parentElement && a.parentElement.parentElement && a.parentElement.parentElement.id === 'nav-corporate-sub') {
+        setNavOpen(false);
+        return;
       }
+      if (a.closest('.nav-dropdown') && a === a.closest('.nav-dropdown').querySelector('a')) {
+        return;
+      }
+      setNavOpen(false);
     });
   }
 

@@ -258,6 +258,15 @@ a:hover {
   color: var(--color-text);
   background: var(--color-surface-alt);
 }
+.nav a.is-active,
+.nav a[aria-current="page"] {
+  color: var(--color-text);
+  font-weight: 600;
+  background: rgba(2, 132, 199, 0.12);
+}
+.nav a:active {
+  transform: translateY(0.5px);
+}
 .nav-cta {
   color: var(--color-primary) !important;
   background: var(--color-primary-soft) !important;
@@ -2019,27 +2028,81 @@ a:hover {
     margin-left: auto;
   }
   .nav-toggle { display: flex; }
+  /* Mobil menü: modern slide-in drawer */
   .nav {
     position: fixed;
-    top: 100px;
-    left: 0;
+    top: 0;
     right: 0;
-    background: var(--color-surface);
-    border-bottom: 1px solid var(--color-border);
-    padding: 20px;
-    box-shadow: var(--shadow-lg);
-    transform: translateY(-100%);
+    bottom: 0;
+    left: auto;
+    width: min(88vw, 360px);
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(16px);
+    border-left: 1px solid var(--color-border);
+    box-shadow: 0 22px 60px rgba(15, 23, 42, 0.22);
+    padding: 18px 18px 24px;
+    transform: translateX(110%);
     opacity: 0;
     visibility: hidden;
-    transition: transform var(--transition), opacity var(--transition), visibility var(--transition);
+    transition: transform 0.28s ease, opacity 0.2s ease, visibility 0.2s ease;
+    z-index: 120;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
+  body.nav-open .nav,
   .nav.is-open {
-    transform: translateY(0);
+    transform: translateX(0);
     opacity: 1;
     visibility: visible;
   }
-  .nav ul { flex-direction: column; align-items: stretch; }
-  .nav a { display: block; padding: 14px; }
+
+  .nav ul {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 10px 0 0;
+  }
+  .nav a {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 14px 16px;
+    border-radius: 14px;
+    font-size: 1rem; /* 16px */
+    font-weight: 600;
+    color: var(--color-text);
+    letter-spacing: -0.01em;
+  }
+  .nav a:not(.is-active) {
+    font-weight: 600;
+  }
+  .nav a:hover {
+    background: rgba(15, 23, 42, 0.06);
+  }
+  .nav a:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .nav-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(2, 6, 23, 0.44);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    z-index: 110;
+  }
+  body.nav-open .nav-overlay {
+    opacity: 1;
+    visibility: visible;
+  }
+  .nav-overlay[hidden] { display: none !important; }
+
+  body.nav-open {
+    overflow: hidden;
+    touch-action: none;
+  }
 
   /* Mobil: Kurumsal dropdown – tıklanınca açılır */
   .nav-dropdown ul {
@@ -2049,19 +2112,31 @@ a:hover {
     max-height: 0;
     overflow: hidden;
     margin-top: 0;
-    padding: 0 0 0 16px;
+    padding: 0 0 0 14px;
     box-shadow: none;
     border: none;
-    transform: none;
-    transition: max-height 0.25s ease, opacity 0.2s ease;
+    transform: translateY(-2px);
+    transition: max-height 0.28s ease, opacity 0.18s ease, transform 0.18s ease;
   }
   .nav-dropdown.is-open ul {
     opacity: 1;
     visibility: visible;
     max-height: 300px;
     margin-top: 4px;
-    padding: 4px 0 4px 16px;
-    border-left: 2px solid var(--color-primary);
+    padding: 6px 0 6px 14px;
+    border-left: 2px solid rgba(2, 132, 199, 0.55);
+    transform: translateY(0);
+  }
+  .nav-dropdown ul a {
+    padding: 12px 14px;
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: var(--color-text);
+    background: transparent;
+  }
+  .nav-dropdown ul a.is-active,
+  .nav-dropdown ul a[aria-current="page"] {
+    background: rgba(2, 132, 199, 0.12);
   }
   .nav-dropdown.is-open > a::after {
     transform: translateY(-50%) rotate(180deg);
