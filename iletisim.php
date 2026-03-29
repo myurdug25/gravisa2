@@ -65,59 +65,59 @@ $pageId = 'iletisim';
             </form>
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 48px;">
-            <div style="padding: 40px; background: var(--color-surface-alt); border-radius: var(--radius-lg); border: 1px solid var(--color-border);">
-              <h3 style="font-size: 1.5rem; margin: 0 0 24px; color: var(--color-text);"><?= htmlspecialchars(t('pages.iletisim.info_title'), ENT_QUOTES, 'UTF-8') ?></h3>
-              <div style="display: flex; flex-direction: column; gap: 20px;">
-                <div style="display: flex; align-items: start; gap: 16px;">
-                  <div style="width: 48px; height: 48px; background: var(--color-primary-soft); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0;">📍</div>
-                  <div>
-                    <strong style="display: block; margin-bottom: 4px; color: var(--color-text);"><?= htmlspecialchars(t('pages.iletisim.addr_lbl'), ENT_QUOTES, 'UTF-8') ?></strong>
-                    <span style="color: var(--color-text-muted); line-height: 1.6;"><?= nl2br(htmlspecialchars($siteSettings['address'] ?? '')) ?></span>
+          <div class="contact-info-grid">
+            <div class="contact-info-card">
+              <h3 class="contact-info-title"><?= htmlspecialchars(t('pages.iletisim.info_title'), ENT_QUOTES, 'UTF-8') ?></h3>
+              <div class="contact-info-list">
+                <div class="contact-info-item">
+                  <div class="contact-info-icon">📍</div>
+                  <div class="contact-info-text">
+                    <strong><?= htmlspecialchars(t('pages.iletisim.addr_lbl'), ENT_QUOTES, 'UTF-8') ?></strong>
+                    <span><?= nl2br(htmlspecialchars($siteSettings['address'] ?? '')) ?></span>
                   </div>
                 </div>
-                <div style="display: flex; align-items: start; gap: 16px;">
-                  <div style="width: 48px; height: 48px; background: var(--color-primary-soft); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0;">📞</div>
-                  <div>
-                    <strong style="display: block; margin-bottom: 4px; color: var(--color-text);"><?= htmlspecialchars(t('pages.iletisim.phone_lbl'), ENT_QUOTES, 'UTF-8') ?></strong>
-                    <a href="tel:+<?= getWaNum() ?>" style="color: var(--color-primary); text-decoration: none; font-weight: 600;"><?= htmlspecialchars($siteSettings['phone_display'] ?? '') ?></a>
+                <div class="contact-info-item">
+                  <div class="contact-info-icon">📞</div>
+                  <div class="contact-info-text">
+                    <strong><?= htmlspecialchars(t('pages.iletisim.phone_lbl'), ENT_QUOTES, 'UTF-8') ?></strong>
+                    <a href="tel:+<?= getWaNum() ?>"><?= htmlspecialchars($siteSettings['phone_display'] ?? '') ?></a>
                   </div>
                 </div>
-                <div style="display: flex; align-items: start; gap: 16px;">
-                  <div style="width: 48px; height: 48px; background: var(--color-primary-soft); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0;">✉️</div>
-                  <div>
-                    <strong style="display: block; margin-bottom: 4px; color: var(--color-text);"><?= htmlspecialchars(t('pages.iletisim.email_lbl'), ENT_QUOTES, 'UTF-8') ?></strong>
-                    <a href="mailto:<?= htmlspecialchars($siteSettings['contact_email'] ?? '') ?>" style="color: var(--color-primary); text-decoration: none; font-weight: 600;"><?= htmlspecialchars($siteSettings['contact_email'] ?? '') ?></a>
+                <div class="contact-info-item">
+                  <div class="contact-info-icon">✉️</div>
+                  <div class="contact-info-text">
+                    <strong><?= htmlspecialchars(t('pages.iletisim.email_lbl'), ENT_QUOTES, 'UTF-8') ?></strong>
+                    <a href="mailto:<?= htmlspecialchars($siteSettings['contact_email'] ?? '') ?>"><?= htmlspecialchars($siteSettings['contact_email'] ?? '') ?></a>
                   </div>
                 </div>
-                <div style="display: flex; align-items: start; gap: 16px;">
-                  <div style="width: 48px; height: 48px; background: var(--color-primary-soft); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0;">💬</div>
-                  <div>
-                    <strong style="display: block; margin-bottom: 4px; color: var(--color-text);"><?= htmlspecialchars(t('pages.iletisim.wa_lbl'), ENT_QUOTES, 'UTF-8') ?></strong>
-                    <a href="https://wa.me/<?= getWaNum() ?>" target="_blank" rel="noopener" style="color: var(--color-primary); text-decoration: none; font-weight: 600;"><?= htmlspecialchars(t('pages.iletisim.wa_short'), ENT_QUOTES, 'UTF-8') ?></a>
+                <div class="contact-info-item">
+                  <div class="contact-info-icon">💬</div>
+                  <div class="contact-info-text">
+                    <strong><?= htmlspecialchars(t('pages.iletisim.wa_lbl'), ENT_QUOTES, 'UTF-8') ?></strong>
+                    <a href="https://wa.me/<?= getWaNum() ?>" target="_blank" rel="noopener"><?= htmlspecialchars(t('pages.iletisim.wa_short'), ENT_QUOTES, 'UTF-8') ?></a>
                   </div>
                 </div>
               </div>
             </div>
-            <div style="padding: 40px; background: linear-gradient(135deg, var(--color-primary-soft) 0%, rgba(13, 148, 136, 0.05) 100%); border-radius: var(--radius-lg); border: 1px solid var(--color-border);">
-              <h3 style="font-size: 1.5rem; margin: 0 0 24px; color: var(--color-text);"><?= htmlspecialchars(t('pages.iletisim.hours_title'), ENT_QUOTES, 'UTF-8') ?></h3>
-              <div style="display: flex; flex-direction: column; gap: 16px;">
-                <div style="display: flex; justify-content: space-between; padding-bottom: 16px; border-bottom: 1px solid var(--color-border);">
-                  <span style="color: var(--color-text); font-weight: 600;"><?= htmlspecialchars(t('pages.iletisim.dow_week'), ENT_QUOTES, 'UTF-8') ?></span>
-                  <span style="color: var(--color-text-muted);">09:00 - 18:00</span>
+            <div class="contact-hours-card">
+              <h3 class="contact-info-title"><?= htmlspecialchars(t('pages.iletisim.hours_title'), ENT_QUOTES, 'UTF-8') ?></h3>
+              <div class="contact-hours-list">
+                <div class="contact-hours-row">
+                  <span class="contact-hours-day"><?= htmlspecialchars(t('pages.iletisim.dow_week'), ENT_QUOTES, 'UTF-8') ?></span>
+                  <span class="contact-hours-time">09:00 - 18:00</span>
                 </div>
-                <div style="display: flex; justify-content: space-between; padding-bottom: 16px; border-bottom: 1px solid var(--color-border);">
-                  <span style="color: var(--color-text); font-weight: 600;"><?= htmlspecialchars(t('pages.iletisim.dow_sat'), ENT_QUOTES, 'UTF-8') ?></span>
-                  <span style="color: var(--color-text-muted);">09:00 - 14:00</span>
+                <div class="contact-hours-row">
+                  <span class="contact-hours-day"><?= htmlspecialchars(t('pages.iletisim.dow_sat'), ENT_QUOTES, 'UTF-8') ?></span>
+                  <span class="contact-hours-time">09:00 - 14:00</span>
                 </div>
-                <div style="display: flex; justify-content: space-between;">
-                  <span style="color: var(--color-text); font-weight: 600;"><?= htmlspecialchars(t('pages.iletisim.dow_sun'), ENT_QUOTES, 'UTF-8') ?></span>
-                  <span style="color: var(--color-text-muted);"><?= htmlspecialchars(t('pages.iletisim.closed'), ENT_QUOTES, 'UTF-8') ?></span>
+                <div class="contact-hours-row is-last">
+                  <span class="contact-hours-day"><?= htmlspecialchars(t('pages.iletisim.dow_sun'), ENT_QUOTES, 'UTF-8') ?></span>
+                  <span class="contact-hours-time"><?= htmlspecialchars(t('pages.iletisim.closed'), ENT_QUOTES, 'UTF-8') ?></span>
                 </div>
               </div>
-              <div style="margin-top: 32px; padding: 24px; background: var(--color-surface); border-radius: var(--radius);">
-                <strong style="display: block; margin-bottom: 8px; color: var(--color-text);"><?= htmlspecialchars(t('pages.iletisim.emergency_title'), ENT_QUOTES, 'UTF-8') ?></strong>
-                <p style="margin: 0; color: var(--color-text-muted); font-size: 0.9rem; line-height: 1.6;"><?= htmlspecialchars(t('pages.iletisim.emergency_text'), ENT_QUOTES, 'UTF-8') ?></p>
+              <div class="contact-emergency">
+                <strong><?= htmlspecialchars(t('pages.iletisim.emergency_title'), ENT_QUOTES, 'UTF-8') ?></strong>
+                <p><?= htmlspecialchars(t('pages.iletisim.emergency_text'), ENT_QUOTES, 'UTF-8') ?></p>
                 <a href="https://wa.me/<?= getWaNum() ?>" class="btn btn-whatsapp" target="_blank" rel="noopener" style="width: 100%; margin-top: 16px;"><?= htmlspecialchars(t('pages.iletisim.wa_btn'), ENT_QUOTES, 'UTF-8') ?></a>
               </div>
             </div>
