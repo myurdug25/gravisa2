@@ -21,7 +21,10 @@ $langEnActive = GRAVISA_LANG === 'en' ? ' is-active' : '';
         <li><a href="<?= htmlspecialchars(gravisa_url('kiralama'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.rental')) ?></a></li>
         <li><a href="<?= htmlspecialchars(gravisa_url('servis'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.service')) ?></a></li>
         <li class="nav-dropdown">
-          <a href="<?= htmlspecialchars(gravisa_url('kurumsal'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.corporate')) ?></a>
+          <div class="nav-dropdown-head">
+            <a class="nav-dropdown-link" href="<?= htmlspecialchars(gravisa_url('kurumsal'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.corporate')) ?></a>
+            <button type="button" class="nav-dropdown-toggle" aria-label="<?= htmlspecialchars(t('nav.corporate'), ENT_QUOTES, 'UTF-8') ?>" aria-expanded="false"></button>
+          </div>
           <ul>
             <li><a href="<?= htmlspecialchars(gravisa_url('hakkimizda'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.about')) ?></a></li>
             <li><a href="<?= htmlspecialchars(gravisa_url('vizyon-misyon'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.vision')) ?></a></li>

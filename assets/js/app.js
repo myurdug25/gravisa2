@@ -24,16 +24,15 @@
     });
   }
 
-  // Mobil: Kurumsal dropdown – tıklanınca aç/kapa (sayfaya gitme)
+  // Mobil: Kurumsal dropdown – ok butonu ile aç/kapa (link navigasyon yapar)
   var navDropdown = document.querySelector('.nav-dropdown');
   if (navDropdown) {
-    var dropdownLink = navDropdown.querySelector('a');
-    if (dropdownLink) {
-      dropdownLink.addEventListener('click', function (e) {
+    var dropdownToggle = navDropdown.querySelector('.nav-dropdown-toggle');
+    if (dropdownToggle) {
+      dropdownToggle.addEventListener('click', function () {
         if (window.innerWidth <= 768) {
-          e.preventDefault();
-          navDropdown.classList.toggle('is-open');
-          dropdownLink.setAttribute('aria-expanded', navDropdown.classList.contains('is-open'));
+          var open = navDropdown.classList.toggle('is-open');
+          dropdownToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
         }
       });
     }

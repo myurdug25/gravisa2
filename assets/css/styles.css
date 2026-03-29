@@ -301,11 +301,11 @@ a:hover {
 }
 
 /* Kurumsal menüsüne alt menü ok ikonu */
-.nav-dropdown > a {
+.nav-dropdown-link {
   position: relative;
   padding-right: 24px;
 }
-.nav-dropdown > a::after {
+.nav-dropdown-link::after {
   content: '';
   position: absolute;
   right: 10px;
@@ -317,9 +317,17 @@ a:hover {
   border-right: 5px solid transparent;
   border-top: 6px solid var(--color-text-soft);
 }
-.nav-dropdown:hover > a::after,
-.nav-dropdown:focus-within > a::after {
+.nav-dropdown:hover .nav-dropdown-link::after,
+.nav-dropdown:focus-within .nav-dropdown-link::after {
   border-top-color: var(--color-text);
+}
+
+.nav-dropdown-head {
+  display: flex;
+  align-items: center;
+}
+.nav-dropdown-toggle {
+  display: none;
 }
 
 /* Buttons – yuvarlak, sade */
@@ -2186,9 +2194,42 @@ a:hover {
     padding: 14px 16px;
     border-radius: 14px;
   }
-  /* Mobilde dropdown tetikleyicide ekstra sağ padding merkezlemeyi bozmasın */
-  .nav-dropdown > a { padding-right: 16px; }
-  .nav-dropdown > a::after { right: 16px; }
+  /* Mobilde: "Kurumsal" linki navigasyon, ok butonu aç/kapa */
+  .nav-dropdown-head {
+    position: relative;
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+  .nav-dropdown-link { padding-right: 16px; }
+  .nav-dropdown-link::after { display: none; }
+  .nav-dropdown-toggle {
+    display: inline-flex;
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 42px;
+    height: 42px;
+    border: 1px solid var(--color-border);
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+  }
+  .nav-dropdown-toggle::before {
+    content: '';
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 7px solid var(--color-text-soft);
+    transform: translateY(1px);
+  }
+  .nav-dropdown.is-open .nav-dropdown-toggle::before {
+    transform: translateY(-1px) rotate(180deg);
+  }
 
   /* Mobil: Kurumsal dropdown – tıklanınca açılır */
   .nav-dropdown ul {
@@ -2219,9 +2260,8 @@ a:hover {
     padding: 12px 16px;
     opacity: 0.92;
   }
-  .nav-dropdown.is-open > a::after {
-    transform: translateY(-50%) rotate(180deg);
-  }
+  /* Eski ok pseudo-elementi (link üzerinde) mobilde devre dışı */
+  .nav-dropdown.is-open > a::after { transform: translateY(-50%) rotate(180deg); }
 
   .hero {
     padding: 24px 20px 40px;
