@@ -302,13 +302,15 @@ a:hover {
 
 /* Kurumsal menüsüne alt menü ok ikonu */
 .nav-dropdown-link {
+  display: inline-flex;
+  align-items: center;
   position: relative;
-  padding-right: 24px;
+  padding-right: 34px;
 }
 .nav-dropdown-link::after {
   content: '';
   position: absolute;
-  right: 10px;
+  right: 14px;
   top: 50%;
   width: 0;
   height: 0;
