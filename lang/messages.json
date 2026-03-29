@@ -13,7 +13,9 @@
             "site_photos": "Saha Fotoğrafları",
             "contact": "İletişim",
             "lang_menu": "Dil seçimi",
-            "menu_open": "Menüyü aç"
+            "menu_open": "Menüyü aç",
+            "lang_switch_tr": "Türkçe",
+            "lang_switch_en": "English"
         },
         "footer": {
             "rights": "Gravisa. Tüm hakları saklıdır.",
@@ -283,7 +285,9 @@
             "site_photos": "Site photos",
             "contact": "Contact",
             "lang_menu": "Language",
-            "menu_open": "Open menu"
+            "menu_open": "Open menu",
+            "lang_switch_tr": "Turkish",
+            "lang_switch_en": "English"
         },
         "footer": {
             "rights": "Gravisa. All rights reserved.",

@@ -33,9 +33,9 @@ $langEnActive = GRAVISA_LANG === 'en' ? ' is-active' : '';
       </ul>
     </nav>
     <div class="header-end">
-      <div class="lang-switcher" role="navigation" aria-label="<?= htmlspecialchars(t('nav.lang_menu'), ENT_QUOTES, 'UTF-8') ?>">
-        <a class="lang-switcher__btn<?= $langTrActive ?>" href="<?= $hrefTr ?>" hreflang="tr" lang="tr"><span class="lang-switcher__fi" aria-hidden="true">🇹🇷</span><span class="lang-switcher__code">TR</span></a>
-        <a class="lang-switcher__btn<?= $langEnActive ?>" href="<?= $hrefEn ?>" hreflang="en" lang="en"><span class="lang-switcher__fi" aria-hidden="true">🇬🇧</span><span class="lang-switcher__code">EN</span></a>
+      <div class="lang-switcher" role="group" aria-label="<?= htmlspecialchars(t('nav.lang_menu'), ENT_QUOTES, 'UTF-8') ?>">
+        <a class="lang-switcher__btn<?= $langTrActive ?>" href="<?= $hrefTr ?>" hreflang="tr" lang="tr" aria-label="<?= htmlspecialchars(t('nav.lang_switch_tr'), ENT_QUOTES, 'UTF-8') ?>"<?= GRAVISA_LANG === 'tr' ? ' aria-current="true"' : '' ?>><span class="lang-switcher__abbr">TR</span></a>
+        <a class="lang-switcher__btn<?= $langEnActive ?>" href="<?= $hrefEn ?>" hreflang="en" lang="en" aria-label="<?= htmlspecialchars(t('nav.lang_switch_en'), ENT_QUOTES, 'UTF-8') ?>"<?= GRAVISA_LANG === 'en' ? ' aria-current="true"' : '' ?>><span class="lang-switcher__abbr">EN</span></a>
       </div>
       <button class="nav-toggle" aria-label="<?= htmlspecialchars(t('nav.menu_open'), ENT_QUOTES, 'UTF-8') ?>" aria-expanded="false">
         <span></span><span></span><span></span>

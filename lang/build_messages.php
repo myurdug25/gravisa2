@@ -15,6 +15,8 @@ $tr = [
         'contact' => 'İletişim',
         'lang_menu' => 'Dil seçimi',
         'menu_open' => 'Menüyü aç',
+        'lang_switch_tr' => 'Türkçe',
+        'lang_switch_en' => 'English',
     ],
     'footer' => [
         'rights' => 'Gravisa. Tüm hakları saklıdır.',
@@ -250,6 +252,8 @@ $en = [
         'contact' => 'Contact',
         'lang_menu' => 'Language',
         'menu_open' => 'Open menu',
+        'lang_switch_tr' => 'Turkish',
+        'lang_switch_en' => 'English',
     ],
     'footer' => [
         'rights' => 'Gravisa. All rights reserved.',
