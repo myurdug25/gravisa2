@@ -2016,10 +2016,6 @@ a:hover {
 }
 
 @media (max-width: 768px) {
-  /* Not: .header z-index bir stacking context oluşturur (sticky). Drawer nav header içinde olduğu için,
-     overlay'in nav'ın üstüne binmemesi adına nav açıkken header'ı overlay'in üstüne taşırız. */
-  body.nav-open .header { z-index: 140; }
-
   .header-inner {
     justify-content: space-between;
     gap: 12px;
@@ -2049,7 +2045,7 @@ a:hover {
     opacity: 0;
     visibility: hidden;
     transition: transform 0.28s ease, opacity 0.2s ease, visibility 0.2s ease;
-    z-index: 150;
+    z-index: 120;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
@@ -2095,7 +2091,7 @@ a:hover {
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.2s ease, visibility 0.2s ease;
-    z-index: 115;
+    z-index: 110;
   }
   body.nav-open .nav-overlay {
     opacity: 1;
