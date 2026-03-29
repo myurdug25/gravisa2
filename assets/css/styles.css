@@ -2149,12 +2149,18 @@ a:hover {
     right: 0;
     background: var(--color-surface);
     border-bottom: 1px solid var(--color-border);
-    padding: 20px;
+    padding: 18px calc(16px + env(safe-area-inset-right, 0px)) calc(18px + env(safe-area-inset-bottom, 0px)) calc(16px + env(safe-area-inset-left, 0px));
     box-shadow: var(--shadow-lg);
     transform: translateY(-100%);
     opacity: 0;
     visibility: hidden;
     transition: transform var(--transition), opacity var(--transition), visibility var(--transition);
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 0 0 22px 22px;
+    display: flex;
+    justify-content: center;
   }
   .nav.is-open {
     transform: translateY(0);
@@ -2162,20 +2168,23 @@ a:hover {
     visibility: visible;
   }
   /* Mobil menü: tam ortalı ve dengeli hizalama */
-  .nav { padding-left: 20px; padding-right: 20px; }
   .nav ul {
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 14px;
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
   }
-  .nav li { width: 100%; max-width: 420px; }
+  .nav li { width: 100%; max-width: none; }
   .nav a {
     display: flex;
     justify-content: center;
     text-align: center;
     width: 100%;
     padding: 14px 16px;
+    border-radius: 14px;
   }
   /* Mobilde dropdown tetikleyicide ekstra sağ padding merkezlemeyi bozmasın */
   .nav-dropdown > a { padding-right: 16px; }
