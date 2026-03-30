@@ -100,6 +100,14 @@ $pageId = 'satis-teklifi';
         'btnSubmit' => t('pages.satis_teklifi.btn_submit'),
         'toastFallback' => t('pages.satis_teklifi.toast_fallback'),
       ], JSON_UNESCAPED_UNICODE) ?>;
+      var base = (typeof window.basePath === 'string') ? window.basePath : '';
+      function safeImg(src) {
+        if (!src || typeof src !== 'string') return '';
+        var t = src.trim().toLowerCase();
+        if (t.indexOf('javascript:') === 0 || t.indexOf('data:') === 0 || t.indexOf('vbscript:') === 0) return '';
+        var p = (src.charAt(0) === '/' ? '' : '/') + src;
+        return base + p;
+      }
       // Makine verilerinin yüklenmesini bekle
       function initSatis() {
         // Makine verilerini global scope'tan al
@@ -130,7 +138,7 @@ $pageId = 'satis-teklifi';
         
         // Makine bilgilerini göster
         makineBilgileri.style.display = 'block';
-        document.getElementById('makine-resim').src = makine.img;
+        document.getElementById('makine-resim').src = safeImg(makine.img);
         document.getElementById('makine-resim').alt = makine.tipModel;
         document.getElementById('makine-adi').textContent = makine.firma + ' ' + makine.tipModel;
         var detayText = makine.tip;
