@@ -1570,7 +1570,8 @@ a:hover {
 
 /* Bölüm içeriği: demo kartı için daha dar container */
 .section-inner-card {
-  max-width: 920px;
+  /* Diğer bölümlerle aynı hizaya gelsin: container genişliği + standart padding */
+  max-width: 1240px;
   margin: 0 auto;
   padding: 0 24px;
 }
@@ -1580,9 +1581,10 @@ a:hover {
 
 /* Demo form – dar ve okunaklı */
 .demo-form {
-  max-width: 520px;
-  margin-left: auto;
-  margin-right: auto;
+  /* Form kartı dar kalsın ama bölüm başlığıyla aynı container hizasında dursun */
+  max-width: 720px;
+  margin-left: 0;
+  margin-right: 0;
   background: var(--color-surface);
   padding: 28px 32px;
   border-radius: var(--radius-md);
