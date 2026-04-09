@@ -68,7 +68,24 @@
             "btn_demo": "Demo Talebi",
             "meta_model_year": "Model Yılı:",
             "meta_power": "Güç:",
-            "stock_badge_in": "✓ Stokta"
+            "stock_badge_in": "✓ Stokta",
+            "cat_all": "Tümü",
+            "cat_truck": "Kamyon",
+            "cat_concrete": "Beton",
+            "cat_lighting": "Aydınlatma",
+            "cat_tunnel": "Tünel",
+            "cat_spraying": "Püskürtme",
+            "cat_compressor": "Kompresör",
+            "cat_other": "Diğer"
+            ,
+            "machine_label": "makine"
+            ,
+            "pick_category": "Bir kategori seçerek makineleri listeleyebilirsiniz."
+            ,
+            "view_category": "Makineleri Gör"
+            ,
+            "show_all_categories": "Tüm kategorileri gör",
+            "show_less_categories": "Daha az göster"
         },
         "seo": {
             "pages": {
@@ -125,10 +142,10 @@
         "pages": {
             "index": {
                 "whatsapp_aria": "WhatsApp ile iletişim",
-                "hero_badge": "Gravisa'ya hoş geldiniz",
-                "hero_title_line1": "İş Makinelerinde",
-                "hero_title_line2": "Güvenilir Çözüm Ortağınız",
-                "hero_subtitle": "Satış ve kiralama için hemen teklif alın. Türkiye genelinde servis ve yedek parça desteği.",
+                "hero_badge": "İş Makineleri Çözümleri",
+                "hero_title_line1": "Satış, kiralama ve satış sonrası destek için",
+                "hero_title_line2": "güvenilir çözüm ortağınız",
+                "hero_subtitle": "Stoktaki makinelerimizi inceleyin, hızlıca teklif talep edin ve Türkiye genelindeki servis/yedek parça ağımızla operasyonunuzu güvence altına alın.",
                 "btn_sales": "Satış Teklifi Al",
                 "btn_browse": "Makineleri İncele",
                 "btn_rent": "Kiralama Yap",
@@ -137,10 +154,13 @@
                 "stat_exp": "Yıllık Tecrübe",
                 "stat_support": "Teknik Destek",
                 "stock_title": "Stokta Makineler",
-                "stock_desc": "Hemen teslim edilebilecek makinelerimizi inceleyin",
+                "stock_desc": "Kategoriye göre filtreleyin, hemen teslim edilebilecek makineleri görüntüleyin",
                 "stock_cta": "Tüm Makineleri Gör",
+                "stock_categories_aria": "Kategori seçimi",
+                "show_all_categories": "Tüm kategorileri gör",
+                "show_less_categories": "Daha az göster",
                 "services_title": "Hizmetlerimiz",
-                "services_desc": "Geniş hizmet yelpazemiz ile ihtiyaçlarınıza çözüm sunuyoruz",
+                "services_desc": "Satış, kiralama, servis ve yedek parça süreçlerinde uçtan uca çözüm sunuyoruz",
                 "svc_sales": "Satış",
                 "svc_sales_desc": "Yeni ve ikinci el iş makineleri satışı.",
                 "svc_rent": "Kiralama",
@@ -154,7 +174,7 @@
                 "btn_details": "Detaylar",
                 "btn_contact_nav": "İletişim",
                 "demo_title": "Demo Makine Talebi",
-                "demo_desc": "İstediğiniz makineyi sahada denemek için talebinizi iletin.",
+                "demo_desc": "İlgilendiğiniz makineyi ve uygun tarihinizi paylaşın; demo planlamasını birlikte yapalım.",
                 "label_name": "Ad Soyad",
                 "ph_name": "Adınız Soyadınız",
                 "label_phone": "Telefon",
@@ -171,7 +191,7 @@
                 "machine_grader": "Greyder",
                 "machine_other": "Diğer",
                 "serv_block_title": "Servis ve Yedek Parça",
-                "serv_block_desc": "Geniş servis ağımız ve mobil servis ile yanınızdayız.",
+                "serv_block_desc": "Geniş servis ağımız ve mobil servis ekiplerimizle yanınızdayız.",
                 "serv_net": "Servis Ağı",
                 "serv_net_desc": "Türkiye genelinde yetkili servis noktalarımız",
                 "mob_serv": "Mobil Servis",
@@ -215,6 +235,8 @@
             "makineler": {
                 "hero_title": "Makine Kataloğu",
                 "hero_sub": "Filtreleme ve arama ile ihtiyacınıza uygun makineleri bulun.",
+                "pick_category_desc": "Önce bir kategori seçin; ardından o kategoriye ait makineleri ve detaylarını görüntüleyin.",
+                "category_search_ph": "Kategori ara...",
                 "filters": "Filtreler",
                 "search_ph": "Firma, model veya tip ara...",
                 "type": "Tip (Kategori)",
@@ -496,14 +518,14 @@
         "nav": {
             "home": "Home",
             "machines": "Machines",
-            "sales_quote": "Sales quote",
+            "sales_quote": "Sales Quote",
             "rental": "Rental",
             "service": "Service",
             "corporate": "Corporate",
             "about": "About",
             "vision": "Vision & Mission",
             "references": "References",
-            "site_photos": "Site photos",
+            "site_photos": "On-site Photos",
             "contact": "Contact",
             "lang_menu": "Language",
             "menu_open": "Open menu",
@@ -517,13 +539,13 @@
             "made_by_suffix": ""
         },
         "toast": {
-            "title_ok": "Request received",
+            "title_ok": "Thank you — we’ve received your request",
             "title_err": "Error",
             "btn_ok": "OK"
         },
         "js": {
             "detail": "Details",
-            "get_quote": "Get quote",
+            "get_quote": "Request a quote",
             "rent": "Rent",
             "select": "Select",
             "sending": "Sending...",
@@ -555,31 +577,48 @@
             "label_motor_brand": "Engine brand",
             "label_motor_type": "Engine type",
             "label_stock": "Stock status",
-            "btn_sales_large": "Get a sales quote",
-            "btn_rent_large": "Rent",
+            "btn_sales_large": "Request a sales quote",
+            "btn_rent_large": "Request a rental quote",
             "btn_contact_large": "Contact us",
-            "btn_demo": "Demo request",
+            "btn_demo": "Request a demo",
             "meta_model_year": "Model year:",
             "meta_power": "Power:",
-            "stock_badge_in": "✓ In stock"
+            "stock_badge_in": "✓ In stock",
+            "cat_all": "All",
+            "cat_truck": "Truck",
+            "cat_concrete": "Concrete",
+            "cat_lighting": "Lighting",
+            "cat_tunnel": "Tunnel",
+            "cat_spraying": "Spraying",
+            "cat_compressor": "Compressor",
+            "cat_other": "Other"
+            ,
+            "machine_label": "machines"
+            ,
+            "pick_category": "Select a category to view available machines."
+            ,
+            "view_category": "View machines"
+            ,
+            "show_all_categories": "View all categories",
+            "show_less_categories": "Show less"
         },
         "seo": {
             "pages": {
                 "index": {
                     "title": "Gravisa - Construction Equipment Sales & Rental",
-                    "description": "Sales, rental, service and spare parts for construction equipment."
+                    "description": "Sales and rental of construction equipment, backed by service and spare parts support."
                 },
                 "makineler": {
-                    "title": "Machine catalog - Gravisa",
-                    "description": "Find equipment with search and filters."
+                    "title": "Equipment Catalogue - Gravisa",
+                    "description": "Browse our fleet by category, or refine results with search and filters."
                 },
                 "iletisim": {
                     "title": "Contact - Gravisa",
-                    "description": "Contact form."
+                    "description": "Get in touch with our team."
                 },
                 "servis": {
-                    "title": "Service & parts - Gravisa",
-                    "description": "Service network and spare parts."
+                    "title": "Service & Spare Parts - Gravisa",
+                    "description": "Service support and spare parts supply."
                 },
                 "kurumsal": {
                     "title": "Corporate - Gravisa",
@@ -598,56 +637,59 @@
                     "description": "References."
                 },
                 "saha-fotograflari": {
-                    "title": "Site photos - Gravisa",
-                    "description": "On-site photos."
+                    "title": "On-site Photos - Gravisa",
+                    "description": "Real photos from our projects and job sites."
                 },
                 "satis-teklifi": {
-                    "title": "Sales quote - Gravisa",
-                    "description": "Request a quote."
+                    "title": "Sales Quote - Gravisa",
+                    "description": "Request a tailored sales quote."
                 },
                 "kiralama": {
                     "title": "Rental - Gravisa",
-                    "description": "Rental request."
+                    "description": "Request rental pricing and availability."
                 },
                 "makine-detay": {
-                    "title": "Machine details - Gravisa",
-                    "description": "Technical specifications."
+                    "title": "Machine Details - Gravisa",
+                    "description": "Technical details and specifications."
                 }
             }
         },
         "pages": {
             "index": {
                 "whatsapp_aria": "Contact us on WhatsApp",
-                "hero_badge": "Welcome to Gravisa",
-                "hero_title_line1": "In construction equipment,",
-                "hero_title_line2": "your trusted partner",
-                "hero_subtitle": "Get a quote for sales and rental. Nationwide service and spare parts.",
-                "btn_sales": "Get a sales quote",
+                "hero_badge": "Construction Equipment Solutions",
+                "hero_title_line1": "Sales, rental and after-sales support for",
+                "hero_title_line2": "high‑performance equipment",
+                "hero_subtitle": "Browse available machines, request a tailored quote, and count on our service and spare parts support across Türkiye.",
+                "btn_sales": "Request a sales quote",
                 "btn_browse": "Browse machines",
-                "btn_rent": "Rent",
+                "btn_rent": "Request rental",
                 "stat_types": "Machine types",
                 "stat_customers": "Happy customers",
                 "stat_exp": "Years of experience",
                 "stat_support": "Technical support",
-                "stock_title": "Machines in stock",
-                "stock_desc": "Explore machines ready for delivery",
-                "stock_cta": "View all machines",
+                "stock_title": "Available machines",
+                "stock_desc": "Browse by category and see machines available for immediate delivery",
+                "stock_cta": "View all categories",
+                "stock_categories_aria": "Category selection",
+                "show_all_categories": "View all categories",
+                "show_less_categories": "Show less",
                 "services_title": "Our services",
-                "services_desc": "We deliver solutions across a broad service range",
+                "services_desc": "An end‑to‑end service offering — from sales and rental to service and spare parts",
                 "svc_sales": "Sales",
                 "svc_sales_desc": "New and used equipment sales.",
                 "svc_rent": "Rental",
                 "svc_rent_desc": "Daily, weekly, monthly and long-term rental.",
                 "svc_service": "Service",
-                "svc_service_desc": "Nationwide service network and spare parts.",
+                "svc_service_desc": "Service support and spare parts supply across Türkiye.",
                 "svc_parts": "Spare parts",
                 "svc_parts_desc": "Genuine and compatible spare parts.",
-                "btn_quote": "Get a quote",
+                "btn_quote": "Request a quote",
                 "btn_rent_short": "Rent",
                 "btn_details": "Details",
                 "btn_contact_nav": "Contact",
-                "demo_title": "Demo machine request",
-                "demo_desc": "Tell us which machine you want to try on site.",
+                "demo_title": "On-site demo request",
+                "demo_desc": "Tell us which machine you’d like to see and your preferred date — we’ll coordinate the demo with you.",
                 "label_name": "Full name",
                 "ph_name": "Your name",
                 "label_phone": "Phone",
@@ -656,7 +698,7 @@
                 "ph_email": "name@company.com",
                 "label_machine": "Machine of interest",
                 "label_date": "Preferred date",
-                "label_note": "Notes",
+                "label_note": "Notes (optional)",
                 "ph_note": "Extra details or address...",
                 "demo_submit": "Send demo request",
                 "machine_exc": "Excavator",
@@ -664,9 +706,9 @@
                 "machine_grader": "Grader",
                 "machine_other": "Other",
                 "serv_block_title": "Service & spare parts",
-                "serv_block_desc": "We are with you with a wide service network.",
+                "serv_block_desc": "We support your operations with fast response times and strong service coverage.",
                 "serv_net": "Service network",
-                "serv_net_desc": "Authorized service points nationwide",
+                "serv_net_desc": "Service points and mobile support across Türkiye",
                 "mob_serv": "Mobile service",
                 "mob_serv_desc": "On-site mobile service",
                 "parts_short": "Spare parts",
@@ -676,9 +718,9 @@
                 "phone_lbl": "Phone",
                 "email_lbl": "Email",
                 "wa_lbl": "WhatsApp",
-                "wa_cta": "Message us",
+                "wa_cta": "Chat with us",
                 "why_title": "Why us?",
-                "why_sub": "Strength from experience; speed from technology",
+                "why_sub": "Experience-driven strength, technology-powered speed",
                 "why_p": "Construction equipment is the art of time and cost management.",
                 "trust_years": "Years of experience",
                 "trust_support": "Technical support",
@@ -695,19 +737,21 @@
                 "v5t": "Flexible payment and rental models.",
                 "more_info": "Learn more",
                 "contact_section_title": "Contact",
-                "contact_section_desc": "Reach out for any questions",
+                "contact_section_desc": "Get in touch for sales, rental, service or spare parts enquiries",
                 "addr_title": "Address",
                 "contact_title": "Contact",
                 "tel_lbl": "Tel:",
                 "email_word": "Email:",
                 "quick_access": "Quick links",
-                "wa_write": "Message on WhatsApp",
+                "wa_write": "Chat on WhatsApp",
                 "contact_form_btn": "Contact form",
-                "img_machine_alt": "Construction machine"
+                "img_machine_alt": "Construction equipment"
             },
             "makineler": {
-                "hero_title": "Machine catalog",
-                "hero_sub": "Find machines with filters and search.",
+                "hero_title": "Equipment catalogue",
+                "hero_sub": "Browse by category or refine results with search and filters.",
+                "pick_category_desc": "Choose a category to view machines and details within that category.",
+                "category_search_ph": "Search categories...",
                 "filters": "Filters",
                 "search_ph": "Search brand, model or type...",
                 "type": "Type (category)",
@@ -717,7 +761,7 @@
             },
             "iletisim": {
                 "hero_title": "Contact",
-                "hero_sub": "Fill out the form for sales, rental or service requests; we will get back to you shortly.",
+                "hero_sub": "For sales, rental or service enquiries, complete the form and our team will get back to you.",
                 "label_name": "Full name",
                 "ph_name": "Your name",
                 "label_phone": "Phone",
@@ -726,7 +770,7 @@
                 "ph_email": "name@company.com",
                 "label_subject": "Subject",
                 "opt_select": "Select",
-                "opt_sales": "Sales quote",
+                "opt_sales": "Sales Quote",
                 "opt_rent": "Rental",
                 "opt_service": "Service \/ spare parts",
                 "opt_other": "Other",
@@ -737,7 +781,7 @@
                 "phone_lbl": "Phone",
                 "email_lbl": "Email",
                 "wa_lbl": "WhatsApp",
-                "wa_short": "Message us",
+                "wa_short": "Chat now",
                 "hours_title": "Business hours",
                 "dow_week": "Monday - Friday",
                 "dow_sat": "Saturday",
@@ -756,7 +800,7 @@
                 "card_vm_d": "Our goals and principles — where we are headed and how we serve.",
                 "card_ref_t": "References",
                 "card_ref_d": "Institutions and projects we work with — construction, public sector and mining.",
-                "card_photo_t": "Site photos",
+                "card_photo_t": "On-site Photos",
                 "card_photo_d": "Our machines on projects — photos from the field.",
                 "link_more": "Learn more →",
                 "link_refs": "View references →",
@@ -813,7 +857,7 @@
                 "v5_p": "We act with awareness of the world we leave behind. We optimize resource use and favour lower-emission equipment where possible, striving to be a responsible brand for society and the environment."
             },
             "saha_fotograflari": {
-                "hero_title": "Site photos",
+                "hero_title": "On-site Photos",
                 "hero_sub": "Our machines in action on real projects—photos from the field."
             },
             "hakkimizda": {
@@ -864,13 +908,13 @@
                 "vm_btn": "Vision & Mission",
                 "cta_h": "Would you like to work with us?",
                 "cta_p": "If you are looking for a reliable solution partner for your projects, contact us.",
-                "cta_sales": "Get a sales quote",
+                "cta_sales": "Request a Sales Quote",
                 "cta_rent": "Rent",
                 "cta_contact": "Contact us"
             },
             "satis_teklifi": {
-                "hero_title": "Sales quote",
-                "hero_sub": "Share your company details and requirements; we will send you a tailored sales quote.",
+                "hero_title": "Sales Quote",
+                "hero_sub": "Share your details and requirements — we’ll prepare a tailored sales quote.",
                 "h_contact": "Contact details",
                 "h_machine": "Machine details",
                 "label_name": "Full name",
@@ -887,7 +931,7 @@
                 "label_notes": "Additional notes",
                 "ph_notes": "Special requests or questions...",
                 "btn_submit": "Send quote request",
-                "toast_fallback": "Your quote request has been received. We will get back to you shortly."
+                "toast_fallback": "Thank you. Your request has been received — we’ll get back to you shortly."
             },
             "kiralama": {
                 "hero_title": "Rental",
@@ -920,11 +964,11 @@
                 "label_notes": "Additional notes",
                 "ph_notes": "Special requests...",
                 "btn_submit": "Send rental request",
-                "toast_fallback": "Your rental request has been received. We will get back to you shortly."
+                "toast_fallback": "Thank you. Your rental request has been received — we’ll get back to you shortly."
             },
             "servis": {
                 "hero_title": "Service & spare parts",
-                "hero_sub": "Our nationwide service network, mobile service options and genuine spare parts supply.",
+                "hero_sub": "Service support, mobile service options and spare parts supply across Türkiye.",
                 "feat_net_h": "Service network",
                 "feat_net_p": "Maintenance and repair through authorised service points across Turkey. 24\/7 support for scheduled maintenance and breakdowns.",
                 "feat_net_li1": "Scheduled maintenance",
@@ -981,7 +1025,7 @@
                 "step3_d": "Our expert team carries out the service",
                 "step4_t": "Warranty",
                 "step4_d": "Warranty documentation for work performed",
-                "toast_fallback": "Your service request has been received. We will contact you shortly."
+                "toast_fallback": "Thank you. Your service request has been received — we’ll contact you shortly."
             }
         }
     }

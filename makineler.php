@@ -29,6 +29,21 @@ $pageId = 'makineler';
 
     <section class="section">
       <div class="container">
+        <div class="catalog-categories" aria-label="<?= htmlspecialchars(t('pages.index.stock_categories_aria'), ENT_QUOTES, 'UTF-8') ?>">
+          <div class="catalog-categories__head">
+            <h2 class="section-title section-title-left" style="margin:0;"><?= htmlspecialchars(t('pages.index.stock_categories_aria'), ENT_QUOTES, 'UTF-8') ?></h2>
+            <p class="section-desc section-desc-left" style="max-width: 720px;"><?= htmlspecialchars(t('pages.makineler.pick_category_desc'), ENT_QUOTES, 'UTF-8') ?></p>
+          </div>
+          <div class="catalog-categories__controls">
+            <input type="text" class="category-filter-input" id="category-filter" placeholder="<?= htmlspecialchars(t('pages.makineler.category_search_ph'), ENT_QUOTES, 'UTF-8') ?>" />
+          </div>
+          <div class="category-grid" id="catalog-categories"></div>
+          <div class="section-cta" style="margin-top: 14px;">
+            <button type="button" class="btn btn-outline" id="catalog-categories-toggle" aria-expanded="false">
+              <?= htmlspecialchars(t('pages.index.show_all_categories'), ENT_QUOTES, 'UTF-8') ?>
+            </button>
+          </div>
+        </div>
         <div class="catalog-layout">
           <aside class="catalog-sidebar" id="catalog-filters">
             <div class="catalog-filters">

@@ -21,6 +21,24 @@ $pageId = 'index';
   <?php include __DIR__ . '/includes/site-header.php'; ?>
 
   <main>
+    <section class="section section-alt section-stock-top" id="stokta">
+      <div class="container">
+        <div class="section-header-flex">
+          <div>
+            <h2 class="section-title section-title-left"><?= htmlspecialchars(t('pages.index.stock_title'), ENT_QUOTES, 'UTF-8') ?></h2>
+            <p class="section-desc section-desc-left"><?= htmlspecialchars(t('pages.index.stock_desc'), ENT_QUOTES, 'UTF-8') ?></p>
+          </div>
+          <a href="<?= htmlspecialchars(gravisa_url('makineler'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-primary"><?= htmlspecialchars(t('pages.index.stock_cta'), ENT_QUOTES, 'UTF-8') ?></a>
+        </div>
+        <div class="category-grid" id="stokta-categories" aria-label="<?= htmlspecialchars(t('pages.index.stock_categories_aria'), ENT_QUOTES, 'UTF-8') ?>"></div>
+        <div class="section-cta" style="margin-top: 18px;">
+          <button type="button" class="btn btn-outline" id="stokta-categories-toggle" aria-expanded="false">
+            <?= htmlspecialchars(t('pages.index.show_all_categories'), ENT_QUOTES, 'UTF-8') ?>
+          </button>
+        </div>
+      </div>
+    </section>
+
     <section class="hero">
       <div class="hero-content">
         <div class="banner-card">
@@ -29,8 +47,8 @@ $pageId = 'index';
             <h1 class="hero-title"><?= htmlspecialchars(t('pages.index.hero_title_line1'), ENT_QUOTES, 'UTF-8') ?> <span><?= htmlspecialchars(t('pages.index.hero_title_line2'), ENT_QUOTES, 'UTF-8') ?></span></h1>
             <p class="hero-subtitle"><?= htmlspecialchars(t('pages.index.hero_subtitle'), ENT_QUOTES, 'UTF-8') ?></p>
             <div class="hero-buttons">
-              <a href="<?= htmlspecialchars(gravisa_url('satis-teklifi'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-primary"><?= htmlspecialchars(t('pages.index.btn_sales'), ENT_QUOTES, 'UTF-8') ?></a>
-              <a href="<?= htmlspecialchars(gravisa_url('makineler'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline"><?= htmlspecialchars(t('pages.index.btn_browse'), ENT_QUOTES, 'UTF-8') ?></a>
+              <a href="<?= htmlspecialchars(gravisa_url('makineler'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-primary"><?= htmlspecialchars(t('pages.index.btn_browse'), ENT_QUOTES, 'UTF-8') ?></a>
+              <a href="<?= htmlspecialchars(gravisa_url('satis-teklifi'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline"><?= htmlspecialchars(t('pages.index.btn_sales'), ENT_QUOTES, 'UTF-8') ?></a>
               <a href="<?= htmlspecialchars(gravisa_url('kiralama'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline"><?= htmlspecialchars(t('pages.index.btn_rent'), ENT_QUOTES, 'UTF-8') ?></a>
             </div>
             <div class="hero-stats">
@@ -63,19 +81,6 @@ $pageId = 'index';
             </div>
           </div>
         </div>
-      </div>
-    </section>
-
-    <section class="section section-alt" id="stokta">
-      <div class="container">
-        <div class="section-header-flex">
-          <div>
-            <h2 class="section-title section-title-left"><?= htmlspecialchars(t('pages.index.stock_title'), ENT_QUOTES, 'UTF-8') ?></h2>
-            <p class="section-desc section-desc-left"><?= htmlspecialchars(t('pages.index.stock_desc'), ENT_QUOTES, 'UTF-8') ?></p>
-          </div>
-          <a href="<?= htmlspecialchars(gravisa_url('makineler'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-primary"><?= htmlspecialchars(t('pages.index.stock_cta'), ENT_QUOTES, 'UTF-8') ?></a>
-        </div>
-        <div class="machine-grid" id="stokta-grid"></div>
       </div>
     </section>
 
@@ -128,7 +133,7 @@ $pageId = 'index';
               <input type="tel" name="phone" required placeholder="<?= htmlspecialchars(t('pages.index.ph_phone'), ENT_QUOTES, 'UTF-8') ?>" />
             </label>
           </div>
-          <label>
+          <label class="demo-form-email">
             <span><?= htmlspecialchars(t('pages.index.label_email'), ENT_QUOTES, 'UTF-8') ?></span>
             <input type="email" name="email" required placeholder="<?= htmlspecialchars(t('pages.index.ph_email'), ENT_QUOTES, 'UTF-8') ?>" />
           </label>

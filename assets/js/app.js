@@ -5,6 +5,10 @@
   function langPath(slug) {
     return typeof window.gravisaLangPath === 'function' ? window.gravisaLangPath(slug) : slug;
   }
+  function addQuery(url, key, value) {
+    var sep = url.indexOf('?') >= 0 ? '&' : '?';
+    return url + sep + encodeURIComponent(key) + '=' + encodeURIComponent(String(value));
+  }
 
   // Mobil menü
   var navToggle = document.querySelector('.nav-toggle');
@@ -68,25 +72,25 @@
     }, 6000);
   }
 
-  // Stokta makineler (ana sayfa)
-  var stoktaGrid = document.getElementById('stokta-grid');
-  if (stoktaGrid) {
-    function renderStoktaMakineler() {
+  // Ana sayfa: stok kategorileri (kategori kartları - görselli)
+  var stoktaCats = document.getElementById('stokta-categories');
+  var stoktaCatsToggle = document.getElementById('stokta-categories-toggle');
+  if (stoktaCats) {
+    function renderStoktaKategoriler() {
       // Makine verilerini global scope'tan al
       var makineler = window.makineler || [];
       
       if (makineler.length === 0) {
         // Eğer henüz yüklenmediyse biraz bekle
-        setTimeout(renderStoktaMakineler, 100);
+        setTimeout(renderStoktaKategoriler, 100);
         return;
       }
       
-      // Stokta olan ilk 4 makineyi göster
-      var stoktaMakineler = makineler.filter(function(m) { return m.stok === true; }).slice(0, 4);
-      
+      // Stokta olan makineler
+      var stoktaMakineler = makineler.filter(function(m) { return m && m.stok === true; });
       if (stoktaMakineler.length === 0) {
-        // Eğer stokta makine yoksa ilk 4 makineyi göster
-        stoktaMakineler = makineler.slice(0, 4);
+        // Eğer stokta makine yoksa yine de ilk 8 makineyi göster (boş kalmasın)
+        stoktaMakineler = makineler.slice(0, 8);
       }
       
       function esc(s) {
@@ -102,43 +106,123 @@
         var p = (src.charAt(0) === '/' ? '' : '/') + src;
         return base + p;
       }
-      stoktaGrid.innerHTML = ''; // Önce temizle
-      
-      stoktaMakineler.forEach(function (m) {
-        var card = document.createElement('article');
-        card.className = 'machine-card';
-        var metaText = '';
-        if (m.modelYil) metaText += (J.model || 'Model') + ': ' + m.modelYil;
-        if (m.guc) {
-          if (metaText) metaText += ' • ';
-          metaText += (J.power || 'Güç') + ': ' + m.guc + ' ' + m.gucBirim;
+
+      function normalize(s) {
+        return String(s || '')
+          .toLowerCase()
+          .replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's').replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ç/g, 'c');
+      }
+
+      // Kategori anahtarı: makinenin kendi tip'inden türet (eks. "Ekskavatör" ayrı kategori olur)
+      function tipKey(label) {
+        var t = normalize(label);
+        t = t.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+        return t || 'other';
+      }
+
+      function categoryKey(m) {
+        if (!m || !m.tip) return 'other';
+        return tipKey(m.tip);
+      }
+
+      function categoryLabelFromKey(key) {
+        // Key -> label çözmek için grup içindeki ilk makinenin tip'ini kullanacağız.
+        if (key === 'other') return (J.catOther || 'Diğer');
+        return key;
+      }
+
+      var groups = {};
+      var labelByKey = {};
+      var firstByKey = {};
+      stoktaMakineler.forEach(function(m) {
+        var k = categoryKey(m);
+        if (!groups[k]) groups[k] = [];
+        groups[k].push(m);
+        if (!firstByKey[k]) firstByKey[k] = m;
+        if (!labelByKey[k]) {
+          if (k === 'other') labelByKey[k] = (J.catOther || 'Diğer');
+          else labelByKey[k] = String(m.tip || categoryLabelFromKey(k));
         }
-        var imgSrc = safeImg(m.img);
+      });
+      var available = Object.keys(groups).filter(function(k) { return (groups[k] || []).length > 0; });
+      // Diğer en sona
+      available.sort(function(a, b) {
+        if (a === 'other' && b !== 'other') return 1;
+        if (b === 'other' && a !== 'other') return -1;
+        return String(labelByKey[a] || a).localeCompare(String(labelByKey[b] || b), 'tr');
+      });
+
+      // İlk ekranda her şeyi göstermek yerine kısalt (toggle ile tamamı açılır)
+      var isExpanded = stoktaCats.getAttribute('data-expanded') === '1';
+      function calcLimit() {
+        var w = window.innerWidth || 1024;
+        if (w <= 480) return 4;
+        if (w <= 900) return 6;
+        return 8;
+      }
+      var limit = calcLimit();
+      var listToRender = isExpanded ? available : available.slice(0, limit);
+
+      stoktaCats.innerHTML = '';
+
+      listToRender.forEach(function(k) {
+        var count = (groups[k] || []).length;
+        var m0 = firstByKey[k] || {};
+        var imgSrc = safeImg(m0.img);
+        var label = labelByKey[k] || categoryLabelFromKey(k);
+        var href = addQuery(langPath('makineler'), 'cat', k);
+
+        var card = document.createElement('article');
+        card.className = 'machine-card category-machine-card';
         card.innerHTML =
-          '<div class="machine-card-image"><img src="' + esc(imgSrc) + '" alt="' + esc(m.tipModel) + '" /></div>' +
+          '<div class="machine-card-image"><img src="' + esc(imgSrc) + '" alt="' + esc(label) + '" loading="lazy" /></div>' +
           '<div class="machine-card-body">' +
-            '<div class="machine-card-badge">' + esc(m.tip) + '</div>' +
-            '<h3 class="machine-card-title">' + esc(m.firma) + ' ' + esc(m.tipModel) + '</h3>' +
-            '<p class="machine-card-meta">' + esc(metaText || m.kapasite || '') + '</p>' +
-            '<p class="machine-card-spec">' + esc(m.kapasite || '') + '</p>' +
-            '<div class="machine-card-actions" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">' +
-              '<a href="' + esc(langPath('makine-detay')) + '?id=' + esc(m.id) + '" class="btn btn-outline">' + esc(J.detail || 'Detay') + '</a>' +
-              '<a href="' + esc(langPath('satis-teklifi')) + '?id=' + esc(m.id) + '" class="btn btn-primary">' + esc(J.getQuote || 'Teklif Al') + '</a>' +
-              '<a href="' + esc(langPath('kiralama')) + '?id=' + esc(m.id) + '" class="btn btn-secondary" style="grid-column:1 / -1">' + esc(J.rent || 'Kirala') + '</a>' +
+            '<div class="machine-card-badges">' +
+              '<span class="machine-card-badge">' + esc(label) + '</span>' +
+              '<span class="machine-card-badge machine-card-badge--stock">' + esc(J.stockIn || 'Stokta') + '</span>' +
+            '</div>' +
+            '<h3 class="machine-card-title">' + esc(label) + '</h3>' +
+            '<p class="machine-card-meta">' + esc(String(count)) + ' ' + esc(J.machineLabel || 'makine') + '</p>' +
+            '<div class="machine-card-actions" style="display:grid;grid-template-columns:1fr;gap:10px">' +
+              '<a href="' + esc(href) + '" class="btn btn-primary">' + esc(J.viewCategory || 'Makineleri Gör') + '</a>' +
             '</div>' +
           '</div>';
-        stoktaGrid.appendChild(card);
+        stoktaCats.appendChild(card);
       });
+
+      // Toggle görünürlüğü + metni
+      if (stoktaCatsToggle) {
+        var needsToggle = available.length > limit;
+        stoktaCatsToggle.style.display = needsToggle ? '' : 'none';
+        stoktaCatsToggle.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+        stoktaCatsToggle.classList.toggle('category-toggle-sticky', !!(needsToggle && isExpanded));
+        if (document.body) document.body.classList.toggle('has-fixed-category-toggle', !!(needsToggle && isExpanded));
+        stoktaCatsToggle.textContent = isExpanded
+          ? (J.showLessCategories || 'Daha az göster')
+          : (J.showAllCategories || 'Tüm kategorileri gör');
+      }
     }
     
     // Sayfa yüklendiğinde başlat
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', function() {
         // app-makineler.js yüklenmesini bekle
-        setTimeout(renderStoktaMakineler, 200);
+        setTimeout(renderStoktaKategoriler, 200);
       });
     } else {
-      setTimeout(renderStoktaMakineler, 200);
+      setTimeout(renderStoktaKategoriler, 200);
+    }
+
+    if (stoktaCatsToggle) {
+      stoktaCatsToggle.addEventListener('click', function() {
+        var isExpanded = stoktaCats.getAttribute('data-expanded') === '1';
+        stoktaCats.setAttribute('data-expanded', isExpanded ? '0' : '1');
+        renderStoktaKategoriler();
+      });
+      window.addEventListener('resize', function() {
+        // limit değişebilir, yeniden çiz
+        renderStoktaKategoriler();
+      });
     }
   }
 
