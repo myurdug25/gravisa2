@@ -125,7 +125,13 @@ if (!empty($_FILES['img']) && isset($_FILES['img']['tmp_name'])) {
         if (!in_array($ext, $allowedExt, true)) {
             jsonResponse(['success' => false, 'message' => 'Sadece JPG, PNG, WEBP veya JFIF yükleyebilirsiniz.']);
         }
-        $filename = 'makine_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+        // Güncellemede dosya adında ID olsun (yanlış makineye yazıldı izlenimi / hata ayıklama)
+        $suffix = bin2hex(random_bytes(4));
+        if ($id > 0) {
+            $filename = 'makine_' . $id . '_' . $suffix . '.' . $ext;
+        } else {
+            $filename = 'makine_' . time() . '_' . $suffix . '.' . $ext;
+        }
         $target = $uploadDir . DIRECTORY_SEPARATOR . $filename;
         if (!move_uploaded_file($_FILES['img']['tmp_name'], $target)) {
             jsonResponse(['success' => false, 'message' => 'Görsel diske yazılamadı (izin veya disk).']);
@@ -169,7 +175,10 @@ if ($id <= 0) {
         }
     }
     if (!$updated) {
-        $items[] = $machine;
+        jsonResponse([
+            'success' => false,
+            'message' => 'Bu ID ile makine bulunamadı. Sayfayı yenileyip tekrar deneyin veya “Yeni makine” ile ekleyin.',
+        ]);
     }
     $message = 'Makine güncellendi.';
 }

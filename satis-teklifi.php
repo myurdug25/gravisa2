@@ -56,7 +56,7 @@ $pageId = 'satis-teklifi';
           <h2 style="margin: 32px 0 24px; font-size: 1.35rem;"><?= htmlspecialchars(t('pages.satis_teklifi.h_machine'), ENT_QUOTES, 'UTF-8') ?></h2>
           <div id="makine-bilgileri" class="makine-preview" style="display: none; background: var(--color-surface-alt); padding: 20px; border-radius: var(--radius); margin-bottom: 24px; border: 2px solid var(--color-primary);">
             <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 12px;">
-              <img id="makine-resim" src="" alt="" style="width: 80px; height: 60px; object-fit: cover; border-radius: var(--radius);" />
+              <img id="makine-resim" class="makine-preview__thumb" src="" alt="" />
               <div>
                 <h3 id="makine-adi" style="margin: 0 0 4px; font-size: 1.1rem; color: var(--color-text);"></h3>
                 <p id="makine-detay" style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted);"></p>

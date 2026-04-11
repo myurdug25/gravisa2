@@ -131,7 +131,9 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
     .machine-list-toolbar input[type="search"] { flex: 1; min-width: 220px; padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.9rem; }
     .machine-img-preview-wrap { margin-top: 10px; border-radius: 8px; overflow: hidden; border: 1px solid #e5e7eb; background: #fff; max-width: 360px; display: none; }
     .machine-img-preview-wrap.is-visible { display: block; }
-    .machine-img-preview-wrap img { width: 100%; height: auto; max-height: 220px; object-fit: contain; display: block; }
+    .machine-img-preview-wrap img { width: 100%; height: auto; max-height: 320px; object-fit: contain; object-position: center; display: block; image-rendering: auto; }
+    .machine-edit-context { font-size: 0.9rem; padding: 10px 12px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #c5d7e6; background: #e8f4fc; color: #164a6e; }
+    .machine-edit-context.is-new { background: #f1f5f9; border-color: #e2e8f0; color: #475569; }
     .admin-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .machine-form-hint { font-size: 0.8rem; color: #64748b; margin-top: 4px; line-height: 1.4; }
   </style>
@@ -258,12 +260,14 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
           <aside class="machine-editor-column" aria-label="Makine formu">
             <div id="machine-editor-anchor" class="machine-editor-panel" tabindex="-1">
             <h3 class="machine-editor-column-title">Makine ekle / düzenle</h3>
+            <div id="machine_edit_context" class="machine-edit-context is-new" aria-live="polite">Yeni kayıt — Kaydet dediğinizde listede oluşur. Görsel, bu formdaki kayda gider.</div>
             <div style="display:flex; justify-content:flex-end; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
               <button type="button" class="btn-sm" id="machineNewBtn">+ Yeni makine</button>
             </div>
             <form id="machineForm" enctype="multipart/form-data">
               <?php echo csrfField(); ?>
               <input type="hidden" name="id" id="machine_id" value="">
+              <input type="hidden" name="no" id="machine_no" value="">
               <input type="hidden" name="img_existing" id="machine_img_existing" value="">
               <div style="display:flex; flex-direction:column; gap:10px;">
                 <label>
@@ -320,9 +324,9 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
                   <span style="display:block; font-weight:600; margin-bottom:4px; color:#555;">Görsel</span>
                   <input type="file" name="img" id="machine_img" accept="image/jpeg,image/png,image/webp,image/jfif,.jpg,.jpeg,.png,.webp,.jfif" style="width:100%; font-size:0.85rem;">
                   <small id="machine_img_info" class="machine-form-hint" style="display:block;"></small>
-                  <p class="machine-form-hint">Yeni dosya seçerseniz kayıtta <code>images/makineler/</code> altına güvenli isimle kaydedilir. Boş bırakırsanız mevcut görsel korunur.</p>
+                  <p class="machine-form-hint">Görsel <strong>yalnızca bu formda açık olan</strong> makine kaydına yazılır (üstteki mavi şerit hangi ID’de olduğunuzu gösterir). Dosya orijinal kalitede saklanır; sitede kartlarda kırpma olmadan gösterilir.</p>
                   <div id="machine_img_preview_wrap" class="machine-img-preview-wrap" aria-hidden="true">
-                    <img id="machine_img_preview" src="" alt="Önizleme" width="360" height="220" />
+                    <img id="machine_img_preview" src="" alt="Önizleme" />
                   </div>
                 </label>
                 <div>
@@ -683,6 +687,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
       var searchInput = document.getElementById('machine_search');
       var searchCount = document.getElementById('machine_search_count');
       var editorAnchor = document.getElementById('machine-editor-anchor');
+      var editContext = document.getElementById('machine_edit_context');
       var csrf = document.getElementById('csrf_token');
 
       var machineAllItems = [];
@@ -726,14 +731,31 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
         }, 350);
       }
 
+      function updateEditContext() {
+        if (!editContext) return;
+        var mid = document.getElementById('machine_id').value.trim();
+        var firma = (document.getElementById('machine_firma') && document.getElementById('machine_firma').value) || '';
+        var model = (document.getElementById('machine_tipModel') && document.getElementById('machine_tipModel').value) || '';
+        if (mid) {
+          editContext.classList.remove('is-new');
+          editContext.textContent = 'Düzenlenen kayıt: ID #' + mid + (firma || model ? ' — ' + String(firma + ' ' + model).trim() : '') + '. Yüklediğiniz görsel bu makineye yazılır.';
+        } else {
+          editContext.classList.add('is-new');
+          editContext.textContent = 'Yeni kayıt — Kaydet dediğinizde listede oluşur. Görsel, bu formdaki kayda gider.';
+        }
+      }
+
       function resetForm() {
         revokePreviewBlob();
         form.reset();
         document.getElementById('machine_id').value = '';
+        var noEl = document.getElementById('machine_no');
+        if (noEl) noEl.value = '';
         if (imgExisting) imgExisting.value = '';
         if (imgInput) imgInput.value = '';
         if (imgInfo) imgInfo.textContent = '';
         setPreviewFromServerPath('');
+        updateEditContext();
         setMessage('', true);
       }
 
@@ -741,6 +763,8 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
         revokePreviewBlob();
         if (imgInput) imgInput.value = '';
         document.getElementById('machine_id').value = m.id || '';
+        var noEl = document.getElementById('machine_no');
+        if (noEl) noEl.value = m.no != null ? String(m.no) : '';
         document.getElementById('machine_tip').value = m.tip || '';
         document.getElementById('machine_firma').value = m.firma || '';
         document.getElementById('machine_tipModel').value = m.tipModel || '';
@@ -759,6 +783,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
           imgInfo.textContent = path ? ('Kayıtlı dosya: ' + path) : 'Henüz görsel yok — aşağıdan yükleyebilirsiniz.';
         }
         setPreviewFromServerPath(path);
+        updateEditContext();
       }
 
       function applyMachineFilter() {
@@ -889,6 +914,10 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
         setMessage('Kaydediliyor...', true);
         var fd = new FormData(form);
         fd.append('action', 'save');
+        var midEl = document.getElementById('machine_id');
+        var noEl2 = document.getElementById('machine_no');
+        if (midEl) fd.set('id', midEl.value || '');
+        if (noEl2) fd.set('no', noEl2.value || '');
         if (csrf) fd.append('_csrf_token', csrf.value);
         fetch('../api/makineler-admin.php', { method: 'POST', body: fd })
           .then(function(r) { return r.json(); })
@@ -933,6 +962,11 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
           applyMachineFilter();
         });
       }
+
+      ['machine_firma', 'machine_tipModel', 'machine_tip'].forEach(function (fid) {
+        var el = document.getElementById(fid);
+        if (el) el.addEventListener('input', updateEditContext);
+      });
 
       loadMachines();
     })();
