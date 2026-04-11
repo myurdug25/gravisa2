@@ -153,18 +153,26 @@
         }
       });
 
-      /* Kategori görseli: yalnızca bu kategorideki makineler arasından, envanter ID sırasına göre ilk geçerli fotoğraf.
-         Başka kategoriden veya havuzdan rastgele görsel kullanılmaz. */
+      /* Kategori görseli: bu kategorideki makineleri ID sırasıyla dene; görsel, katalog kartıyla aynı kaynaktan
+         (gravisaResolveMachineImage = kendi img veya sitedeki havuz yedeği). Sadece JSON’daki img’ye bakmak yetmez. */
       function categoryCardImgSrc(k) {
         var group = (groups[k] || []).slice().sort(function(a, b) {
           return (parseInt(a && a.id, 10) || 0) - (parseInt(b && b.id, 10) || 0);
         });
+        var resolveImg = (typeof window.gravisaResolveMachineImage === 'function')
+          ? window.gravisaResolveMachineImage
+          : null;
         var i;
         for (i = 0; i < group.length; i++) {
-          if (group[i] && group[i].img && String(group[i].img).trim() !== '') {
-            var u = safeImg(group[i].img, group[i].img_mtime);
-            if (u) return u;
+          var m = group[i];
+          if (!m) continue;
+          var u = '';
+          if (resolveImg) {
+            u = resolveImg(m) || '';
+          } else if (m.img && String(m.img).trim() !== '') {
+            u = safeImg(m.img, m.img_mtime) || '';
           }
+          if (u) return u;
         }
         return '';
       }
