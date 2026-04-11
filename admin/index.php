@@ -128,7 +128,8 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
       border-bottom: 1px solid #e2e8f0;
     }
     .machine-list-toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 12px; }
-    .machine-list-toolbar input[type="search"] { flex: 1; min-width: 220px; padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.9rem; }
+    .machine-list-toolbar input[type="search"] { flex: 1; min-width: 200px; padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.9rem; }
+    .machine-list-toolbar select { min-width: 200px; max-width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.9rem; background: #fff; }
     .machine-img-preview-wrap { margin-top: 10px; border-radius: 8px; overflow: hidden; border: 1px solid #e5e7eb; background: #fff; max-width: 360px; display: none; }
     .machine-img-preview-wrap.is-visible { display: block; }
     .machine-img-preview-wrap img { width: 100%; height: auto; max-height: 320px; object-fit: contain; object-position: center; display: block; image-rendering: auto; }
@@ -234,14 +235,19 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
           <div class="machine-list-column">
             <h3 style="margin:0 0 12px; font-size:1.1rem;">Makine listesi</h3>
             <div class="machine-list-toolbar">
-              <input type="search" id="machine_search" placeholder="ID, tip, firma, model yılı veya model adı ile ara…" autocomplete="off" />
+              <select id="machine_tip_filter" aria-label="Kategori filtre">
+                <option value="">Tüm kategoriler</option>
+              </select>
+              <input type="search" id="machine_search" placeholder="ID, no, tip, firma, model…" autocomplete="off" />
               <span id="machine_search_count" style="font-size:0.85rem; color:#666; white-space:nowrap;"></span>
             </div>
+            <p class="machine-form-hint" style="margin:0 0 12px;">Liste, sitedeki kategorilerle aynı <strong>Tip</strong> alanına göre gruplanır. Bir satırı düzenleyip Kaydet dediğinizde yalnızca o makine güncellenir.</p>
             <div class="admin-table-wrap">
-              <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 640px;">
+              <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 720px;">
                 <thead>
                   <tr style="background:#f5f7fa;">
                     <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">ID</th>
+                    <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">No</th>
                     <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Tip</th>
                     <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Firma / Model</th>
                     <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Yıl</th>
@@ -252,7 +258,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
                   </tr>
                 </thead>
                 <tbody id="machineTableBody">
-                  <tr><td colspan="8" style="padding:12px; text-align:center; color:#999;">Yükleniyor...</td></tr>
+                  <tr><td colspan="9" style="padding:12px; text-align:center; color:#999;">Yükleniyor...</td></tr>
                 </tbody>
               </table>
             </div>
@@ -267,13 +273,18 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
             <form id="machineForm" enctype="multipart/form-data">
               <?php echo csrfField(); ?>
               <input type="hidden" name="id" id="machine_id" value="">
-              <input type="hidden" name="no" id="machine_no" value="">
               <input type="hidden" name="img_existing" id="machine_img_existing" value="">
               <div style="display:flex; flex-direction:column; gap:10px;">
                 <label>
-                  <span style="display:block; font-weight:600; margin-bottom:4px; color:#555;">Tip</span>
-                  <input type="text" name="tip" id="machine_tip" required style="width:100%; padding:8px 10px; border:1px solid #ddd; border-radius:8px;">
+                  <span style="display:block; font-weight:600; margin-bottom:4px; color:#555;">Envanter no (Excel)</span>
+                  <input type="text" name="no" id="machine_no" placeholder="Örn. 14 — boş bırakılırsa kayıt ID kullanılır" style="width:100%; padding:8px 10px; border:1px solid #ddd; border-radius:8px;">
+                  <span class="machine-form-hint">Toplu görsel dosya adı: <code id="machine_img_filename_hint">images/makineler/makine_NO.jpg</code> (.png / .webp de olur). Makpark içe aktarma bu numarayı kullanır.</span>
                 </label>
+                <label>
+                  <span style="display:block; font-weight:600; margin-bottom:4px; color:#555;">Tip (kategori)</span>
+                  <input type="text" name="tip" id="machine_tip" required style="width:100%; padding:8px 10px; border:1px solid #ddd; border-radius:8px;" list="machine_tip_suggestions">
+                </label>
+                <datalist id="machine_tip_suggestions"></datalist>
                 <label>
                   <span style="display:block; font-weight:600; margin-bottom:4px; color:#555;">Firma</span>
                   <input type="text" name="firma" id="machine_firma" required style="width:100%; padding:8px 10px; border:1px solid #ddd; border-radius:8px;">
@@ -324,7 +335,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
                   <span style="display:block; font-weight:600; margin-bottom:4px; color:#555;">Görsel</span>
                   <input type="file" name="img" id="machine_img" accept="image/jpeg,image/png,image/webp,image/jfif,.jpg,.jpeg,.png,.webp,.jfif" style="width:100%; font-size:0.85rem;">
                   <small id="machine_img_info" class="machine-form-hint" style="display:block;"></small>
-                  <p class="machine-form-hint">Görsel <strong>yalnızca bu formda açık olan</strong> makine kaydına yazılır (üstteki mavi şerit hangi ID’de olduğunuzu gösterir). Dosya orijinal kalitede saklanır; sitede kartlarda kırpma olmadan gösterilir.</p>
+                  <p class="machine-form-hint">Yüklediğiniz dosya <strong>yalnızca şu an düzenlediğiniz</strong> makineye (üstteki ID şeridi) yazılır; sitede aynı kayıt anında güncellenir. İsterseniz dosyayı <code>makine_{no}.jpg</code> adıyla klasöre koyup <code>python scripts/import_makpark.py --assign-images-only</code> ile de eşleyebilirsiniz.</p>
                   <div id="machine_img_preview_wrap" class="machine-img-preview-wrap" aria-hidden="true">
                     <img id="machine_img_preview" src="" alt="Önizleme" />
                   </div>
@@ -686,6 +697,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
       var imgPreview = document.getElementById('machine_img_preview');
       var searchInput = document.getElementById('machine_search');
       var searchCount = document.getElementById('machine_search_count');
+      var tipFilterSelect = document.getElementById('machine_tip_filter');
       var editorAnchor = document.getElementById('machine-editor-anchor');
       var editContext = document.getElementById('machine_edit_context');
       var csrf = document.getElementById('csrf_token');
@@ -731,6 +743,50 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
         }, 350);
       }
 
+      function updateFilenameHint() {
+        var hint = document.getElementById('machine_img_filename_hint');
+        var noEl = document.getElementById('machine_no');
+        if (!hint || !noEl) return;
+        var n = noEl.value.trim();
+        if (!n) {
+          var mid = document.getElementById('machine_id').value.trim();
+          n = mid || 'NO';
+        }
+        hint.textContent = 'images/makineler/makine_' + n + '.jpg';
+      }
+
+      function rebuildTipFilter() {
+        if (!tipFilterSelect) return;
+        var prev = tipFilterSelect.value;
+        var tips = [];
+        var seen = {};
+        machineAllItems.forEach(function(m) {
+          var t = String(m.tip || '').trim();
+          if (!t || seen[t]) return;
+          seen[t] = true;
+          tips.push(t);
+        });
+        tips.sort(function(a, b) { return a.localeCompare(b, 'tr'); });
+        tipFilterSelect.innerHTML = '<option value="">Tüm kategoriler</option>';
+        tips.forEach(function(t) {
+          var o = document.createElement('option');
+          o.value = t;
+          o.textContent = t;
+          tipFilterSelect.appendChild(o);
+        });
+        if (prev && tips.indexOf(prev) !== -1) tipFilterSelect.value = prev;
+        else tipFilterSelect.value = '';
+        var datalist = document.getElementById('machine_tip_suggestions');
+        if (datalist) {
+          datalist.innerHTML = '';
+          tips.forEach(function(t) {
+            var opt = document.createElement('option');
+            opt.value = t;
+            datalist.appendChild(opt);
+          });
+        }
+      }
+
       function updateEditContext() {
         if (!editContext) return;
         var mid = document.getElementById('machine_id').value.trim();
@@ -756,6 +812,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
         if (imgInfo) imgInfo.textContent = '';
         setPreviewFromServerPath('');
         updateEditContext();
+        updateFilenameHint();
         setMessage('', true);
       }
 
@@ -784,13 +841,19 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
         }
         setPreviewFromServerPath(path);
         updateEditContext();
+        updateFilenameHint();
       }
 
       function applyMachineFilter() {
+        var tipSel = tipFilterSelect ? String(tipFilterSelect.value || '').trim() : '';
         var q = (searchInput && searchInput.value || '').trim().toLowerCase();
         var filtered = machineAllItems;
+        filtered = filtered.filter(function(m) {
+          if (tipSel && String(m.tip || '') !== tipSel) return false;
+          return true;
+        });
         if (q) {
-          filtered = machineAllItems.filter(function(m) {
+          filtered = filtered.filter(function(m) {
             var blob = [m.id, m.no, m.tip, m.firma, m.tipModel, m.modelYil, m.guc, m.motorTip].map(function(x) {
               return String(x != null ? x : '').toLowerCase();
             }).join(' ');
@@ -807,21 +870,23 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
 
       function renderRows(items) {
         if (!machineAllItems.length) {
-          tbody.innerHTML = '<tr><td colspan="8" style="padding:12px; text-align:center; color:#999;">Henüz makine eklenmemiş.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="9" style="padding:12px; text-align:center; color:#999;">Henüz makine eklenmemiş.</td></tr>';
           return;
         }
         if (!items || !items.length) {
-          tbody.innerHTML = '<tr><td colspan="8" style="padding:12px; text-align:center; color:#999;">Aramanıza uygun makine yok.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="9" style="padding:12px; text-align:center; color:#999;">Aramanıza uygun makine yok.</td></tr>';
           return;
         }
         tbody.innerHTML = '';
         items.forEach(function(m) {
           var imgPreviewCell = m.img
-            ? '<img src="../' + String(m.img).replace(/ /g, '%20') + '" alt="" loading="lazy" style="width:60px; height:40px; object-fit:cover; border-radius:4px;">'
+            ? '<img src="../' + String(m.img).replace(/ /g, '%20') + '" alt="" loading="lazy" style="width:56px; height:42px; object-fit:contain; border-radius:4px; background:#f1f5f9;">'
             : '-';
+          var noDisp = (m.no != null && String(m.no).trim() !== '') ? String(m.no) : '—';
           var tr = document.createElement('tr');
           tr.innerHTML =
             '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0; font-size:0.8rem; color:#999;">' + (m.id || '') + '</td>' +
+            '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0; font-weight:600; color:#164a6e;">' + noDisp + '</td>' +
             '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0;">' + (m.tip || '') + '</td>' +
             '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0;">' + (m.firma || '') + ' ' + (m.tipModel || '') + '</td>' +
             '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0;">' + (m.modelYil || '') + '</td>' +
@@ -845,6 +910,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
               return;
             }
             machineAllItems = res.items || [];
+            rebuildTipFilter();
             applyMachineFilter();
           })
           .catch(function() {
@@ -900,6 +966,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
               setMessage(res.message || (res.success ? 'Silindi.' : 'Silme hatası.'), !!res.success);
               if (res.success) {
                 machineAllItems = res.items || [];
+                rebuildTipFilter();
                 applyMachineFilter();
                 resetForm();
               }
@@ -925,6 +992,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
             setMessage(res.message || (res.success ? 'Kaydedildi.' : 'Hata.'), !!res.success);
             if (res.success) {
               machineAllItems = res.items || [];
+              rebuildTipFilter();
               applyMachineFilter();
               var sid = res.saved_id;
               if (sid) {
@@ -961,6 +1029,15 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
         searchInput.addEventListener('input', function() {
           applyMachineFilter();
         });
+      }
+      if (tipFilterSelect) {
+        tipFilterSelect.addEventListener('change', function() {
+          applyMachineFilter();
+        });
+      }
+      var machineNoInput = document.getElementById('machine_no');
+      if (machineNoInput) {
+        machineNoInput.addEventListener('input', updateFilenameHint);
       }
 
       ['machine_firma', 'machine_tipModel', 'machine_tip'].forEach(function (fid) {
