@@ -53,7 +53,7 @@
   // Her zaman API'den güncel veriyi çek (basePath ile local/production uyumlu)
   var base = (typeof window.basePath === 'string') ? window.basePath : '';
   var apiUrl = (window.location.origin || (window.location.protocol + '//' + window.location.host)) + base + '/api/settings.php?t=' + Date.now();
-  fetch(apiUrl)
+  fetch(apiUrl, { cache: 'no-store', credentials: 'same-origin' })
     .then(function (r) { return r.json(); })
     .then(applySettings)
     .catch(function () {});

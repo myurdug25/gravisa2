@@ -40,7 +40,7 @@ $pageId = 'makine-detay';
 
   <?php include __DIR__ . '/includes/site-footer.php'; ?>
 
-  <script src="<?= BASE_PATH ?>/assets/js/site-settings.js?v=6"></script>
+  <script src="<?= BASE_PATH ?>/assets/js/site-settings.js?v=7"></script>
   <script src="<?= BASE_PATH ?>/assets/js/app.js?v=<?= @filemtime(__DIR__ . '/assets/js/app.js') ?: 4 ?>"></script>
   <script src="<?= BASE_PATH ?>/assets/js/app-makineler.js?v=7"></script>
   <script>

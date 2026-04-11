@@ -29,8 +29,7 @@ function loadEnv(string $dir): void
             continue;
         }
         $_ENV[$name] = $value;
-        if (!getenv($name)) {
-            putenv("$name=$value");
-        }
+        // Her istekte dosyadaki değeri sürece senkron tut (sunucu ortamında eski getenv kalmasın)
+        putenv("{$name}={$value}");
     }
 }

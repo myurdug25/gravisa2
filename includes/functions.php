@@ -201,24 +201,46 @@ function saveSubmission(string $type, array $data): string
     return $id;
 }
 
-/** Site ayarlarını döndürür (config sabitleriyle birleşik) */
+/** .env yüklendikten sonra $_ENV / getenv okur (getSettings önce loadEnv çağırır). */
+function gravisa_env_value(string $key, string $default = ''): string
+{
+    $v = $_ENV[$key] ?? getenv($key);
+    if ($v === false || $v === null) {
+        return $default;
+    }
+    $s = trim((string) $v);
+
+    return $s !== '' ? $s : $default;
+}
+
+/** Site ayarlarını döndürür (data/settings.json + güncel .env birleşimi) */
 function getSettings(): array
 {
+    if (function_exists('loadEnv') && defined('ROOT_PATH')) {
+        loadEnv(ROOT_PATH . DIRECTORY_SEPARATOR . 'config');
+    }
+    $ev = static function (string $key, string $default = ''): string {
+        return gravisa_env_value($key, $default);
+    };
+
+    $waDigits = preg_replace('/\D/', '', $ev('WHATSAPP_NUMBER', ''));
+
     $defaults = [
-        'contact_email' => (defined('CONTACT_EMAIL') && CONTACT_EMAIL) ? CONTACT_EMAIL : (defined('MAIL_TO') ? MAIL_TO : 'destek@gravisa.com.tr'),
-        'servis_email'  => (defined('SERVIS_EMAIL_ENV') && SERVIS_EMAIL_ENV) ? SERVIS_EMAIL_ENV : 'servis@gravisa.com',
-        'whatsapp_number' => (defined('WHATSAPP_NUMBER') && WHATSAPP_NUMBER) ? WHATSAPP_NUMBER : '905551234567',
-        'phone_display' => (defined('PHONE_DISPLAY') && PHONE_DISPLAY) ? PHONE_DISPLAY : '0555 123 45 67',
+        'contact_email' => $ev('CONTACT_EMAIL', $ev('MAIL_TO', 'destek@gravisa.com.tr')),
+        'servis_email'  => $ev('SERVIS_EMAIL', $ev('MAIL_TO', $ev('CONTACT_EMAIL', 'servis@gravisa.com'))),
+        'whatsapp_number' => $waDigits !== '' ? $waDigits : '905551234567',
+        'phone_display' => $ev('PHONE_DISPLAY', '0555 123 45 67'),
         'address'       => 'Örnek Mah. Sanayi Cad. No:1' . "\n" . 'İstanbul, Türkiye',
-        'mail_to'       => defined('MAIL_TO') ? MAIL_TO : '',
-        'mail_from_name'=> defined('MAIL_FROM_NAME') ? MAIL_FROM_NAME : 'Gravisa Web Sitesi',
-        'mail_from'     => defined('MAIL_FROM') ? MAIL_FROM : '',
+        'mail_to'       => $ev('MAIL_TO', ''),
+        'mail_from_name'=> $ev('MAIL_FROM_NAME', 'Gravisa Web Sitesi'),
+        'mail_from'     => $ev('MAIL_FROM', ''),
         'seo_site_title' => 'Gravisa',
         'seo_default_description' => 'Gravisa - İş makineleri satış ve kiralama. Satış teklifi alın, günlük/aylık kiralama seçenekleri. Hızlı iletişim.',
         'seo_default_keywords' => 'iş makineleri, satış, kiralama, ekskavatör, yükleyici, Gravisa',
         'seo_pages'     => '', // JSON string: {"index":{"title":"...","description":"..."},...}
         'whatsapp_prefill_tr' => '',
         'whatsapp_prefill_en' => '',
+        'prefer_env_contact' => false,
     ];
     $file = defined('DATA_PATH') ? DATA_PATH . '/settings.json' : (dirname(__DIR__) . '/data/settings.json');
     clearstatcache(true, $file);
@@ -230,11 +252,41 @@ function getSettings(): array
         return $defaults;
     }
     $merged = array_merge($defaults, $saved);
-    // Boş değerlerde .env fallback (admin kaydetmemişse .env kullanılır)
-    if (empty(trim($merged['contact_email'] ?? '')) && defined('CONTACT_EMAIL') && CONTACT_EMAIL) $merged['contact_email'] = CONTACT_EMAIL;
-    if (empty(trim($merged['servis_email'] ?? '')) && defined('SERVIS_EMAIL_ENV') && SERVIS_EMAIL_ENV) $merged['servis_email'] = SERVIS_EMAIL_ENV;
-    if (empty(trim($merged['whatsapp_number'] ?? '')) && defined('WHATSAPP_NUMBER') && WHATSAPP_NUMBER) $merged['whatsapp_number'] = WHATSAPP_NUMBER;
-    if (empty(trim($merged['phone_display'] ?? '')) && defined('PHONE_DISPLAY') && PHONE_DISPLAY) $merged['phone_display'] = PHONE_DISPLAY;
+
+    // Panel: "İletişimde .env öncelikli" → JSON’daki e-posta/telefon/WhatsApp yok sayılır (sadece .env)
+    if (!empty($merged['prefer_env_contact'])) {
+        $merged['contact_email'] = $defaults['contact_email'];
+        $merged['servis_email'] = $defaults['servis_email'];
+        $merged['whatsapp_number'] = $defaults['whatsapp_number'];
+        $merged['phone_display'] = $defaults['phone_display'];
+        $merged['mail_to'] = $defaults['mail_to'];
+        $merged['mail_from_name'] = $defaults['mail_from_name'];
+        $merged['mail_from'] = $defaults['mail_from'];
+    } else {
+        // Boş alanlarda güncel .env (panelde boş bırakıldıysa .env devreye girer)
+        if (empty(trim((string) ($merged['contact_email'] ?? '')))) {
+            $merged['contact_email'] = $defaults['contact_email'];
+        }
+        if (empty(trim((string) ($merged['servis_email'] ?? '')))) {
+            $merged['servis_email'] = $defaults['servis_email'];
+        }
+        if (empty(trim((string) ($merged['whatsapp_number'] ?? '')))) {
+            $merged['whatsapp_number'] = $defaults['whatsapp_number'];
+        }
+        if (empty(trim((string) ($merged['phone_display'] ?? '')))) {
+            $merged['phone_display'] = $defaults['phone_display'];
+        }
+        if (empty(trim((string) ($merged['mail_to'] ?? '')))) {
+            $merged['mail_to'] = $defaults['mail_to'];
+        }
+        if (empty(trim((string) ($merged['mail_from_name'] ?? '')))) {
+            $merged['mail_from_name'] = $defaults['mail_from_name'];
+        }
+        if (empty(trim((string) ($merged['mail_from'] ?? '')))) {
+            $merged['mail_from'] = $defaults['mail_from'];
+        }
+    }
+
     return $merged;
 }
 
@@ -294,13 +346,26 @@ function saveSettings(array $settings): bool
     $current = file_exists($file) ? (json_decode(file_get_contents($file), true) ?: []) : [];
     $allowed = ['contact_email', 'servis_email', 'whatsapp_number', 'phone_display', 'address', 'mail_to', 'mail_from_name', 'mail_from',
         'seo_site_title', 'seo_default_description', 'seo_default_keywords', 'seo_pages',
-        'whatsapp_prefill_tr', 'whatsapp_prefill_en'];
+        'whatsapp_prefill_tr', 'whatsapp_prefill_en', 'prefer_env_contact'];
     foreach ($allowed as $key) {
-        if (array_key_exists($key, $settings)) {
-            $current[$key] = $key === 'seo_pages' ? (is_string($settings[$key]) ? $settings[$key] : json_encode($settings[$key], JSON_UNESCAPED_UNICODE)) : trim((string)$settings[$key]);
+        if (!array_key_exists($key, $settings)) {
+            continue;
+        }
+        if ($key === 'seo_pages') {
+            $current[$key] = is_string($settings[$key]) ? $settings[$key] : json_encode($settings[$key], JSON_UNESCAPED_UNICODE);
+        } elseif ($key === 'prefer_env_contact') {
+            $current[$key] = (bool) $settings[$key];
+        } else {
+            $current[$key] = trim((string) $settings[$key]);
         }
     }
-    return file_put_contents($file, json_encode($current, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)) !== false;
+    $bytes = @file_put_contents($file, json_encode($current, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), LOCK_EX);
+    $ok = $bytes !== false;
+    if ($ok) {
+        clearstatcache(true, $file);
+    }
+
+    return $ok;
 }
 
 /** Sayfa ID’sine göre SEO başlık, açıklama ve anahtar kelimeleri döndürür (admin’den yönetilen) */

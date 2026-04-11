@@ -56,11 +56,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'seo_default_description' => sanitize($input['seo_default_description'] ?? ''),
         'seo_default_keywords'    => sanitize($input['seo_default_keywords'] ?? ''),
         'seo_pages'        => sanitizeJsonPages($input['seo_pages'] ?? ''),
+        'prefer_env_contact' => !empty($input['prefer_env_contact']),
     ];
     if (saveSettings($settings)) {
         jsonResponse(['success' => true, 'message' => 'Ayarlar kaydedildi.']);
     }
-    jsonResponse(['success' => false, 'message' => 'Kayıt sırasında hata oluştu.'], 500);
+    $dataPath = defined('DATA_PATH') ? DATA_PATH : '';
+    $hint = '';
+    if ($dataPath !== '' && (!is_dir($dataPath) || !is_writable($dataPath))) {
+        $hint = ' data/ klasörü yazılabilir olmalı (chmod 755 veya 775).';
+    }
+    jsonResponse(['success' => false, 'message' => 'Kayıt sırasında hata oluştu.' . $hint], 500);
 }
 
 jsonResponse(['success' => false, 'message' => 'Geçersiz istek.'], 405);

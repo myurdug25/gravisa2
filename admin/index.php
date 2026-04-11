@@ -152,6 +152,10 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
               <span style="display: block; font-weight: 600; margin-bottom: 6px; color: #555;">Adres</span>
               <textarea name="address" rows="3" style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px;"><?= htmlspecialchars($settings['address'] ?? '') ?></textarea>
             </label>
+            <label style="display: flex; align-items: flex-start; gap: 10px; font-size: 0.9rem; color: #444;">
+              <input type="checkbox" name="prefer_env_contact" value="1" style="margin-top: 3px;" <?= !empty($settings['prefer_env_contact']) ? 'checked' : '' ?> />
+              <span><strong>İletişimde öncelik .env dosyasında</strong> — İşaretliyse e-posta, WhatsApp, telefon ve form mail alanları yalnızca <code style="font-size:0.85em;">config/.env</code> üzerinden okunur; aşağıdaki panel alanları yok sayılır. .env’i sık değiştiriyorsanız kullanın. Panelden yönetmek için kutuyu kaldırın.</span>
+            </label>
             <hr style="border: none; border-top: 1px solid #eee;" />
             <p style="font-size: 0.9rem; color: #666;">Form talepleri aşağıdaki adrese e-posta ile gönderilir. Boş bırakırsanız config.php içindeki MAIL_TO kullanılır.</p>
             <label style="display: block;">
