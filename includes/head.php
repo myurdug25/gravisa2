@@ -43,14 +43,12 @@ $gravisaHrefEn = $gravisaAbs . (function_exists('gravisa_url_for_lang') ? gravis
 <link rel="alternate" hreflang="x-default" href="<?= htmlspecialchars($gravisaHrefTr, ENT_QUOTES, 'UTF-8') ?>" />
 <?php endif; ?>
 <title><?= htmlspecialchars($pageTitle) ?></title>
-<script>window.basePath='<?= addslashes(defined('BASE_PATH') ? BASE_PATH : '') ?>';<?php if (function_exists('gravisa_js_strings')): ?>window.__GRAVISA_JS=<?= json_encode(gravisa_js_strings(), JSON_UNESCAPED_UNICODE) ?>;window.GRAVISA_LANG='<?= defined('GRAVISA_LANG') ? GRAVISA_LANG : 'tr' ?>';window.gravisaLangPath=function(s){var b=window.basePath||'',g=(typeof window.GRAVISA_LANG==='string'?window.GRAVISA_LANG:'tr');s=(s||'').replace(/^\//,'');if(!s||s==='index')return b+'/'+g;return b+'/'+g+'/'+s;};<?php endif; ?>window.__GRAVISA_WA_PREFILL=<?= json_encode(function_exists('getWaPrefillMessage') ? getWaPrefillMessage() : (function_exists('t') ? t('wa.default_message') : 'Merhaba, Gravisa ekibiyiz. Size nasıl yardımcı olabiliriz?'), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;window.__siteSettings=<?= json_encode([
+<script>window.basePath='<?= addslashes(defined('BASE_PATH') ? BASE_PATH : '') ?>';<?php if (function_exists('gravisa_js_strings')): ?>window.__GRAVISA_JS=<?= json_encode(gravisa_js_strings(), JSON_UNESCAPED_UNICODE) ?>;window.GRAVISA_LANG='<?= defined('GRAVISA_LANG') ? GRAVISA_LANG : 'tr' ?>';window.gravisaLangPath=function(s){var b=window.basePath||'',g=(typeof window.GRAVISA_LANG==='string'?window.GRAVISA_LANG:'tr');s=(s||'').replace(/^\//,'');if(!s||s==='index')return b+'/'+g;return b+'/'+g+'/'+s;};<?php endif; ?>window.__siteSettings=<?= json_encode([
   'contact_email'=>$siteSettings['contact_email']??'',
   'servis_email'=>$siteSettings['servis_email']??'',
   'whatsapp_number'=>$siteSettings['whatsapp_number']??'',
   'phone_display'=>$siteSettings['phone_display']??'',
-  'address'=>$siteSettings['address']??'',
-  'whatsapp_prefill_tr'=>$siteSettings['whatsapp_prefill_tr']??'',
-  'whatsapp_prefill_en'=>$siteSettings['whatsapp_prefill_en']??''
+  'address'=>$siteSettings['address']??''
 ], JSON_UNESCAPED_UNICODE) ?>;</script>
 <script>
 (function () {

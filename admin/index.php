@@ -70,6 +70,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
     .admin-nav a:hover { color: #1e5f8a; }
     .admin-nav a.active { color: #1e5f8a; border-bottom-color: #1e5f8a; }
     .admin-content { padding: 32px; max-width: 1200px; margin: 0 auto; }
+    .admin-content--wide { max-width: 1480px; }
     .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); border: 1px solid #e8e8e8; overflow: hidden; }
     .card-header { padding: 20px 24px; border-bottom: 1px solid #eee; font-weight: 700; font-size: 1.1rem; color: #1e5f8a; }
     .item { padding: 20px 24px; border-bottom: 1px solid #f0f0f0; }
@@ -99,7 +100,33 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
     .detail-reply label { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 0.9rem; }
     .reply-status { font-size: 0.85rem; color: #0a0; margin-top: 8px; }
     .admin-machines-layout { display: flex; flex-direction: column; gap: 24px; }
-    .machine-editor-panel { scroll-margin-top: 20px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px 22px; }
+    .admin-machines-layout--split {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(300px, 400px);
+      gap: 24px;
+      align-items: start;
+    }
+    @media (max-width: 992px) {
+      .admin-machines-layout--split {
+        grid-template-columns: 1fr;
+      }
+    }
+    .machine-editor-column {
+      position: sticky;
+      top: 16px;
+    }
+    @media (max-width: 992px) {
+      .machine-editor-column { position: static; }
+    }
+    .machine-editor-panel { scroll-margin-top: 24px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px 22px; }
+    .machine-editor-column-title {
+      margin: 0 0 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #1e5f8a;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #e2e8f0;
+    }
     .machine-list-toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 12px; }
     .machine-list-toolbar input[type="search"] { flex: 1; min-width: 220px; padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.9rem; }
     .machine-img-preview-wrap { margin-top: 10px; border-radius: 8px; overflow: hidden; border: 1px solid #e5e7eb; background: #fff; max-width: 360px; display: none; }
@@ -124,7 +151,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
     <a href="?tab=<?= $t ?>" class="<?= $tab === $t ? 'active' : '' ?>"><?= $labels[$t] ?></a>
     <?php endforeach; ?>
   </nav>
-  <main class="admin-content">
+  <main class="admin-content<?= $tab === 'makineler' ? ' admin-content--wide' : '' ?>">
     <?php if ($tab === 'ayarlar'): ?>
     <div class="card">
       <div class="card-header">Site Ayarları</div>
@@ -143,15 +170,6 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
             <label style="display: block;">
               <span style="display: block; font-weight: 600; margin-bottom: 6px; color: #555;">WhatsApp Numarası (sadece rakam, örn. 905551234567)</span>
               <input type="text" name="whatsapp_number" value="<?= htmlspecialchars($settings['whatsapp_number'] ?? '') ?>" placeholder="905551234567" style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px;" />
-            </label>
-            <label style="display: block;">
-              <span style="display: block; font-weight: 600; margin-bottom: 6px; color: #555;">WhatsApp ön metni (Türkçe sayfa)</span>
-              <textarea name="whatsapp_prefill_tr" rows="3" maxlength="2000" placeholder="Boş bırakırsanız sitedeki varsayılan çeviri metni kullanılır." style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px;"><?= htmlspecialchars($settings['whatsapp_prefill_tr'] ?? '') ?></textarea>
-              <span style="font-size: 0.8rem; color: #666;">Ziyaretçi WhatsApp’a tıkladığında uygulamada mesaj kutusuna bu metin yazılır (göndermeden önce düzenleyebilir).</span>
-            </label>
-            <label style="display: block;">
-              <span style="display: block; font-weight: 600; margin-bottom: 6px; color: #555;">WhatsApp ön metni (İngilizce sayfa)</span>
-              <textarea name="whatsapp_prefill_en" rows="3" maxlength="2000" placeholder="Boş bırakırsanız İngilizce varsayılan çeviri kullanılır." style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px;"><?= htmlspecialchars($settings['whatsapp_prefill_en'] ?? '') ?></textarea>
             </label>
             <label style="display: block;">
               <span style="display: block; font-weight: 600; margin-bottom: 6px; color: #555;">Telefon (görünen metin)</span>
@@ -210,10 +228,37 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
     <div class="card">
       <div class="card-header">Makineler</div>
       <div class="body" style="padding: 24px;">
-        <div class="admin-machines-layout">
-          <div id="machine-editor-anchor" class="machine-editor-panel" tabindex="-1">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
-              <h3 style="margin:0; font-size:1.15rem; color:#1e5f8a;">Makine ekle / düzenle</h3>
+        <div class="admin-machines-layout admin-machines-layout--split">
+          <div class="machine-list-column">
+            <h3 style="margin:0 0 12px; font-size:1.1rem;">Makine listesi</h3>
+            <div class="machine-list-toolbar">
+              <input type="search" id="machine_search" placeholder="ID, tip, firma, model yılı veya model adı ile ara…" autocomplete="off" />
+              <span id="machine_search_count" style="font-size:0.85rem; color:#666; white-space:nowrap;"></span>
+            </div>
+            <div class="admin-table-wrap">
+              <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 640px;">
+                <thead>
+                  <tr style="background:#f5f7fa;">
+                    <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">ID</th>
+                    <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Tip</th>
+                    <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Firma / Model</th>
+                    <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Yıl</th>
+                    <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Güç</th>
+                    <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Stok</th>
+                    <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Görsel</th>
+                    <th style="text-align:right; padding:8px; border-bottom:1px solid #eee;">İşlem</th>
+                  </tr>
+                </thead>
+                <tbody id="machineTableBody">
+                  <tr><td colspan="8" style="padding:12px; text-align:center; color:#999;">Yükleniyor...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <aside class="machine-editor-column" aria-label="Makine formu">
+            <div id="machine-editor-anchor" class="machine-editor-panel" tabindex="-1">
+            <h3 class="machine-editor-column-title">Makine ekle / düzenle</h3>
+            <div style="display:flex; justify-content:flex-end; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
               <button type="button" class="btn-sm" id="machineNewBtn">+ Yeni makine</button>
             </div>
             <form id="machineForm" enctype="multipart/form-data">
@@ -287,33 +332,8 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
                 </div>
               </div>
             </form>
-          </div>
-          <div>
-            <h3 style="margin:0 0 12px; font-size:1.1rem;">Makine listesi</h3>
-            <div class="machine-list-toolbar">
-              <input type="search" id="machine_search" placeholder="ID, tip, firma, model yılı veya model adı ile ara…" autocomplete="off" />
-              <span id="machine_search_count" style="font-size:0.85rem; color:#666; white-space:nowrap;"></span>
             </div>
-            <div class="admin-table-wrap">
-              <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 640px;">
-                <thead>
-                  <tr style="background:#f5f7fa;">
-                    <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">ID</th>
-                    <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Tip</th>
-                    <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Firma / Model</th>
-                    <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Yıl</th>
-                    <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Güç</th>
-                    <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Stok</th>
-                    <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Görsel</th>
-                    <th style="text-align:right; padding:8px; border-bottom:1px solid #eee;">İşlem</th>
-                  </tr>
-                </thead>
-                <tbody id="machineTableBody">
-                  <tr><td colspan="8" style="padding:12px; text-align:center; color:#999;">Yükleniyor...</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+          </aside>
         </div>
       </div>
     </div>
@@ -698,7 +718,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
 
       function scrollToEditor() {
         if (!editorAnchor) return;
-        editorAnchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        editorAnchor.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         setTimeout(function() {
           try { editorAnchor.focus({ preventScroll: true }); } catch (e) {}
           var tip = document.getElementById('machine_tip');

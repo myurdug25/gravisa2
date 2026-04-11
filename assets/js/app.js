@@ -123,6 +123,7 @@
       // Kategori anahtarı: makinenin kendi tip'inden türet (eks. "Ekskavatör" ayrı kategori olur)
       function tipKey(label) {
         var t = normalize(label);
+        t = t.replace(/\byeralti\b/g, 'yer alti');
         t = t.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
         return t || 'other';
       }

@@ -90,9 +90,9 @@ $pageId = 'satis-teklifi';
   <?php include __DIR__ . '/includes/site-footer.php'; ?>
 
   <script src="<?= BASE_PATH ?>/assets/js/form-api.js?v=3"></script>
-  <script src="<?= BASE_PATH ?>/assets/js/site-settings.js?v=8"></script>
+  <script src="<?= BASE_PATH ?>/assets/js/site-settings.js?v=9"></script>
   <script src="<?= BASE_PATH ?>/assets/js/app.js?v=<?= @filemtime(__DIR__ . '/assets/js/app.js') ?: 4 ?>"></script>
-  <script src="<?= BASE_PATH ?>/assets/js/app-makineler.js?v=7"></script>
+  <script src="<?= BASE_PATH ?>/assets/js/app-makineler.js?v=10"></script>
   <script>
     (function () {
       var FORM = <?= json_encode([
@@ -114,38 +114,50 @@ $pageId = 'satis-teklifi';
         var b = base.replace(/\/$/, '');
         return s.charAt(0) === '/' ? s : (b ? (b + '/' + s) : ('/' + s));
       }
-      // Makine verilerinin yüklenmesini bekle
-      function initSatis() {
-        // Makine verilerini global scope'tan al
-        var makineler = window.makineler || [];
-        
-        if (makineler.length === 0) {
-          // Eğer henüz yüklenmediyse biraz bekle
-          setTimeout(initSatis, 100);
-          return;
-        }
-      
-      // Model select'i doldur
-      var modelSelect = document.getElementById('satis-model');
-      if (modelSelect && makineler.length > 0) {
-        makineler.forEach(function(m) {
-          var opt = document.createElement('option');
-          opt.value = m.id;
-          opt.textContent = m.firma + ' ' + m.tipModel + ' (' + m.tip + ')';
-          modelSelect.appendChild(opt);
-        });
+      function findMakineByParam(makineler, modelId) {
+        if (!modelId || !makineler || !makineler.length) return null;
+        var q = String(modelId).trim();
+        var n = parseInt(q, 10);
+        return makineler.find(function (m) {
+          if (String(m.id) === q) return true;
+          if (!isNaN(n) && Number(m.id) === n) return true;
+          if (isNaN(n) && q) {
+            var ql = q.toLowerCase();
+            var tm = (m.tipModel && String(m.tipModel).toLowerCase()) || '';
+            var full = String((m.firma || '') + ' ' + (m.tipModel || '')).toLowerCase();
+            return tm.indexOf(ql) >= 0 || full.indexOf(ql) >= 0;
+          }
+          return false;
+        }) || null;
       }
-      
+      function resolveMakineImg(makine) {
+        if (!makine) return '';
+        if (typeof window.gravisaResolveMachineImage === 'function') {
+          var u = window.gravisaResolveMachineImage(makine);
+          if (u) return u;
+        }
+        return safeImg(makine.img || '');
+      }
       function showMakineInfo(makine) {
         if (!makine) return;
-        
         var makineBilgileri = document.getElementById('makine-bilgileri');
         if (!makineBilgileri) return;
-        
-        // Makine bilgilerini göster
         makineBilgileri.style.display = 'block';
-        document.getElementById('makine-resim').src = safeImg(makine.img);
-        document.getElementById('makine-resim').alt = makine.tipModel;
+        var imgUrl = resolveMakineImg(makine);
+        var imgEl = document.getElementById('makine-resim');
+        if (imgEl) {
+          imgEl.onerror = null;
+          if (imgUrl) {
+            imgEl.onerror = function () { this.style.display = 'none'; };
+            imgEl.src = imgUrl;
+            imgEl.alt = makine.tipModel || '';
+            imgEl.style.display = '';
+          } else {
+            imgEl.removeAttribute('src');
+            imgEl.alt = '';
+            imgEl.style.display = 'none';
+          }
+        }
         document.getElementById('makine-adi').textContent = makine.firma + ' ' + makine.tipModel;
         var detayText = makine.tip;
         if (makine.modelYil) detayText += ' • ' + makine.modelYil;
@@ -153,71 +165,79 @@ $pageId = 'satis-teklifi';
         document.getElementById('makine-detay').textContent = detayText;
         document.getElementById('makine-id').value = makine.id;
         document.getElementById('makine-model').value = makine.firma + ' ' + makine.tipModel;
-        
-        // Select'i de güncelle
-        if (modelSelect) {
-          modelSelect.value = makine.id;
-        }
+        var modelSelect = document.getElementById('satis-model');
+        if (modelSelect) modelSelect.value = String(makine.id);
       }
-      
-      // URL parametrelerinden makine bilgilerini al
-      var params = new URLSearchParams(window.location.search);
-      var modelId = params.get('id') || params.get('model');
-      
-      if (modelId && makineler.length > 0) {
-        var makineIdNum = parseInt(modelId, 10);
-        var makine = makineler.find(function(m) { 
-          return m.id === makineIdNum || 
-                 (isNaN(makineIdNum) && (
-                   m.tipModel.toLowerCase().includes(modelId.toLowerCase()) || 
-                   (m.firma + ' ' + m.tipModel).toLowerCase().includes(modelId.toLowerCase())
-                 ));
+      function populateSelect(makineler) {
+        var modelSelect = document.getElementById('satis-model');
+        if (!modelSelect || !makineler.length || modelSelect.options.length > 1) return;
+        makineler.forEach(function (m) {
+          var opt = document.createElement('option');
+          opt.value = m.id;
+          opt.textContent = m.firma + ' ' + m.tipModel + ' (' + m.tip + ')';
+          modelSelect.appendChild(opt);
         });
-        
-        if (makine) {
-          showMakineInfo(makine);
+      }
+      function applyFromUrl(makineler) {
+        var params = new URLSearchParams(window.location.search);
+        var modelId = params.get('id') || params.get('model');
+        if (modelId) {
+          var makine = findMakineByParam(makineler, modelId);
+          if (makine) showMakineInfo(makine);
         }
       }
-      
-      // Model değiştiğinde makine bilgilerini güncelle
-      if (modelSelect) {
-        modelSelect.addEventListener('change', function() {
-          var selectedId = this.value;
-          if (selectedId && makineler.length > 0) {
-            var selectedIdNum = parseInt(selectedId, 10);
-            var makine = makineler.find(function(m) { return m.id === selectedIdNum; });
-            if (makine) {
-              showMakineInfo(makine);
+      var satisUiBound = false;
+      function bindSatisUi() {
+        if (satisUiBound) return;
+        satisUiBound = true;
+        var modelSelect = document.getElementById('satis-model');
+        if (modelSelect) {
+          modelSelect.addEventListener('change', function () {
+            var makineler = window.makineler || [];
+            var selectedId = this.value;
+            if (selectedId && makineler.length) {
+              var makine = makineler.find(function (m) { return String(m.id) === String(selectedId); });
+              if (makine) showMakineInfo(makine);
+              else document.getElementById('makine-bilgileri').style.display = 'none';
             } else {
               document.getElementById('makine-bilgileri').style.display = 'none';
             }
+          });
+        }
+        document.getElementById('satis-form').addEventListener('submit', function (e) {
+          e.preventDefault();
+          var form = this;
+          var btn = form.querySelector('button[type="submit"]');
+          if (btn) { btn.disabled = true; btn.textContent = FORM.sending; }
+          if (typeof window.submitFormToAPI === 'function') {
+            window.submitFormToAPI(form, '<?= BASE_PATH ?>/api/satis.php')
+              .then(function (msg) { if (typeof window.showToast === 'function') window.showToast(msg, true); else alert(msg); form.reset(); document.getElementById('makine-bilgileri').style.display = 'none'; })
+              .catch(function (err) { if (typeof window.showToast === 'function') window.showToast(err, false); else alert(err); })
+              .finally(function () { if (btn) { btn.disabled = false; btn.textContent = FORM.btnSubmit; } });
           } else {
+            if (typeof window.showToast === 'function') window.showToast(FORM.toastFallback, true); else alert(FORM.toastFallback);
+            form.reset();
             document.getElementById('makine-bilgileri').style.display = 'none';
+            if (btn) { btn.disabled = false; btn.textContent = FORM.btnSubmit; }
           }
         });
       }
-      
-      // Form gönderimi
-      document.getElementById('satis-form').addEventListener('submit', function (e) {
-        e.preventDefault();
-        var form = this;
-        var btn = form.querySelector('button[type="submit"]');
-        if (btn) { btn.disabled = true; btn.textContent = FORM.sending; }
-        if (typeof window.submitFormToAPI === 'function') {
-          window.submitFormToAPI(form, '<?= BASE_PATH ?>/api/satis.php')
-            .then(function (msg) { if (typeof window.showToast === 'function') window.showToast(msg, true); else alert(msg); form.reset(); document.getElementById('makine-bilgileri').style.display = 'none'; })
-            .catch(function (err) { if (typeof window.showToast === 'function') window.showToast(err, false); else alert(err); })
-            .finally(function () { if (btn) { btn.disabled = false; btn.textContent = FORM.btnSubmit; } });
-        } else {
-          if (typeof window.showToast === 'function') window.showToast(FORM.toastFallback, true); else alert(FORM.toastFallback);
-          form.reset();
-          document.getElementById('makine-bilgileri').style.display = 'none';
-          if (btn) { btn.disabled = false; btn.textContent = FORM.btnSubmit; }
+      function initSatis() {
+        var makineler = window.makineler || [];
+        if (!makineler.length) {
+          setTimeout(initSatis, 100);
+          return;
         }
-      });
+        populateSelect(makineler);
+        applyFromUrl(makineler);
+        bindSatisUi();
       }
-      
-      // Sayfa yüklendiğinde başlat
+      window.addEventListener('gravisa-machines-loaded', function () {
+        var makineler = window.makineler || [];
+        populateSelect(makineler);
+        applyFromUrl(makineler);
+        bindSatisUi();
+      });
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initSatis);
       } else {

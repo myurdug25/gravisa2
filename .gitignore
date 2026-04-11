@@ -26,6 +26,9 @@ Thumbs.db
 # Log
 *.log
 
+# Import yedeği (yerelde kalır)
+data/makineler_admin.json.bak
+
 # Rate limit state (sunucuda otomatik oluşur)
 data/rate_limit.json
 

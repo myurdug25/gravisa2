@@ -238,8 +238,6 @@ function getSettings(): array
         'seo_default_description' => 'Gravisa - İş makineleri satış ve kiralama. Satış teklifi alın, günlük/aylık kiralama seçenekleri. Hızlı iletişim.',
         'seo_default_keywords' => 'iş makineleri, satış, kiralama, ekskavatör, yükleyici, Gravisa',
         'seo_pages'     => '', // JSON string: {"index":{"title":"...","description":"..."},...}
-        'whatsapp_prefill_tr' => '',
-        'whatsapp_prefill_en' => '',
         'prefer_env_contact' => false,
     ];
     $file = defined('DATA_PATH') ? DATA_PATH . '/settings.json' : (dirname(__DIR__) . '/data/settings.json');
@@ -299,43 +297,10 @@ function getWaNum(): string
     return $n ?: '905551234567';
 }
 
-/**
- * WhatsApp wa.me?text= için metin: önce admin (dile göre), yoksa çeviri wa.default_message.
- */
-function getWaPrefillMessage(): string
+/** WhatsApp sohbet linki (yalnızca numara; ön yazılı mesaj yok). */
+function getWaUrl(): string
 {
-    $s = getSettings();
-    $en = defined('GRAVISA_LANG') && GRAVISA_LANG === 'en';
-    $custom = trim((string)($en ? ($s['whatsapp_prefill_en'] ?? '') : ($s['whatsapp_prefill_tr'] ?? '')));
-    if ($custom !== '') {
-        return $custom;
-    }
-    if (function_exists('t')) {
-        return t('wa.default_message');
-    }
-    return $en
-        ? 'Hello, I\'m contacting you via your website. I\'d like information about your construction equipment.'
-        : 'Merhaba, web siteniz üzerinden yazıyorum. İş makineleri hakkında bilgi almak istiyorum.';
-}
-
-/**
- * WhatsApp sohbet linki; ?text= ile ön doldurulmuş karşılama (wa.me API).
- * $customText boşsa admin veya çeviri wa.default_message kullanılır.
- */
-function getWaUrl(?string $customText = null): string
-{
-    $num = getWaNum();
-    $url = 'https://wa.me/' . $num;
-    $text = $customText;
-    if ($text === null || $text === '') {
-        $text = getWaPrefillMessage();
-    }
-    $text = trim((string) $text);
-    if ($text === '') {
-        return $url;
-    }
-
-    return $url . '?text=' . rawurlencode($text);
+    return 'https://wa.me/' . getWaNum();
 }
 
 /** Site ayarlarını kaydeder */
@@ -346,7 +311,7 @@ function saveSettings(array $settings): bool
     $current = file_exists($file) ? (json_decode(file_get_contents($file), true) ?: []) : [];
     $allowed = ['contact_email', 'servis_email', 'whatsapp_number', 'phone_display', 'address', 'mail_to', 'mail_from_name', 'mail_from',
         'seo_site_title', 'seo_default_description', 'seo_default_keywords', 'seo_pages',
-        'whatsapp_prefill_tr', 'whatsapp_prefill_en', 'prefer_env_contact'];
+        'prefer_env_contact'];
     foreach ($allowed as $key) {
         if (!array_key_exists($key, $settings)) {
             continue;

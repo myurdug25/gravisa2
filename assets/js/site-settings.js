@@ -29,21 +29,7 @@
         var wa = (settings.whatsapp_number || '').replace(/\D/g, '');
         if (wa.indexOf('9') !== 0 && wa.length >= 10) wa = '9' + wa;
         if (isLink && wa) {
-          var lang = (typeof window.GRAVISA_LANG === 'string' ? window.GRAVISA_LANG : 'tr');
-          var adminTr = (settings.whatsapp_prefill_tr || '').trim();
-          var adminEn = (settings.whatsapp_prefill_en || '').trim();
-          var pre = '';
-          if (lang === 'en' && adminEn) pre = adminEn;
-          else if (lang !== 'en' && adminTr) pre = adminTr;
-          if (!pre && typeof window.__GRAVISA_WA_PREFILL === 'string' && window.__GRAVISA_WA_PREFILL.trim()) {
-            pre = window.__GRAVISA_WA_PREFILL.trim();
-          }
-          if (!pre) {
-            pre = lang === 'en'
-              ? "Hello, I'm contacting you via your website. I'd like information about your construction equipment."
-              : 'Merhaba, web siteniz üzerinden yazıyorum. İş makineleri hakkında bilgi almak istiyorum.';
-          }
-          el.href = 'https://wa.me/' + wa + '?text=' + encodeURIComponent(pre);
+          el.href = 'https://wa.me/' + wa;
         }
       } else if (key === 'address') {
         var safeAddr = (val + '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');

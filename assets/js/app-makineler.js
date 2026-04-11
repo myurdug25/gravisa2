@@ -80,6 +80,8 @@
 
   function tipKey(label) {
     var t = normalize(label);
+    // Excel: "YERALTI ..." tek kelime — "YER ALTI ..." ile aynı kategori anahtarı (yer-alti-...)
+    t = t.replace(/\byeralti\b/g, 'yer alti');
     t = t.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
     return t || 'other';
   }
