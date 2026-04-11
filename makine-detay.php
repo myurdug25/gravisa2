@@ -42,7 +42,7 @@ $pageId = 'makine-detay';
 
   <script src="<?= BASE_PATH ?>/assets/js/site-settings.js?v=9"></script>
   <script src="<?= BASE_PATH ?>/assets/js/app.js?v=<?= @filemtime(__DIR__ . '/assets/js/app.js') ?: 4 ?>"></script>
-  <script src="<?= BASE_PATH ?>/assets/js/app-makineler.js?v=10"></script>
+  <script src="<?= BASE_PATH ?>/assets/js/app-makineler.js?v=11"></script>
   <script>
     (function () {
       var J = window.__GRAVISA_JS || {};
@@ -70,9 +70,9 @@ $pageId = 'makine-detay';
         return d.innerHTML;
       }
       var base = (typeof window.basePath === 'string') ? window.basePath : '';
-      function safeImg(src) {
+      function safeImg(src, imgMtime) {
         if (typeof window.gravisaAssetUrl === 'function') {
-          return window.gravisaAssetUrl(src);
+          return window.gravisaAssetUrl(src, imgMtime);
         }
         if (!src || typeof src !== 'string') return '';
         var s = src.trim();
@@ -95,7 +95,7 @@ $pageId = 'makine-detay';
 
         var imgSrc = (typeof window.gravisaResolveMachineImage === 'function')
           ? window.gravisaResolveMachineImage(makine)
-          : safeImg(makine.img);
+          : safeImg(makine.img, makine.img_mtime);
         var stockBadge = makine.stok ? (J.stockBadgeIn || '✓ Stokta') : (J.stockOrder || 'Talebe göre');
         var html = '<div class="machine-detail-modern">';
         html += '<div class="machine-detail-image-modern' + (imgSrc ? '' : ' machine-detail-image-modern--empty') + '">';

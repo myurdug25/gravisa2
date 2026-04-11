@@ -120,7 +120,7 @@ $pageId = 'kiralama';
 <script src="<?= BASE_PATH ?>/assets/js/form-api.js?v=3"></script>
 <script src="<?= BASE_PATH ?>/assets/js/site-settings.js?v=9"></script>
 <script src="<?= BASE_PATH ?>/assets/js/app.js?v=<?= @filemtime(__DIR__ . '/assets/js/app.js') ?: 4 ?>"></script>
-<script src="<?= BASE_PATH ?>/assets/js/app-makineler.js?v=10"></script>
+<script src="<?= BASE_PATH ?>/assets/js/app-makineler.js?v=11"></script>
   <script>
     (function () {
       var FORM = <?= json_encode([
@@ -129,9 +129,9 @@ $pageId = 'kiralama';
         'toastFallback' => t('pages.kiralama.toast_fallback'),
       ], JSON_UNESCAPED_UNICODE) ?>;
       var base = (typeof window.basePath === 'string') ? window.basePath : '';
-      function safeImg(src) {
+      function safeImg(src, imgMtime) {
         if (typeof window.gravisaAssetUrl === 'function') {
-          return window.gravisaAssetUrl(src);
+          return window.gravisaAssetUrl(src, imgMtime);
         }
         if (!src || typeof src !== 'string') return '';
         var s = src.trim();
@@ -164,7 +164,7 @@ $pageId = 'kiralama';
           var u = window.gravisaResolveMachineImage(makine);
           if (u) return u;
         }
-        return safeImg(makine.img || '');
+        return safeImg(makine.img || '', makine.img_mtime);
       }
       function showMakineInfo(makine) {
         if (!makine) return;

@@ -99,9 +99,9 @@
         d.textContent = String(s);
         return d.innerHTML;
       }
-      function safeImg(src) {
+      function safeImg(src, imgMtime) {
         if (typeof window.gravisaAssetUrl === 'function') {
-          return window.gravisaAssetUrl(src);
+          return window.gravisaAssetUrl(src, imgMtime);
         }
         if (!src || typeof src !== 'string') return '';
         var s = src.trim();
@@ -155,14 +155,14 @@
 
       /* Görseli olan stok makineler (klasörde foto var); çoğu kategori farklı id’lerde ve img boş */
       var stokWithPhoto = stoktaMakineler.filter(function(m) {
-        return m && m.img && String(m.img).trim() !== '' && safeImg(m.img);
+        return m && m.img && String(m.img).trim() !== '' && safeImg(m.img, m.img_mtime);
       });
       function categoryCardImgSrc(k) {
         var group = groups[k] || [];
         var i;
         for (i = 0; i < group.length; i++) {
           if (group[i] && group[i].img && String(group[i].img).trim() !== '') {
-            var u = safeImg(group[i].img);
+            var u = safeImg(group[i].img, group[i].img_mtime);
             if (u) return u;
           }
         }
@@ -173,7 +173,8 @@
           h = ((h << 5) - h + keyStr.charCodeAt(i)) | 0;
         }
         var idx = Math.abs(h) % stokWithPhoto.length;
-        return safeImg(stokWithPhoto[idx].img);
+        var sp = stokWithPhoto[idx];
+        return safeImg(sp.img, sp.img_mtime);
       }
       var available = Object.keys(groups).filter(function(k) { return (groups[k] || []).length > 0; });
       // Diğer en sona

@@ -79,7 +79,7 @@ $gravisaHrefEn = $gravisaAbs . (function_exists('gravisa_url_for_lang') ? gravis
     memoBase = '';
     return memoBase;
   };
-  window.gravisaAssetUrl = function (src) {
+  window.gravisaAssetUrl = function (src, cacheBust) {
     if (!src || typeof src !== 'string') return '';
     var s = src.replace(/^\s+|\s+$/g, '');
     if (!s) return '';
@@ -87,11 +87,17 @@ $gravisaHrefEn = $gravisaAbs . (function_exists('gravisa_url_for_lang') ? gravis
     if (low.indexOf('javascript:') === 0 || low.indexOf('data:') === 0 || low.indexOf('vbscript:') === 0) return '';
     if (/^https?:\/\//i.test(s)) return s;
     var b = window.gravisaEffectiveBasePath();
+    var url;
     if (s.charAt(0) === '/') {
-      if (!b || s.indexOf(b + '/') === 0 || s === b) return s;
-      return b + s;
+      if (!b || s.indexOf(b + '/') === 0 || s === b) url = s;
+      else url = b + s;
+    } else {
+      url = b ? (b + '/' + s) : ('/' + s);
     }
-    return b ? (b + '/' + s) : ('/' + s);
+    if (cacheBust != null && cacheBust !== '' && low.indexOf('data:') !== 0) {
+      url += (url.indexOf('?') >= 0 ? '&' : '?') + 'v=' + encodeURIComponent(String(cacheBust));
+    }
+    return url;
   };
 })();
 </script>

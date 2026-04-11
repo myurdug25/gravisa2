@@ -39,7 +39,7 @@
 
   function rebuildMachinesWithPhoto() {
     machinesWithPhoto = (window.makineler || []).filter(function (m) {
-      return m && m.img && String(m.img).trim() !== '' && safeImgSrc(m.img);
+      return m && m.img && String(m.img).trim() !== '' && safeImgSrc(m.img, m.img_mtime);
     });
   }
 
@@ -50,7 +50,7 @@
   function cardImgSrcForMachine(m) {
     if (!m) return '';
     if (m.img && String(m.img).trim() !== '') {
-      var own = safeImgSrc(m.img);
+      var own = safeImgSrc(m.img, m.img_mtime);
       if (own) return own;
     }
     var k = categoryKey(m);
@@ -59,7 +59,7 @@
       var o = g[i];
       if (!o || categoryKey(o) !== k) continue;
       if (!o.img || String(o.img).trim() === '') continue;
-      var u = safeImgSrc(o.img);
+      var u = safeImgSrc(o.img, o.img_mtime);
       if (u) return u;
     }
     if (machinesWithPhoto.length === 0) return '';
@@ -69,7 +69,8 @@
       h = ((h << 5) - h + idStr.charCodeAt(j)) | 0;
     }
     var idx = Math.abs(h) % machinesWithPhoto.length;
-    return safeImgSrc(machinesWithPhoto[idx].img);
+    var pool = machinesWithPhoto[idx];
+    return safeImgSrc(pool.img, pool.img_mtime);
   }
 
   function normalize(s) {
@@ -115,9 +116,9 @@
     return div.innerHTML;
   }
 
-  function safeImgSrc(src) {
+  function safeImgSrc(src, imgMtime) {
     if (typeof window.gravisaAssetUrl === 'function') {
-      return window.gravisaAssetUrl(src);
+      return window.gravisaAssetUrl(src, imgMtime);
     }
     if (!src || typeof src !== 'string') return '';
     var s = src.trim();
