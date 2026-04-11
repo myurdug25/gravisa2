@@ -33,25 +33,23 @@ function saveMachines(string $file, array $items): bool
 }
 
 /**
- * Kartta görünen teknik özet aynıysa aynı makine sayılır (şasi/motor seri ayrı tutulmaz).
- * İki fiziksel ünite aynı model/yıl/güç/kapasitede ise tek kayıt veya modele ayırt edici not ekleyin.
+ * Listede ve sitede tek satır: aynı kategori (tip) + aynı model (tipModel) yalnızca bir kez.
+ * tipModel boşsa aynı kategorideki farklı makineleri birleştirmemek için firma/yıl/güç/kapasite de anahtara girer.
  */
-function gravisaMachineSpecFingerprint(array $m): string
+function gravisaMachineTipModelKey(array $m): string
 {
+    $tip = strtolower(trim((string) ($m['tip'] ?? '')));
+    $tm = strtolower(trim((string) ($m['tipModel'] ?? '')));
+    if ($tm !== '') {
+        return $tip . "\x1e" . $tm;
+    }
     $guc = strtolower(str_replace(',', '.', trim((string) ($m['guc'] ?? ''))));
     $gucBirim = strtolower(trim((string) ($m['gucBirim'] ?? '')));
     $kap = strtolower(preg_replace('/\s+/', '', (string) ($m['kapasite'] ?? '')));
+    $firma = strtolower(trim((string) ($m['firma'] ?? '')));
+    $yil = strtolower(trim((string) ($m['modelYil'] ?? '')));
 
-    $parts = [
-        strtolower(trim((string) ($m['tip'] ?? ''))),
-        strtolower(trim((string) ($m['firma'] ?? ''))),
-        strtolower(trim((string) ($m['tipModel'] ?? ''))),
-        strtolower(trim((string) ($m['modelYil'] ?? ''))),
-        $guc . '|' . $gucBirim,
-        $kap,
-    ];
-
-    return implode("\x1e", $parts);
+    return $tip . "\x1e" . $firma . "\x1e" . $yil . "\x1e" . $guc . '|' . $gucBirim . "\x1e" . $kap;
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -167,7 +165,7 @@ if (!empty($_FILES['img']) && isset($_FILES['img']['tmp_name'])) {
     }
 }
 
-$fpSpec = gravisaMachineSpecFingerprint($machine);
+$keyNew = gravisaMachineTipModelKey($machine);
 $noNorm = trim((string) $machine['no']);
 foreach ($items as $m) {
     $otherId = (int) ($m['id'] ?? 0);
@@ -180,10 +178,10 @@ foreach ($items as $m) {
             'message' => 'Bu envanter numarası (No) zaten kullanılıyor (ID #' . $otherId . '). Listeden o kaydı düzenleyin; yeni satır açmayın.',
         ]);
     }
-    if (gravisaMachineSpecFingerprint($m) === $fpSpec) {
+    if (gravisaMachineTipModelKey($m) === $keyNew) {
         jsonResponse([
             'success' => false,
-            'message' => 'Bu makine zaten listede (ID #' . $otherId . '): kategori, firma, model, yıl, güç ve kapasite aynı. Sitede kartlar tıpatıp aynı görünür. Yinelenen kaydı silin veya mevcut kaydı düzenleyin; gerçekten iki ayrı üniteyse model/kapasite alanına ayırt edici bilgi yazın.',
+            'message' => 'Bu kategori ve model zaten kayıtlı (ID #' . $otherId . '). Aynı Tip + Tip/Model ile ikinci satır oluşturulamaz; mevcut kaydı düzenleyin. İki farklı ürünü ayırmak için Tip/Model alanına farklı bir metin yazın (ör. model + kısa not).',
         ]);
     }
 }

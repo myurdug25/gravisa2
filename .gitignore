@@ -28,6 +28,7 @@ Thumbs.db
 
 # Import yedeği (yerelde kalır)
 data/makineler_admin.json.bak
+data/makineler_admin.json.dedupe.bak
 
 # Rate limit state (sunucuda otomatik oluşur)
 data/rate_limit.json

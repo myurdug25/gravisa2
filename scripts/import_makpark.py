@@ -24,6 +24,9 @@ numarasına (no) göre atanır.
 
 Mevcut JSON’u yeniden taramak için:
   python scripts/import_makpark.py --assign-images-only
+
+Aynı Tip+Tip/Model tekrarlarını (en düşük ID kalır) temizlemek için:
+  python scripts/import_makpark.py --dedupe-json
 """
 
 from __future__ import annotations
@@ -199,15 +202,18 @@ def normalize_category_label(s: str) -> str:
     return s
 
 
-def machine_spec_fingerprint(m: dict) -> str:
-    """Kartta görünen özet aynıysa tekrar sayılır (şasi/motor seri hariç)."""
+def machine_tip_model_key(m: dict) -> str:
+    """Aynı kategori + aynı model = tek kayıt. tipModel boşsa firma/yıl/güç/kapasite ile ayır."""
+    tip = fold_tr(str(m.get("tip") or ""))
+    tm = fold_tr(str(m.get("tipModel") or ""))
+    if tm:
+        return tip + "|" + tm
     guc = str(m.get("guc") or "").strip().replace(",", ".").lower()
     birim = str(m.get("gucBirim") or "").strip().lower()
     kap = re.sub(r"\s+", "", str(m.get("kapasite") or "").strip().lower())
     parts = [
-        fold_tr(str(m.get("tip") or "")),
+        tip,
         fold_tr(str(m.get("firma") or "")),
-        fold_tr(str(m.get("tipModel") or "")),
         fold_tr(str(m.get("modelYil") or "")),
         fold_tr(guc + birim),
         fold_tr(kap),
@@ -352,7 +358,7 @@ def main() -> int:
 
     img_index = scan_machine_images(IMG_DIR)
     machines: list[dict] = []
-    seen_spec: set[str] = set()
+    seen_key: set[str] = set()
     seen_no: set[str] = set()
     skipped_dup = 0
     for row in data_rows:
@@ -361,15 +367,15 @@ def main() -> int:
         m = row_to_machine(tuple(row or ()), colmap, len(machines) + 1)
         if m is None:
             continue
-        spec_fp = machine_spec_fingerprint(m)
-        if spec_fp in seen_spec:
+        ukey = machine_tip_model_key(m)
+        if ukey in seen_key:
             skipped_dup += 1
             continue
         no_s = str(m.get("no", "")).strip()
         if no_s and no_s in seen_no:
             skipped_dup += 1
             continue
-        seen_spec.add(spec_fp)
+        seen_key.add(ukey)
         if no_s:
             seen_no.add(no_s)
         m["img"] = image_for_inventory_no(str(m.get("no", m["id"])), img_index)
@@ -388,7 +394,7 @@ def main() -> int:
         encoding="utf-8",
     )
     if skipped_dup:
-        print(f"Uyarı: {skipped_dup} tekrarlayan Excel satırı atlandı (aynı no veya sitede aynı görünen teknik özet).", file=sys.stderr)
+        print(f"Uyarı: {skipped_dup} tekrarlayan Excel satırı atlandı (aynı no veya aynı kategori+model).", file=sys.stderr)
     print(f"{len(machines)} makine yazıldı: {OUT_JSON}")
     if BACKUP_JSON.is_file():
         print(f"Önceki liste yedek: {BACKUP_JSON}")
@@ -418,7 +424,43 @@ def assign_images_only() -> int:
     return 0
 
 
+DEDUPE_JSON_BAK = ROOT / "data" / "makineler_admin.json.dedupe.bak"
+
+
+def dedupe_json_only() -> int:
+    """Aynı kategori+model (machine_tip_model_key) tekrarlarını siler; en düşük ID kalır."""
+    if not OUT_JSON.is_file():
+        print(f"Bulunamadı: {OUT_JSON}", file=sys.stderr)
+        return 1
+    raw = json.loads(OUT_JSON.read_text(encoding="utf-8"))
+    if not isinstance(raw, list):
+        print("Geçersiz JSON", file=sys.stderr)
+        return 1
+    by_id = sorted([m for m in raw if isinstance(m, dict)], key=lambda x: int(x.get("id") or 0))
+    seen: set[str] = set()
+    out: list[dict] = []
+    removed: list[int] = []
+    for m in by_id:
+        k = machine_tip_model_key(m)
+        if k in seen:
+            removed.append(int(m.get("id") or 0))
+            continue
+        seen.add(k)
+        out.append(m)
+    out.sort(key=lambda x: int(x.get("id") or 0))
+    if len(out) == len(by_id):
+        print(f"Tekrar yok ({len(out)} kayıt).")
+        return 0
+    shutil.copy2(OUT_JSON, DEDUPE_JSON_BAK)
+    OUT_JSON.write_text(json.dumps(out, ensure_ascii=False, indent=4), encoding="utf-8")
+    print(f"Yedek: {DEDUPE_JSON_BAK}")
+    print(f"{len(by_id)} -> {len(out)} kayıt; kaldırılan: {len(removed)}")
+    return 0
+
+
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "--assign-images-only":
         raise SystemExit(assign_images_only())
+    if len(sys.argv) > 1 and sys.argv[1] == "--dedupe-json":
+        raise SystemExit(dedupe_json_only())
     raise SystemExit(main())
