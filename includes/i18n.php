@@ -252,5 +252,6 @@ function gravisa_js_strings(): array
         'metaModelYear' => t('js.meta_model_year'),
         'metaPower' => t('js.meta_power'),
         'stockBadgeIn' => t('js.stock_badge_in'),
+        'noPhoto' => t('js.no_photo'),
     ];
 }

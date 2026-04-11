@@ -14,6 +14,7 @@ $items = [];
 if (file_exists($file)) {
     $data = json_decode(file_get_contents($file), true);
     $items = is_array($data) ? $data : [];
+    /* img: JSON’daki göreli yol (images/makineler/…) — tarayıcıda window.gravisaAssetUrl + basePath birleştirir */
 }
 
 jsonResponse(['success' => true, 'items' => array_values($items)]);

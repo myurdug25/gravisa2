@@ -22,6 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         'whatsapp_number'  => $all['whatsapp_number'],
         'phone_display'    => $all['phone_display'],
         'address'          => $all['address'],
+        'whatsapp_prefill_tr' => $all['whatsapp_prefill_tr'] ?? '',
+        'whatsapp_prefill_en' => $all['whatsapp_prefill_en'] ?? '',
     ];
     echo json_encode($public, JSON_UNESCAPED_UNICODE);
     exit;
@@ -43,6 +45,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'contact_email'    => sanitize($input['contact_email'] ?? ''),
         'servis_email'     => sanitize($input['servis_email'] ?? ''),
         'whatsapp_number'  => preg_replace('/\D/', '', $input['whatsapp_number'] ?? ''),
+        'whatsapp_prefill_tr' => sanitize($input['whatsapp_prefill_tr'] ?? '', 2000),
+        'whatsapp_prefill_en' => sanitize($input['whatsapp_prefill_en'] ?? '', 2000),
         'phone_display'    => sanitize($input['phone_display'] ?? ''),
         'address'          => sanitize($input['address'] ?? ''),
         'mail_to'          => sanitize($input['mail_to'] ?? ''),

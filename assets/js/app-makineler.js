@@ -77,20 +77,36 @@
   }
 
   function safeImgSrc(src) {
+    if (typeof window.gravisaAssetUrl === 'function') {
+      return window.gravisaAssetUrl(src);
+    }
     if (!src || typeof src !== 'string') return '';
-    var t = src.trim().toLowerCase();
+    var s = src.trim();
+    if (!s) return '';
+    var t = s.toLowerCase();
     if (t.indexOf('javascript:') === 0 || t.indexOf('data:') === 0 || t.indexOf('vbscript:') === 0) return '';
-    var p = (src.charAt(0) === '/' ? '' : '/') + src;
-    return base + p;
+    if (/^https?:\/\//i.test(s)) return s;
+    if (s.charAt(0) === '/') return s;
+    var b = base.replace(/\/$/, '');
+    return b ? (b + '/' + s.replace(/^\//, '')) : ('/' + s.replace(/^\//, ''));
   }
 
   function loadMachinesFromAPI() {
-    return fetch(base + '/api/makineler.php')
+    var apiBase = (typeof window.gravisaEffectiveBasePath === 'function') ? window.gravisaEffectiveBasePath() : base;
+    return fetch(apiBase + '/api/makineler.php')
       .then(function(r) { return r.json(); })
       .then(function(res) {
-        if (!res.success || !Array.isArray(res.items)) return;
+        if (!res.success || !Array.isArray(res.items)) {
+          try {
+            window.dispatchEvent(new CustomEvent('gravisa-machines-loaded'));
+          } catch (e) {}
+          return;
+        }
         window.makineler = res.items;
         filteredMakineler = window.makineler;
+        try {
+          window.dispatchEvent(new CustomEvent('gravisa-machines-loaded'));
+        } catch (e) {}
         // Filtreleri yeniden oluştur
         if (filterTip) {
           filterTip.innerHTML = '<option value=\"\">Tümü</option>';
@@ -297,8 +313,11 @@
     var article = document.createElement('article');
     article.className = 'machine-card';
     var imgSrc = safeImgSrc(m.img);
+    var imgHtml = imgSrc
+      ? '<div class="machine-card-image"><img src="' + escapeHtml(imgSrc) + '" alt="' + escapeHtml(m.tipModel) + '" loading="lazy" /></div>'
+      : '<div class="machine-card-image machine-card-image--empty" role="img" aria-label="' + escapeHtml(J.noPhoto || '') + '"><span>' + escapeHtml(J.noPhoto || '') + '</span></div>';
     article.innerHTML =
-      '<div class="machine-card-image"><img src="' + escapeHtml(imgSrc) + '" alt="' + escapeHtml(m.tipModel) + '" /></div>' +
+      imgHtml +
       '<div class="machine-card-body">' +
         '<div class="machine-card-badges">' +
           '<span class="machine-card-badge">' + escapeHtml(m.tip) + '</span>' +
@@ -317,8 +336,12 @@
   }
 
   function renderDetay(m) {
+    var dImg = safeImgSrc(m.img);
+    var dImgBlock = dImg
+      ? '<div class="machine-detail-image"><img src="' + escapeHtml(dImg) + '" alt="' + escapeHtml(m.tipModel) + '" /></div>'
+      : '<div class="machine-detail-image machine-detail-image--empty"><span>' + escapeHtml(J.noPhoto || '') + '</span></div>';
     return (
-      '<div class="machine-detail-image"><img src="' + m.img + '" alt="' + m.tipModel + '" /></div>' +
+      dImgBlock +
       '<div>' +
         '<div class="machine-detail-badge">' + m.tip + '</div>' +
         '<h2 style="margin:0 0 8px; font-size:1.75rem;">' + m.firma + ' ' + m.tipModel + '</h2>' +

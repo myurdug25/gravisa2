@@ -43,13 +43,60 @@ $gravisaHrefEn = $gravisaAbs . (function_exists('gravisa_url_for_lang') ? gravis
 <link rel="alternate" hreflang="x-default" href="<?= htmlspecialchars($gravisaHrefTr, ENT_QUOTES, 'UTF-8') ?>" />
 <?php endif; ?>
 <title><?= htmlspecialchars($pageTitle) ?></title>
-<script>window.basePath='<?= addslashes(defined('BASE_PATH') ? BASE_PATH : '') ?>';<?php if (function_exists('gravisa_js_strings')): ?>window.__GRAVISA_JS=<?= json_encode(gravisa_js_strings(), JSON_UNESCAPED_UNICODE) ?>;window.GRAVISA_LANG='<?= defined('GRAVISA_LANG') ? GRAVISA_LANG : 'tr' ?>';window.gravisaLangPath=function(s){var b=window.basePath||'',g=(typeof window.GRAVISA_LANG==='string'?window.GRAVISA_LANG:'tr');s=(s||'').replace(/^\//,'');if(!s||s==='index')return b+'/'+g;return b+'/'+g+'/'+s;};<?php endif; ?>window.__siteSettings=<?= json_encode([
+<script>window.basePath='<?= addslashes(defined('BASE_PATH') ? BASE_PATH : '') ?>';<?php if (function_exists('gravisa_js_strings')): ?>window.__GRAVISA_JS=<?= json_encode(gravisa_js_strings(), JSON_UNESCAPED_UNICODE) ?>;window.GRAVISA_LANG='<?= defined('GRAVISA_LANG') ? GRAVISA_LANG : 'tr' ?>';window.gravisaLangPath=function(s){var b=window.basePath||'',g=(typeof window.GRAVISA_LANG==='string'?window.GRAVISA_LANG:'tr');s=(s||'').replace(/^\//,'');if(!s||s==='index')return b+'/'+g;return b+'/'+g+'/'+s;};<?php endif; ?>window.__GRAVISA_WA_PREFILL=<?= json_encode(function_exists('getWaPrefillMessage') ? getWaPrefillMessage() : (function_exists('t') ? t('wa.default_message') : 'Merhaba, Gravisa ekibiyiz. Size nasıl yardımcı olabiliriz?'), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;window.__siteSettings=<?= json_encode([
   'contact_email'=>$siteSettings['contact_email']??'',
   'servis_email'=>$siteSettings['servis_email']??'',
   'whatsapp_number'=>$siteSettings['whatsapp_number']??'',
   'phone_display'=>$siteSettings['phone_display']??'',
-  'address'=>$siteSettings['address']??''
+  'address'=>$siteSettings['address']??'',
+  'whatsapp_prefill_tr'=>$siteSettings['whatsapp_prefill_tr']??'',
+  'whatsapp_prefill_en'=>$siteSettings['whatsapp_prefill_en']??''
 ], JSON_UNESCAPED_UNICODE) ?>;</script>
+<script>
+(function () {
+  var memoBase = null;
+  window.gravisaEffectiveBasePath = function () {
+    if (memoBase !== null) {
+      return memoBase;
+    }
+    var b = (typeof window.basePath === 'string' && window.basePath) ? String(window.basePath).replace(/\/$/, '') : '';
+    if (b) {
+      memoBase = b;
+      return memoBase;
+    }
+    try {
+      var scripts = document.getElementsByTagName('script');
+      for (var i = 0; i < scripts.length; i++) {
+        var href = scripts[i].src;
+        if (!href || href.indexOf('/assets/') === -1) continue;
+        var u = new URL(href, window.location.href);
+        var p = u.pathname;
+        var ix = p.indexOf('/assets/');
+        if (ix > 0) {
+          memoBase = p.substring(0, ix);
+          return memoBase;
+        }
+      }
+    } catch (e) {}
+    memoBase = '';
+    return memoBase;
+  };
+  window.gravisaAssetUrl = function (src) {
+    if (!src || typeof src !== 'string') return '';
+    var s = src.replace(/^\s+|\s+$/g, '');
+    if (!s) return '';
+    var low = s.toLowerCase();
+    if (low.indexOf('javascript:') === 0 || low.indexOf('data:') === 0 || low.indexOf('vbscript:') === 0) return '';
+    if (/^https?:\/\//i.test(s)) return s;
+    var b = window.gravisaEffectiveBasePath();
+    if (s.charAt(0) === '/') {
+      if (!b || s.indexOf(b + '/') === 0 || s === b) return s;
+      return b + s;
+    }
+    return b ? (b + '/' + s) : ('/' + s);
+  };
+})();
+</script>
 <script>
 window.__GRAVISA_UI=<?= json_encode([
   'toast_ok' => function_exists('t') ? t('toast.title_ok') : 'Talebiniz Alındı',

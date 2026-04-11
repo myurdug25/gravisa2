@@ -136,6 +136,15 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
               <input type="text" name="whatsapp_number" value="<?= htmlspecialchars($settings['whatsapp_number'] ?? '') ?>" placeholder="905551234567" style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px;" />
             </label>
             <label style="display: block;">
+              <span style="display: block; font-weight: 600; margin-bottom: 6px; color: #555;">WhatsApp ön metni (Türkçe sayfa)</span>
+              <textarea name="whatsapp_prefill_tr" rows="3" maxlength="2000" placeholder="Boş bırakırsanız sitedeki varsayılan çeviri metni kullanılır." style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px;"><?= htmlspecialchars($settings['whatsapp_prefill_tr'] ?? '') ?></textarea>
+              <span style="font-size: 0.8rem; color: #666;">Ziyaretçi WhatsApp’a tıkladığında uygulamada mesaj kutusuna bu metin yazılır (göndermeden önce düzenleyebilir).</span>
+            </label>
+            <label style="display: block;">
+              <span style="display: block; font-weight: 600; margin-bottom: 6px; color: #555;">WhatsApp ön metni (İngilizce sayfa)</span>
+              <textarea name="whatsapp_prefill_en" rows="3" maxlength="2000" placeholder="Boş bırakırsanız İngilizce varsayılan çeviri kullanılır." style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px;"><?= htmlspecialchars($settings['whatsapp_prefill_en'] ?? '') ?></textarea>
+            </label>
+            <label style="display: block;">
               <span style="display: block; font-weight: 600; margin-bottom: 6px; color: #555;">Telefon (görünen metin)</span>
               <input type="text" name="phone_display" value="<?= htmlspecialchars($settings['phone_display'] ?? '') ?>" placeholder="0555 123 45 67" style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px;" />
             </label>
@@ -147,7 +156,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
             <p style="font-size: 0.9rem; color: #666;">Form talepleri aşağıdaki adrese e-posta ile gönderilir. Boş bırakırsanız config.php içindeki MAIL_TO kullanılır.</p>
             <label style="display: block;">
               <span style="display: block; font-weight: 600; margin-bottom: 6px; color: #555;">Taleplerin gönderileceği e-posta (mail_to)</span>
-              <input type="email" name="mail_to" value="<?= htmlspecialchars($settings['mail_to'] ?? '') ?>" placeholder="info@gravisa.com" style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px;" />
+              <input type="email" name="mail_to" value="<?= htmlspecialchars($settings['mail_to'] ?? '') ?>" placeholder="destek@gravisa.com.tr" style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px;" />
             </label>
             <label style="display: block;">
               <span style="display: block; font-weight: 600; margin-bottom: 6px; color: #555;">Gönderen adı (e-postada görünen)</span>

@@ -63,7 +63,7 @@ B) SSH ile:
    ADMIN_USER=admin
    ADMIN_PASS=GucluSifre123!
    
-   MAIL_TO=info@gravisa.com
+   MAIL_TO=destek@gravisa.com.tr
    MAIL_FROM=noreply@gravisa.com
 
 

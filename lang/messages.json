@@ -17,6 +17,9 @@
             "lang_switch_tr": "Türkçe",
             "lang_switch_en": "English"
         },
+        "wa": {
+            "default_message": "Merhaba, Gravisa ekibiyiz. Size nasıl yardımcı olabiliriz?"
+        },
         "footer": {
             "rights": "Gravisa. Tüm hakları saklıdır.",
             "made_by_prefix": "Bu site",
@@ -69,6 +72,7 @@
             "meta_model_year": "Model Yılı:",
             "meta_power": "Güç:",
             "stock_badge_in": "✓ Stokta",
+            "no_photo": "Görsel yok",
             "cat_all": "Tümü",
             "cat_truck": "Kamyon",
             "cat_concrete": "Beton",
@@ -532,6 +536,9 @@
             "lang_switch_tr": "Turkish",
             "lang_switch_en": "English"
         },
+        "wa": {
+            "default_message": "Hello, this is the Gravisa team. How can we help you?"
+        },
         "footer": {
             "rights": "Gravisa. All rights reserved.",
             "made_by_prefix": "This site was built by",
@@ -584,6 +591,7 @@
             "meta_model_year": "Model year:",
             "meta_power": "Power:",
             "stock_badge_in": "✓ In stock",
+            "no_photo": "No photo",
             "cat_all": "All",
             "cat_truck": "Truck",
             "cat_concrete": "Concrete",

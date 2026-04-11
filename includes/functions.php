@@ -100,6 +100,35 @@ function safeImgSrc(string $url): string
     return $url;
 }
 
+/**
+ * Makine görseli: JSON’daki göreli yolu site köküne göre mutlak path yapar
+ * (örn. images/makineler/x.png → /gravisa/images/makineler/x.png). Alt klasör + boş basePath JS hatasını giderir.
+ */
+function gravisa_normalize_machine_img(?string $img): string
+{
+    $img = trim((string) $img);
+    if ($img === '') {
+        return '';
+    }
+    if (preg_match('#^https?://#i', $img)) {
+        return $img;
+    }
+    $img = str_replace('\\', '/', $img);
+    $bp = defined('BASE_PATH') ? rtrim((string) BASE_PATH, '/') : '';
+    if ($img[0] === '/') {
+        if ($bp !== '' && strpos($img, $bp . '/') !== 0 && $img !== $bp) {
+            return $bp . $img;
+        }
+
+        return $img;
+    }
+    if ($bp === '') {
+        return '/' . ltrim($img, '/');
+    }
+
+    return $bp . '/' . ltrim($img, '/');
+}
+
 function validateEmail(string $email): bool
 {
     return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
@@ -176,7 +205,7 @@ function saveSubmission(string $type, array $data): string
 function getSettings(): array
 {
     $defaults = [
-        'contact_email' => (defined('CONTACT_EMAIL') && CONTACT_EMAIL) ? CONTACT_EMAIL : (defined('MAIL_TO') ? MAIL_TO : 'info@gravisa.com'),
+        'contact_email' => (defined('CONTACT_EMAIL') && CONTACT_EMAIL) ? CONTACT_EMAIL : (defined('MAIL_TO') ? MAIL_TO : 'destek@gravisa.com.tr'),
         'servis_email'  => (defined('SERVIS_EMAIL_ENV') && SERVIS_EMAIL_ENV) ? SERVIS_EMAIL_ENV : 'servis@gravisa.com',
         'whatsapp_number' => (defined('WHATSAPP_NUMBER') && WHATSAPP_NUMBER) ? WHATSAPP_NUMBER : '905551234567',
         'phone_display' => (defined('PHONE_DISPLAY') && PHONE_DISPLAY) ? PHONE_DISPLAY : '0555 123 45 67',
@@ -188,6 +217,8 @@ function getSettings(): array
         'seo_default_description' => 'Gravisa - İş makineleri satış ve kiralama. Satış teklifi alın, günlük/aylık kiralama seçenekleri. Hızlı iletişim.',
         'seo_default_keywords' => 'iş makineleri, satış, kiralama, ekskavatör, yükleyici, Gravisa',
         'seo_pages'     => '', // JSON string: {"index":{"title":"...","description":"..."},...}
+        'whatsapp_prefill_tr' => '',
+        'whatsapp_prefill_en' => '',
     ];
     $file = defined('DATA_PATH') ? DATA_PATH . '/settings.json' : (dirname(__DIR__) . '/data/settings.json');
     clearstatcache(true, $file);
@@ -216,6 +247,45 @@ function getWaNum(): string
     return $n ?: '905551234567';
 }
 
+/**
+ * WhatsApp wa.me?text= için metin: önce admin (dile göre), yoksa çeviri wa.default_message.
+ */
+function getWaPrefillMessage(): string
+{
+    $s = getSettings();
+    $en = defined('GRAVISA_LANG') && GRAVISA_LANG === 'en';
+    $custom = trim((string)($en ? ($s['whatsapp_prefill_en'] ?? '') : ($s['whatsapp_prefill_tr'] ?? '')));
+    if ($custom !== '') {
+        return $custom;
+    }
+    if (function_exists('t')) {
+        return t('wa.default_message');
+    }
+    return $en
+        ? 'Hello, this is the Gravisa team. How can we help you?'
+        : 'Merhaba, Gravisa ekibiyiz. Size nasıl yardımcı olabiliriz?';
+}
+
+/**
+ * WhatsApp sohbet linki; ?text= ile ön doldurulmuş karşılama (wa.me API).
+ * $customText boşsa admin veya çeviri wa.default_message kullanılır.
+ */
+function getWaUrl(?string $customText = null): string
+{
+    $num = getWaNum();
+    $url = 'https://wa.me/' . $num;
+    $text = $customText;
+    if ($text === null || $text === '') {
+        $text = getWaPrefillMessage();
+    }
+    $text = trim((string) $text);
+    if ($text === '') {
+        return $url;
+    }
+
+    return $url . '?text=' . rawurlencode($text);
+}
+
 /** Site ayarlarını kaydeder */
 function saveSettings(array $settings): bool
 {
@@ -223,7 +293,8 @@ function saveSettings(array $settings): bool
     $file = DATA_PATH . '/settings.json';
     $current = file_exists($file) ? (json_decode(file_get_contents($file), true) ?: []) : [];
     $allowed = ['contact_email', 'servis_email', 'whatsapp_number', 'phone_display', 'address', 'mail_to', 'mail_from_name', 'mail_from',
-        'seo_site_title', 'seo_default_description', 'seo_default_keywords', 'seo_pages'];
+        'seo_site_title', 'seo_default_description', 'seo_default_keywords', 'seo_pages',
+        'whatsapp_prefill_tr', 'whatsapp_prefill_en'];
     foreach ($allowed as $key) {
         if (array_key_exists($key, $settings)) {
             $current[$key] = $key === 'seo_pages' ? (is_string($settings[$key]) ? $settings[$key] : json_encode($settings[$key], JSON_UNESCAPED_UNICODE)) : trim((string)$settings[$key]);

@@ -35,9 +35,9 @@ if (!$isDebug && function_exists('ini_set')) {
 date_default_timezone_set($env('APP_TIMEZONE', 'Europe/Istanbul'));
 
 // E-posta
-define('MAIL_TO', $env('MAIL_TO', 'info@gravisa.com'));
+define('MAIL_TO', $env('MAIL_TO', 'destek@gravisa.com.tr'));
 define('MAIL_FROM_NAME', $env('MAIL_FROM_NAME', 'Gravisa Web Sitesi'));
-define('MAIL_FROM', $env('MAIL_FROM', 'noreply@gravisa.com'));
+define('MAIL_FROM', $env('MAIL_FROM', 'destek@gravisa.com.tr'));
 
 // Site iletişim bilgileri (.env'den - admin panel boşsa bunlar kullanılır)
 define('CONTACT_EMAIL', $env('CONTACT_EMAIL', $env('MAIL_TO', '')));
@@ -67,13 +67,35 @@ define('ROOT_PATH', $rootDir);
 define('DATA_PATH', $rootDir . DIRECTORY_SEPARATOR . 'data');
 
 // Web base path: XAMPP'ta /gravisa, production'da '' (kök)
+// Öneri: config/.env içinde BASE_PATH=gravisa (alt klasör) veya boş (site kökü).
 $envBase = $env('BASE_PATH', null);
 if ($envBase !== null && $envBase !== '') {
     define('BASE_PATH', '/' . trim($envBase, '/'));
 } else {
-    $script = $_SERVER['SCRIPT_NAME'] ?? $_SERVER['PHP_SELF'] ?? '/index.php';
+    // PHP_SELF sanal yolu (örn. /gravisa/tr/makineler) verebilir; BASE_PATH için kullanma.
+    $script = str_replace('\\', '/', (string) ($_SERVER['SCRIPT_NAME'] ?? '/index.php'));
     $scriptDir = dirname($script);
-    define('BASE_PATH', ($scriptDir === '/' || $scriptDir === '\\' || $scriptDir === '.') ? '' : rtrim(str_replace('\\', '/', $scriptDir), '/'));
+    $base = ($scriptDir === '/' || $scriptDir === '.' || $scriptDir === '') ? '' : rtrim($scriptDir, '/');
+
+    // SCRIPT_NAME güvenilmezse: index.php dosyasının document root'a göre klasörü
+    if ($base === '' && !empty($_SERVER['SCRIPT_FILENAME']) && !empty($_SERVER['DOCUMENT_ROOT'])) {
+        $doc = realpath($_SERVER['DOCUMENT_ROOT']);
+        $sf = realpath($_SERVER['SCRIPT_FILENAME']);
+        if ($doc !== false && $sf !== false) {
+            $doc = str_replace('\\', '/', $doc);
+            $sf = str_replace('\\', '/', $sf);
+            if (strpos($sf, $doc) === 0) {
+                $rel = substr($sf, strlen($doc));
+                $rel = '/' . ltrim(str_replace('\\', '/', $rel), '/');
+                $relDir = dirname($rel);
+                if ($relDir !== '/' && $relDir !== '.' && $relDir !== '\\') {
+                    $base = rtrim(str_replace('\\', '/', $relDir), '/');
+                }
+            }
+        }
+    }
+
+    define('BASE_PATH', $base);
 }
 
 require_once $rootDir . '/includes/i18n.php';

@@ -100,11 +100,18 @@
         return d.innerHTML;
       }
       function safeImg(src) {
+        if (typeof window.gravisaAssetUrl === 'function') {
+          return window.gravisaAssetUrl(src);
+        }
         if (!src || typeof src !== 'string') return '';
-        var t = src.trim().toLowerCase();
+        var s = src.trim();
+        if (!s) return '';
+        var t = s.toLowerCase();
         if (t.indexOf('javascript:') === 0 || t.indexOf('data:') === 0 || t.indexOf('vbscript:') === 0) return '';
-        var p = (src.charAt(0) === '/' ? '' : '/') + src;
-        return base + p;
+        if (/^https?:\/\//i.test(s)) return s;
+        if (s.charAt(0) === '/') return s;
+        var b = base.replace(/\/$/, '');
+        return b ? (b + '/' + s.replace(/^\//, '')) : ('/' + s.replace(/^\//, ''));
       }
 
       function normalize(s) {
@@ -144,6 +151,29 @@
           else labelByKey[k] = String(m.tip || categoryLabelFromKey(k));
         }
       });
+
+      /* Görseli olan stok makineler (klasörde foto var); çoğu kategori farklı id’lerde ve img boş */
+      var stokWithPhoto = stoktaMakineler.filter(function(m) {
+        return m && m.img && String(m.img).trim() !== '' && safeImg(m.img);
+      });
+      function categoryCardImgSrc(k) {
+        var group = groups[k] || [];
+        var i;
+        for (i = 0; i < group.length; i++) {
+          if (group[i] && group[i].img && String(group[i].img).trim() !== '') {
+            var u = safeImg(group[i].img);
+            if (u) return u;
+          }
+        }
+        if (stokWithPhoto.length === 0) return '';
+        var h = 0;
+        var keyStr = String(k);
+        for (i = 0; i < keyStr.length; i++) {
+          h = ((h << 5) - h + keyStr.charCodeAt(i)) | 0;
+        }
+        var idx = Math.abs(h) % stokWithPhoto.length;
+        return safeImg(stokWithPhoto[idx].img);
+      }
       var available = Object.keys(groups).filter(function(k) { return (groups[k] || []).length > 0; });
       // Diğer en sona
       available.sort(function(a, b) {
@@ -167,15 +197,17 @@
 
       listToRender.forEach(function(k) {
         var count = (groups[k] || []).length;
-        var m0 = firstByKey[k] || {};
-        var imgSrc = safeImg(m0.img);
+        var imgSrc = categoryCardImgSrc(k);
         var label = labelByKey[k] || categoryLabelFromKey(k);
         var href = addQuery(langPath('makineler'), 'cat', k);
+        var catImgHtml = imgSrc
+          ? '<div class="machine-card-image"><img src="' + esc(imgSrc) + '" alt="' + esc(label) + '" loading="lazy" /></div>'
+          : '<div class="machine-card-image machine-card-image--empty" role="img" aria-label="' + esc(J.noPhoto || '') + '"><span>' + esc(J.noPhoto || '') + '</span></div>';
 
         var card = document.createElement('article');
         card.className = 'machine-card category-machine-card';
         card.innerHTML =
-          '<div class="machine-card-image"><img src="' + esc(imgSrc) + '" alt="' + esc(label) + '" loading="lazy" /></div>' +
+          catImgHtml +
           '<div class="machine-card-body">' +
             '<div class="machine-card-badges">' +
               '<span class="machine-card-badge">' + esc(label) + '</span>' +
@@ -212,6 +244,10 @@
     } else {
       setTimeout(renderStoktaKategoriler, 200);
     }
+
+    window.addEventListener('gravisa-machines-loaded', function() {
+      renderStoktaKategoriler();
+    });
 
     if (stoktaCatsToggle) {
       stoktaCatsToggle.addEventListener('click', function() {
