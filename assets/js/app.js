@@ -177,10 +177,11 @@
         return '';
       }
       var available = Object.keys(groups).filter(function(k) { return (groups[k] || []).length > 0; });
-      // Diğer en sona
+      // Önce en çok ürün olan kategoriler; aynı sayıda ise Türkçe alfabetik
       available.sort(function(a, b) {
-        if (a === 'other' && b !== 'other') return 1;
-        if (b === 'other' && a !== 'other') return -1;
+        var ca = (groups[a] || []).length;
+        var cb = (groups[b] || []).length;
+        if (cb !== ca) return cb - ca;
         return String(labelByKey[a] || a).localeCompare(String(labelByKey[b] || b), 'tr');
       });
 
