@@ -153,12 +153,12 @@
         }
       });
 
-      /* Görseli olan stok makineler (klasörde foto var); çoğu kategori farklı id’lerde ve img boş */
-      var stokWithPhoto = stoktaMakineler.filter(function(m) {
-        return m && m.img && String(m.img).trim() !== '' && safeImg(m.img, m.img_mtime);
-      });
+      /* Kategori görseli: yalnızca bu kategorideki makineler arasından, envanter ID sırasına göre ilk geçerli fotoğraf.
+         Başka kategoriden veya havuzdan rastgele görsel kullanılmaz. */
       function categoryCardImgSrc(k) {
-        var group = groups[k] || [];
+        var group = (groups[k] || []).slice().sort(function(a, b) {
+          return (parseInt(a && a.id, 10) || 0) - (parseInt(b && b.id, 10) || 0);
+        });
         var i;
         for (i = 0; i < group.length; i++) {
           if (group[i] && group[i].img && String(group[i].img).trim() !== '') {
@@ -166,15 +166,7 @@
             if (u) return u;
           }
         }
-        if (stokWithPhoto.length === 0) return '';
-        var h = 0;
-        var keyStr = String(k);
-        for (i = 0; i < keyStr.length; i++) {
-          h = ((h << 5) - h + keyStr.charCodeAt(i)) | 0;
-        }
-        var idx = Math.abs(h) % stokWithPhoto.length;
-        var sp = stokWithPhoto[idx];
-        return safeImg(sp.img, sp.img_mtime);
+        return '';
       }
       var available = Object.keys(groups).filter(function(k) { return (groups[k] || []).length > 0; });
       // Diğer en sona
