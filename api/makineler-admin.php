@@ -27,7 +27,9 @@ function loadMachines(string $file): array
 function saveMachines(string $file, array $items): bool
 {
     ensureDataDir();
-    return file_put_contents($file, json_encode($items, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)) !== false;
+    $json = json_encode($items, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+
+    return file_put_contents($file, $json, LOCK_EX) !== false;
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -73,7 +75,7 @@ if ($action === 'delete') {
 // save (create/update)
 $id = (int)($_POST['id'] ?? 0);
 
-$imgExisting = trim($_POST['img_existing'] ?? '');
+$imgExisting = trim((string)($_POST['img_existing'] ?? ''));
 $allowedImgPrefixes = ['images/makineler/', 'assets/uploads/machines/'];
 $imgExisting = sanitizeImagePath($imgExisting, $allowedImgPrefixes);
 
@@ -95,24 +97,46 @@ $machine = [
     'img'         => $imgExisting,
 ];
 
-// Görsel yükleme
-if (!empty($_FILES['img']) && is_uploaded_file($_FILES['img']['tmp_name'])) {
-    $uploadDir = dirname(__DIR__) . '/assets/uploads/machines';
-    if (!is_dir($uploadDir)) {
-        mkdir($uploadDir, 0755, true);
+// Görsel yükleme (site ile aynı klasör: images/makineler — göreli yol tutarlı)
+if (!empty($_FILES['img']) && isset($_FILES['img']['tmp_name'])) {
+    $err = (int)($_FILES['img']['error'] ?? UPLOAD_ERR_OK);
+    if ($err !== UPLOAD_ERR_OK) {
+        $errMsg = [
+            UPLOAD_ERR_INI_SIZE   => 'Dosya çok büyük (sunucu upload limiti).',
+            UPLOAD_ERR_FORM_SIZE  => 'Dosya çok büyük (form limiti).',
+            UPLOAD_ERR_PARTIAL    => 'Dosya kısmen yüklendi, tekrar deneyin.',
+            UPLOAD_ERR_NO_FILE    => '',
+            UPLOAD_ERR_NO_TMP_DIR => 'Sunucu geçici klasörü yok.',
+            UPLOAD_ERR_CANT_WRITE => 'Sunucuya yazılamadı (izin).',
+            UPLOAD_ERR_EXTENSION  => 'Yükleme bir eklenti tarafından engellendi.',
+        ];
+        $msg = $errMsg[$err] ?? ('Yükleme hatası kodu: ' . $err);
+        if ($msg !== '') {
+            jsonResponse(['success' => false, 'message' => $msg]);
+        }
+    } elseif (is_uploaded_file($_FILES['img']['tmp_name'])) {
+        $uploadDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'makineler';
+        if (!is_dir($uploadDir) && !mkdir($uploadDir, 0755, true)) {
+            jsonResponse(['success' => false, 'message' => 'Görsel klasörü oluşturulamadı (images/makineler).']);
+        }
+        $origName = (string)($_FILES['img']['name'] ?? '');
+        $ext = strtolower(pathinfo($origName, PATHINFO_EXTENSION));
+        $allowedExt = ['jpg', 'jpeg', 'png', 'webp', 'jfif'];
+        if (!in_array($ext, $allowedExt, true)) {
+            jsonResponse(['success' => false, 'message' => 'Sadece JPG, PNG, WEBP veya JFIF yükleyebilirsiniz.']);
+        }
+        $filename = 'makine_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+        $target = $uploadDir . DIRECTORY_SEPARATOR . $filename;
+        if (!move_uploaded_file($_FILES['img']['tmp_name'], $target)) {
+            jsonResponse(['success' => false, 'message' => 'Görsel diske yazılamadı (izin veya disk).']);
+        }
+        $probe = @getimagesize($target);
+        if ($probe === false) {
+            @unlink($target);
+            jsonResponse(['success' => false, 'message' => 'Yüklenen dosya geçerli bir resim değil.']);
+        }
+        $machine['img'] = 'images/makineler/' . $filename;
     }
-    $origName = $_FILES['img']['name'];
-    $ext = strtolower(pathinfo($origName, PATHINFO_EXTENSION));
-    $allowedExt = ['jpg', 'jpeg', 'png', 'webp', 'jfif'];
-    if (!in_array($ext, $allowedExt, true)) {
-        jsonResponse(['success' => false, 'message' => 'Sadece JPG, PNG veya WEBP yükleyebilirsiniz.']);
-    }
-    $filename = 'machine_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
-    $target = $uploadDir . '/' . $filename;
-    if (!move_uploaded_file($_FILES['img']['tmp_name'], $target)) {
-        jsonResponse(['success' => false, 'message' => 'Görsel yüklenemedi.']);
-    }
-    $machine['img'] = 'assets/uploads/machines/' . $filename;
 }
 
 // Yeni ID
@@ -154,5 +178,6 @@ if (!saveMachines($file, $items)) {
     jsonResponse(['success' => false, 'message' => 'Kayıt sırasında hata oluştu.']);
 }
 
-jsonResponse(['success' => true, 'message' => $message, 'items' => array_values($items)]);
+$savedId = (int)($machine['id'] ?? 0);
+jsonResponse(['success' => true, 'message' => $message, 'items' => array_values($items), 'saved_id' => $savedId]);
 
