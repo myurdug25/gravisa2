@@ -32,6 +32,21 @@ function saveMachines(string $file, array $items): bool
     return file_put_contents($file, $json, LOCK_EX) !== false;
 }
 
+/** Aynı satırın iki kez eklenmesini önlemek için parmak izi (tip, firma, model, yıl, şasi, motor SN). */
+function gravisaMachineFingerprint(array $m): string
+{
+    $parts = [
+        strtolower(trim((string) ($m['tip'] ?? ''))),
+        strtolower(trim((string) ($m['firma'] ?? ''))),
+        strtolower(trim((string) ($m['tipModel'] ?? ''))),
+        strtolower(trim((string) ($m['modelYil'] ?? ''))),
+        strtolower(trim((string) ($m['saseSeriNo'] ?? ''))),
+        strtolower(trim((string) ($m['motorSeriNo'] ?? ''))),
+    ];
+
+    return implode('|', $parts);
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $items = loadMachines($file);
     jsonResponse(['success' => true, 'items' => array_values($items)]);
@@ -142,6 +157,27 @@ if (!empty($_FILES['img']) && isset($_FILES['img']['tmp_name'])) {
             jsonResponse(['success' => false, 'message' => 'Yüklenen dosya geçerli bir resim değil.']);
         }
         $machine['img'] = 'images/makineler/' . $filename;
+    }
+}
+
+$fp = gravisaMachineFingerprint($machine);
+$noNorm = trim((string) $machine['no']);
+foreach ($items as $m) {
+    $otherId = (int) ($m['id'] ?? 0);
+    if ($id > 0 && $otherId === $id) {
+        continue;
+    }
+    if ($noNorm !== '' && trim((string) ($m['no'] ?? '')) === $noNorm) {
+        jsonResponse([
+            'success' => false,
+            'message' => 'Bu envanter numarası (No) zaten kullanılıyor (ID #' . $otherId . '). Listeden o kaydı düzenleyin; yeni satır açmayın.',
+        ]);
+    }
+    if (gravisaMachineFingerprint($m) === $fp) {
+        jsonResponse([
+            'success' => false,
+            'message' => 'Bu bilgilerle başka bir makine zaten kayıtlı (ID #' . $otherId . '). Aynı kayıt iki kez eklenemez.',
+        ]);
     }
 }
 

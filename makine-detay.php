@@ -42,7 +42,7 @@ $pageId = 'makine-detay';
 
   <script src="<?= BASE_PATH ?>/assets/js/site-settings.js?v=9"></script>
   <script src="<?= BASE_PATH ?>/assets/js/app.js?v=<?= @filemtime(__DIR__ . '/assets/js/app.js') ?: 4 ?>"></script>
-  <script src="<?= BASE_PATH ?>/assets/js/app-makineler.js?v=11"></script>
+  <script src="<?= BASE_PATH ?>/assets/js/app-makineler.js?v=13"></script>
   <script>
     (function () {
       var J = window.__GRAVISA_JS || {};
@@ -86,12 +86,26 @@ $pageId = 'makine-detay';
 
       var ns = J.notSpecified || 'Belirtilmemiş';
 
+      function machineTitleUi(m) {
+        if (!m) return '';
+        if (typeof window.gravisaMachineDisplayTitle === 'function') {
+          return window.gravisaMachineDisplayTitle(m);
+        }
+        var f = String(m.firma || '').trim();
+        var t = String(m.tipModel || '').trim();
+        if (!f) return t;
+        if (!t || t.toLowerCase() === f.toLowerCase()) return f;
+        if (t.toLowerCase().indexOf(f.toLowerCase() + ' ') === 0) return t;
+        return f + ' ' + t;
+      }
+
       function renderMakine(makine) {
         if (!makine) {
           showError();
           return;
         }
-        document.title = (makine.firma || '') + ' ' + (makine.tipModel || '') + ' | Gravisa';
+        var titleLine = machineTitleUi(makine);
+        document.title = titleLine + ' | Gravisa';
 
         var imgSrc = (typeof window.gravisaResolveMachineImage === 'function')
           ? window.gravisaResolveMachineImage(makine)
@@ -100,7 +114,7 @@ $pageId = 'makine-detay';
         var html = '<div class="machine-detail-modern">';
         html += '<div class="machine-detail-image-modern' + (imgSrc ? '' : ' machine-detail-image-modern--empty') + '">';
         if (imgSrc) {
-          html += '<img src="' + esc(imgSrc) + '" alt="' + esc(makine.tipModel) + '" />';
+          html += '<img src="' + esc(imgSrc) + '" alt="' + esc(titleLine) + '" />';
         } else {
           html += '<span role="img" aria-label="' + esc(J.noPhoto || '') + '">' + esc(J.noPhoto || '') + '</span>';
         }
@@ -109,7 +123,7 @@ $pageId = 'makine-detay';
 
         html += '<div class="machine-detail-content-modern">';
         html += '<div class="machine-detail-header">';
-        html += '<h1>' + esc(makine.firma) + ' ' + esc(makine.tipModel) + '</h1>';
+        html += '<h1>' + esc(titleLine) + '</h1>';
         html += '<div class="machine-detail-meta">';
         html += '<span class="meta-item"><strong>' + esc(J.metaModelYear || 'Model Yılı:') + '</strong> ' + esc(makine.modelYil || ns) + '</span>';
         html += '<span class="meta-item"><strong>' + esc(J.metaPower || 'Güç:') + '</strong> ' + esc(makine.guc ? makine.guc + ' ' + makine.gucBirim : ns) + '</span>';

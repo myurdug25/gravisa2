@@ -705,6 +705,18 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
       var machineAllItems = [];
       var previewBlobUrl = null;
 
+      function machineTitleUi(m) {
+        if (!m) return '';
+        var f = String(m.firma != null ? m.firma : '').trim();
+        var t = String(m.tipModel != null ? m.tipModel : '').trim();
+        var fl = f.toLowerCase();
+        var tl = t.toLowerCase();
+        if (!f) return t;
+        if (!t || tl === fl) return f;
+        if (tl.indexOf(fl + ' ') === 0) return t;
+        return f + ' ' + t;
+      }
+
       function setMessage(text, ok) {
         if (!msg) return;
         msg.textContent = text || '';
@@ -888,7 +900,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
             '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0; font-size:0.8rem; color:#999;">' + (m.id || '') + '</td>' +
             '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0; font-weight:600; color:#164a6e;">' + noDisp + '</td>' +
             '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0;">' + (m.tip || '') + '</td>' +
-            '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0;">' + (m.firma || '') + ' ' + (m.tipModel || '') + '</td>' +
+            '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0;">' + machineTitleUi(m) + '</td>' +
             '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0;">' + (m.modelYil || '') + '</td>' +
             '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0;">' + (m.guc || '') + ' ' + (m.gucBirim || '') + '</td>' +
             '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0;">' + (m.stok ? 'Stokta' : 'Talebe göre') + '</td>' +

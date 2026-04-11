@@ -120,7 +120,7 @@ $pageId = 'kiralama';
 <script src="<?= BASE_PATH ?>/assets/js/form-api.js?v=3"></script>
 <script src="<?= BASE_PATH ?>/assets/js/site-settings.js?v=9"></script>
 <script src="<?= BASE_PATH ?>/assets/js/app.js?v=<?= @filemtime(__DIR__ . '/assets/js/app.js') ?: 4 ?>"></script>
-<script src="<?= BASE_PATH ?>/assets/js/app-makineler.js?v=11"></script>
+<script src="<?= BASE_PATH ?>/assets/js/app-makineler.js?v=13"></script>
   <script>
     (function () {
       var FORM = <?= json_encode([
@@ -166,6 +166,18 @@ $pageId = 'kiralama';
         }
         return safeImg(makine.img || '', makine.img_mtime);
       }
+      function machineTitleUi(m) {
+        if (!m) return '';
+        if (typeof window.gravisaMachineDisplayTitle === 'function') {
+          return window.gravisaMachineDisplayTitle(m);
+        }
+        var f = String(m.firma || '').trim();
+        var t = String(m.tipModel || '').trim();
+        if (!f) return t;
+        if (!t || t.toLowerCase() === f.toLowerCase()) return f;
+        if (t.toLowerCase().indexOf(f.toLowerCase() + ' ') === 0) return t;
+        return f + ' ' + t;
+      }
       function showMakineInfo(makine) {
         if (!makine) return;
         var makineBilgileri = document.getElementById('makine-bilgileri');
@@ -178,7 +190,7 @@ $pageId = 'kiralama';
           if (imgUrl) {
             imgEl.onerror = function () { this.style.display = 'none'; };
             imgEl.src = imgUrl;
-            imgEl.alt = makine.tipModel || '';
+            imgEl.alt = machineTitleUi(makine);
             imgEl.style.display = '';
           } else {
             imgEl.removeAttribute('src');
@@ -186,13 +198,13 @@ $pageId = 'kiralama';
             imgEl.style.display = 'none';
           }
         }
-        document.getElementById('makine-adi').textContent = makine.firma + ' ' + makine.tipModel;
+        document.getElementById('makine-adi').textContent = machineTitleUi(makine);
         var detayText = makine.tip;
         if (makine.modelYil) detayText += ' • ' + makine.modelYil;
         if (makine.guc) detayText += ' • ' + makine.guc + ' ' + makine.gucBirim;
         document.getElementById('makine-detay').textContent = detayText;
         document.getElementById('makine-id').value = makine.id;
-        document.getElementById('makine-model').value = makine.firma + ' ' + makine.tipModel;
+        document.getElementById('makine-model').value = machineTitleUi(makine);
         var modelSelect = document.getElementById('kiralama-model');
         if (modelSelect) modelSelect.value = String(makine.id);
       }
@@ -202,7 +214,7 @@ $pageId = 'kiralama';
         makineler.forEach(function (m) {
           var opt = document.createElement('option');
           opt.value = m.id;
-          opt.textContent = m.firma + ' ' + m.tipModel + ' (' + m.tip + ')';
+          opt.textContent = machineTitleUi(m) + ' (' + m.tip + ')';
           modelSelect.appendChild(opt);
         });
       }

@@ -199,6 +199,19 @@ def normalize_category_label(s: str) -> str:
     return s
 
 
+def machine_fingerprint(m: dict) -> str:
+    """Tam aynı teknik satırın iki kez yazılmasını ayırt etmek için."""
+    parts = [
+        fold_tr(str(m.get("tip") or "")),
+        fold_tr(str(m.get("firma") or "")),
+        fold_tr(str(m.get("tipModel") or "")),
+        fold_tr(str(m.get("modelYil") or "")),
+        fold_tr(str(m.get("saseSeriNo") or "")),
+        fold_tr(str(m.get("motorSeriNo") or "")),
+    ]
+    return "|".join(parts)
+
+
 def resolve_tip(raw: str) -> str:
     """
     Kategori yalnızca Excel TYPE sütunundan (normalize edilmiş).
@@ -336,12 +349,26 @@ def main() -> int:
 
     img_index = scan_machine_images(IMG_DIR)
     machines: list[dict] = []
+    seen_fp: set[str] = set()
+    seen_no: set[str] = set()
+    skipped_dup = 0
     for row in data_rows:
         if use_makpark and not _is_makpark_data_row(tuple(row or ())):
             continue
         m = row_to_machine(tuple(row or ()), colmap, len(machines) + 1)
         if m is None:
             continue
+        fp = machine_fingerprint(m)
+        if fp in seen_fp:
+            skipped_dup += 1
+            continue
+        no_s = str(m.get("no", "")).strip()
+        if no_s and no_s in seen_no:
+            skipped_dup += 1
+            continue
+        seen_fp.add(fp)
+        if no_s:
+            seen_no.add(no_s)
         m["img"] = image_for_inventory_no(str(m.get("no", m["id"])), img_index)
         machines.append(m)
 
@@ -357,6 +384,8 @@ def main() -> int:
         json.dumps(machines, ensure_ascii=False, indent=4),
         encoding="utf-8",
     )
+    if skipped_dup:
+        print(f"Uyarı: {skipped_dup} tekrarlayan Excel satırı atlandı (aynı no veya aynı teknik içerik).", file=sys.stderr)
     print(f"{len(machines)} makine yazıldı: {OUT_JSON}")
     if BACKUP_JSON.is_file():
         print(f"Önceki liste yedek: {BACKUP_JSON}")

@@ -44,23 +44,15 @@
   }
 
   /**
-   * Kart görseli: önce makinenin kendi img’si; yoksa aynı kategoride başka makinenin görseli;
-   * o da yoksa havuzdan deterministik yedek (boş img kayıtlarında ana sayfa gibi görünür).
+   * Kart görseli: yalnızca bu makinenin kendi img’si; yoksa havuzdan deterministik yedek.
+   * Aynı kategorideki başka makinenin görseli kullanılmaz — biri fotoğraf değiştirince
+   * kategorideki tüm kartların aynı resme dönmesi engellenir.
    */
   function cardImgSrcForMachine(m) {
     if (!m) return '';
     if (m.img && String(m.img).trim() !== '') {
       var own = safeImgSrc(m.img, m.img_mtime);
       if (own) return own;
-    }
-    var k = categoryKey(m);
-    var g = window.makineler || [];
-    for (var i = 0; i < g.length; i++) {
-      var o = g[i];
-      if (!o || categoryKey(o) !== k) continue;
-      if (!o.img || String(o.img).trim() === '') continue;
-      var u = safeImgSrc(o.img, o.img_mtime);
-      if (u) return u;
     }
     if (machinesWithPhoto.length === 0) return '';
     var h = 0;
@@ -115,6 +107,20 @@
     div.textContent = str;
     return div.innerHTML;
   }
+
+  /** Kart başlığı: firma ile tipModel aynıysa veya biri diğerinin tekrarıysa tek metin. */
+  function machineDisplayTitle(m) {
+    if (!m) return '';
+    var f = String(m.firma != null ? m.firma : '').trim();
+    var t = String(m.tipModel != null ? m.tipModel : '').trim();
+    var fl = f.toLowerCase();
+    var tl = t.toLowerCase();
+    if (!f) return t;
+    if (!t || tl === fl) return f;
+    if (tl.indexOf(fl + ' ') === 0) return t;
+    return f + ' ' + t;
+  }
+  window.gravisaMachineDisplayTitle = machineDisplayTitle;
 
   function safeImgSrc(src, imgMtime) {
     if (typeof window.gravisaAssetUrl === 'function') {
@@ -354,8 +360,9 @@
     var article = document.createElement('article');
     article.className = 'machine-card';
     var imgSrc = cardImgSrcForMachine(m);
+    var dispTitle = machineDisplayTitle(m);
     var imgHtml = imgSrc
-      ? '<div class="machine-card-image"><img src="' + escapeHtml(imgSrc) + '" alt="' + escapeHtml(m.tipModel) + '" loading="lazy" /></div>'
+      ? '<div class="machine-card-image"><img src="' + escapeHtml(imgSrc) + '" alt="' + escapeHtml(dispTitle) + '" loading="lazy" /></div>'
       : '<div class="machine-card-image machine-card-image--empty" role="img" aria-label="' + escapeHtml(J.noPhoto || '') + '"><span>' + escapeHtml(J.noPhoto || '') + '</span></div>';
     article.innerHTML =
       imgHtml +
@@ -364,7 +371,7 @@
           '<span class="machine-card-badge">' + escapeHtml(m.tip) + '</span>' +
           (m.stok ? '<span class="machine-card-badge machine-card-badge--stock">' + escapeHtml(J.stockIn || 'Stokta') + '</span>' : '<span class="machine-card-badge">' + escapeHtml(J.stockOrder || 'Talebe göre') + '</span>') +
         '</div>' +
-        '<h3 class="machine-card-title">' + escapeHtml(m.firma) + ' ' + escapeHtml(m.tipModel) + '</h3>' +
+        '<h3 class="machine-card-title">' + escapeHtml(dispTitle) + '</h3>' +
         '<p class="machine-card-meta">' + escapeHtml(J.model || 'Model') + ': ' + escapeHtml(m.modelYil) + ' &bull; ' + escapeHtml(J.power || 'Güç') + ': ' + escapeHtml(m.guc) + ' ' + escapeHtml(m.gucBirim) + '</p>' +
         '<p class="machine-card-spec">' + escapeHtml(m.kapasite) + '</p>' +
         '<div class="machine-card-actions" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">' +
@@ -384,8 +391,8 @@
     return (
       dImgBlock +
       '<div>' +
-        '<div class="machine-detail-badge">' + m.tip + '</div>' +
-        '<h2 style="margin:0 0 8px; font-size:1.75rem;">' + m.firma + ' ' + m.tipModel + '</h2>' +
+        '<div class="machine-detail-badge">' + escapeHtml(m.tip) + '</div>' +
+        '<h2 style="margin:0 0 8px; font-size:1.75rem;">' + escapeHtml(machineDisplayTitle(m)) + '</h2>' +
         '<p style="color: var(--color-text-muted); margin-bottom: 24px;">' + escapeHtml(J.metaModelYear || 'Model Yılı:') + ' ' + escapeHtml(m.modelYil) + '</p>' +
         '<ul class="machine-detail-specs">' +
           '<li><span>' + escapeHtml(J.labelType || 'Tip') + '</span><span>' + escapeHtml(m.tip) + '</span></li>' +
@@ -401,8 +408,8 @@
           '<li><span>' + escapeHtml(J.labelStock || 'Stok Durumu') + '</span><span>' + escapeHtml(m.stok ? (J.stockIn || 'Stokta') : (J.stockOrder || 'Talebe göre')) + '</span></li>' +
         '</ul>' +
         '<div class="machine-detail-actions">' +
-          '<a href="' + escapeHtml(addQuery(langPath('satis-teklifi'), 'model', (m.firma + ' ' + m.tipModel))) + '" class="btn btn-primary">' + escapeHtml(J.btnSalesLarge || 'Satış Teklifi Al') + '</a>' +
-          '<a href="' + escapeHtml(addQuery(langPath('kiralama'), 'model', (m.firma + ' ' + m.tipModel))) + '" class="btn btn-secondary">' + escapeHtml(J.btnRentLarge || 'Kiralama Yap') + '</a>' +
+          '<a href="' + escapeHtml(addQuery(langPath('satis-teklifi'), 'model', machineDisplayTitle(m))) + '" class="btn btn-primary">' + escapeHtml(J.btnSalesLarge || 'Satış Teklifi Al') + '</a>' +
+          '<a href="' + escapeHtml(addQuery(langPath('kiralama'), 'model', machineDisplayTitle(m))) + '" class="btn btn-secondary">' + escapeHtml(J.btnRentLarge || 'Kiralama Yap') + '</a>' +
           '<a href="' + escapeHtml(langPath('index')) + '#demo' + '" class="btn btn-outline">' + escapeHtml(J.btnDemo || 'Demo Talebi') + '</a>' +
         '</div>' +
       '</div>'
