@@ -104,7 +104,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
     .machine-list-toolbar input[type="search"] { flex: 1; min-width: 220px; padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.9rem; }
     .machine-img-preview-wrap { margin-top: 10px; border-radius: 8px; overflow: hidden; border: 1px solid #e5e7eb; background: #fff; max-width: 360px; display: none; }
     .machine-img-preview-wrap.is-visible { display: block; }
-    .machine-img-preview-wrap img { width: 100%; height: auto; max-height: 220px; object-fit: contain; display: block; vertical-align: top; }
+    .machine-img-preview-wrap img { width: 100%; height: auto; max-height: 220px; object-fit: contain; display: block; }
     .admin-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .machine-form-hint { font-size: 0.8rem; color: #64748b; margin-top: 4px; line-height: 1.4; }
   </style>
