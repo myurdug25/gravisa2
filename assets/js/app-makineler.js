@@ -34,6 +34,43 @@
 
   var filteredMakineler = window.makineler;
   var activeCatKey = '';
+  /** Görseli olan makineler (ana sayfadaki kategori kartı mantığıyla aynı havuz) */
+  var machinesWithPhoto = [];
+
+  function rebuildMachinesWithPhoto() {
+    machinesWithPhoto = (window.makineler || []).filter(function (m) {
+      return m && m.img && String(m.img).trim() !== '' && safeImgSrc(m.img);
+    });
+  }
+
+  /**
+   * Kart görseli: önce makinenin kendi img’si; yoksa aynı kategoride başka makinenin görseli;
+   * o da yoksa havuzdan deterministik yedek (boş img kayıtlarında ana sayfa gibi görünür).
+   */
+  function cardImgSrcForMachine(m) {
+    if (!m) return '';
+    if (m.img && String(m.img).trim() !== '') {
+      var own = safeImgSrc(m.img);
+      if (own) return own;
+    }
+    var k = categoryKey(m);
+    var g = window.makineler || [];
+    for (var i = 0; i < g.length; i++) {
+      var o = g[i];
+      if (!o || categoryKey(o) !== k) continue;
+      if (!o.img || String(o.img).trim() === '') continue;
+      var u = safeImgSrc(o.img);
+      if (u) return u;
+    }
+    if (machinesWithPhoto.length === 0) return '';
+    var h = 0;
+    var idStr = String(m.id != null ? m.id : (m.tipModel || '') + (m.firma || ''));
+    for (var j = 0; j < idStr.length; j++) {
+      h = ((h << 5) - h + idStr.charCodeAt(j)) | 0;
+    }
+    var idx = Math.abs(h) % machinesWithPhoto.length;
+    return safeImgSrc(machinesWithPhoto[idx].img);
+  }
 
   function normalize(s) {
     return String(s || '')
@@ -104,6 +141,7 @@
         }
         window.makineler = res.items;
         filteredMakineler = window.makineler;
+        rebuildMachinesWithPhoto();
         try {
           window.dispatchEvent(new CustomEvent('gravisa-machines-loaded'));
         } catch (e) {}
@@ -312,7 +350,7 @@
   function renderCard(m) {
     var article = document.createElement('article');
     article.className = 'machine-card';
-    var imgSrc = safeImgSrc(m.img);
+    var imgSrc = cardImgSrcForMachine(m);
     var imgHtml = imgSrc
       ? '<div class="machine-card-image"><img src="' + escapeHtml(imgSrc) + '" alt="' + escapeHtml(m.tipModel) + '" loading="lazy" /></div>'
       : '<div class="machine-card-image machine-card-image--empty" role="img" aria-label="' + escapeHtml(J.noPhoto || '') + '"><span>' + escapeHtml(J.noPhoto || '') + '</span></div>';
@@ -336,7 +374,7 @@
   }
 
   function renderDetay(m) {
-    var dImg = safeImgSrc(m.img);
+    var dImg = cardImgSrcForMachine(m);
     var dImgBlock = dImg
       ? '<div class="machine-detail-image"><img src="' + escapeHtml(dImg) + '" alt="' + escapeHtml(m.tipModel) + '" /></div>'
       : '<div class="machine-detail-image machine-detail-image--empty"><span>' + escapeHtml(J.noPhoto || '') + '</span></div>';
@@ -451,4 +489,7 @@
       rerenderCategories();
     });
   }
+
+  window.gravisaRebuildMachinePhotos = rebuildMachinesWithPhoto;
+  window.gravisaResolveMachineImage = cardImgSrcForMachine;
 })();

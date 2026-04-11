@@ -18,7 +18,7 @@
             "lang_switch_en": "English"
         },
         "wa": {
-            "default_message": "Merhaba, Gravisa ekibiyiz. Size nasıl yardımcı olabiliriz?"
+            "default_message": "Merhaba, web siteniz üzerinden yazıyorum. İş makineleri hakkında bilgi almak istiyorum."
         },
         "footer": {
             "rights": "Gravisa. Tüm hakları saklıdır.",
@@ -537,7 +537,7 @@
             "lang_switch_en": "English"
         },
         "wa": {
-            "default_message": "Hello, this is the Gravisa team. How can we help you?"
+            "default_message": "Hello, I'm contacting you via your website. I'd like information about your construction equipment."
         },
         "footer": {
             "rights": "Gravisa. All rights reserved.",

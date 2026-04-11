@@ -90,7 +90,7 @@ $pageId = 'satis-teklifi';
   <?php include __DIR__ . '/includes/site-footer.php'; ?>
 
   <script src="<?= BASE_PATH ?>/assets/js/form-api.js?v=3"></script>
-  <script src="<?= BASE_PATH ?>/assets/js/site-settings.js?v=7"></script>
+  <script src="<?= BASE_PATH ?>/assets/js/site-settings.js?v=8"></script>
   <script src="<?= BASE_PATH ?>/assets/js/app.js?v=<?= @filemtime(__DIR__ . '/assets/js/app.js') ?: 4 ?>"></script>
   <script src="<?= BASE_PATH ?>/assets/js/app-makineler.js?v=7"></script>
   <script>

@@ -314,8 +314,8 @@ function getWaPrefillMessage(): string
         return t('wa.default_message');
     }
     return $en
-        ? 'Hello, this is the Gravisa team. How can we help you?'
-        : 'Merhaba, Gravisa ekibiyiz. Size nasıl yardımcı olabiliriz?';
+        ? 'Hello, I\'m contacting you via your website. I\'d like information about your construction equipment.'
+        : 'Merhaba, web siteniz üzerinden yazıyorum. İş makineleri hakkında bilgi almak istiyorum.';
 }
 
 /**

@@ -38,7 +38,11 @@
           if (!pre && typeof window.__GRAVISA_WA_PREFILL === 'string' && window.__GRAVISA_WA_PREFILL.trim()) {
             pre = window.__GRAVISA_WA_PREFILL.trim();
           }
-          if (!pre) pre = 'Merhaba, Gravisa ekibiyiz. Size nasıl yardımcı olabiliriz?';
+          if (!pre) {
+            pre = lang === 'en'
+              ? "Hello, I'm contacting you via your website. I'd like information about your construction equipment."
+              : 'Merhaba, web siteniz üzerinden yazıyorum. İş makineleri hakkında bilgi almak istiyorum.';
+          }
           el.href = 'https://wa.me/' + wa + '?text=' + encodeURIComponent(pre);
         }
       } else if (key === 'address') {

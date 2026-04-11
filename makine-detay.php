@@ -40,9 +40,9 @@ $pageId = 'makine-detay';
 
   <?php include __DIR__ . '/includes/site-footer.php'; ?>
 
-  <script src="<?= BASE_PATH ?>/assets/js/site-settings.js?v=7"></script>
+  <script src="<?= BASE_PATH ?>/assets/js/site-settings.js?v=8"></script>
   <script src="<?= BASE_PATH ?>/assets/js/app.js?v=<?= @filemtime(__DIR__ . '/assets/js/app.js') ?: 4 ?>"></script>
-  <script src="<?= BASE_PATH ?>/assets/js/app-makineler.js?v=7"></script>
+  <script src="<?= BASE_PATH ?>/assets/js/app-makineler.js?v=8"></script>
   <script>
     (function () {
       var J = window.__GRAVISA_JS || {};
@@ -93,7 +93,9 @@ $pageId = 'makine-detay';
         }
         document.title = (makine.firma || '') + ' ' + (makine.tipModel || '') + ' | Gravisa';
 
-        var imgSrc = safeImg(makine.img);
+        var imgSrc = (typeof window.gravisaResolveMachineImage === 'function')
+          ? window.gravisaResolveMachineImage(makine)
+          : safeImg(makine.img);
         var stockBadge = makine.stok ? (J.stockBadgeIn || '✓ Stokta') : (J.stockOrder || 'Talebe göre');
         var html = '<div class="machine-detail-modern">';
         html += '<div class="machine-detail-image-modern' + (imgSrc ? '' : ' machine-detail-image-modern--empty') + '">';
@@ -161,6 +163,10 @@ $pageId = 'makine-detay';
         .then(function(r) { return r.json(); })
         .then(function(res) {
           var items = (res && res.success && res.items) ? res.items : [];
+          window.makineler = items;
+          if (typeof window.gravisaRebuildMachinePhotos === 'function') {
+            window.gravisaRebuildMachinePhotos();
+          }
           var makine = items.find(function(m) { return m.id === makineId; });
           renderMakine(makine);
         })
