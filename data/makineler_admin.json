@@ -5678,23 +5678,6 @@
         "img": ""
     },
     {
-        "id": 335,
-        "no": "335",
-        "tip": "ANKRAJ MİNİ KAZIK",
-        "firma": "FD 1600 HD",
-        "tipModel": "FD 1600 HD",
-        "modelYil": "2006",
-        "guc": "124.8",
-        "gucBirim": "kW",
-        "kapasite": "1600daN/m",
-        "saseSeriNo": "6004",
-        "motorSeriNo": "8911126",
-        "motorMarka": "",
-        "motorTip": "Deutz BF 6L 914 C",
-        "stok": true,
-        "img": ""
-    },
-    {
         "id": 336,
         "no": "336",
         "tip": "HİDROLİK SONDAJ MAKİNESİ",

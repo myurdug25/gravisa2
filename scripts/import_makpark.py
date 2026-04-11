@@ -199,15 +199,18 @@ def normalize_category_label(s: str) -> str:
     return s
 
 
-def machine_fingerprint(m: dict) -> str:
-    """Tam aynı teknik satırın iki kez yazılmasını ayırt etmek için."""
+def machine_spec_fingerprint(m: dict) -> str:
+    """Kartta görünen özet aynıysa tekrar sayılır (şasi/motor seri hariç)."""
+    guc = str(m.get("guc") or "").strip().replace(",", ".").lower()
+    birim = str(m.get("gucBirim") or "").strip().lower()
+    kap = re.sub(r"\s+", "", str(m.get("kapasite") or "").strip().lower())
     parts = [
         fold_tr(str(m.get("tip") or "")),
         fold_tr(str(m.get("firma") or "")),
         fold_tr(str(m.get("tipModel") or "")),
         fold_tr(str(m.get("modelYil") or "")),
-        fold_tr(str(m.get("saseSeriNo") or "")),
-        fold_tr(str(m.get("motorSeriNo") or "")),
+        fold_tr(guc + birim),
+        fold_tr(kap),
     ]
     return "|".join(parts)
 
@@ -349,7 +352,7 @@ def main() -> int:
 
     img_index = scan_machine_images(IMG_DIR)
     machines: list[dict] = []
-    seen_fp: set[str] = set()
+    seen_spec: set[str] = set()
     seen_no: set[str] = set()
     skipped_dup = 0
     for row in data_rows:
@@ -358,15 +361,15 @@ def main() -> int:
         m = row_to_machine(tuple(row or ()), colmap, len(machines) + 1)
         if m is None:
             continue
-        fp = machine_fingerprint(m)
-        if fp in seen_fp:
+        spec_fp = machine_spec_fingerprint(m)
+        if spec_fp in seen_spec:
             skipped_dup += 1
             continue
         no_s = str(m.get("no", "")).strip()
         if no_s and no_s in seen_no:
             skipped_dup += 1
             continue
-        seen_fp.add(fp)
+        seen_spec.add(spec_fp)
         if no_s:
             seen_no.add(no_s)
         m["img"] = image_for_inventory_no(str(m.get("no", m["id"])), img_index)
@@ -385,7 +388,7 @@ def main() -> int:
         encoding="utf-8",
     )
     if skipped_dup:
-        print(f"Uyarı: {skipped_dup} tekrarlayan Excel satırı atlandı (aynı no veya aynı teknik içerik).", file=sys.stderr)
+        print(f"Uyarı: {skipped_dup} tekrarlayan Excel satırı atlandı (aynı no veya sitede aynı görünen teknik özet).", file=sys.stderr)
     print(f"{len(machines)} makine yazıldı: {OUT_JSON}")
     if BACKUP_JSON.is_file():
         print(f"Önceki liste yedek: {BACKUP_JSON}")

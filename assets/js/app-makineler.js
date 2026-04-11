@@ -374,6 +374,7 @@
         '<h3 class="machine-card-title">' + escapeHtml(dispTitle) + '</h3>' +
         '<p class="machine-card-meta">' + escapeHtml(J.model || 'Model') + ': ' + escapeHtml(m.modelYil) + ' &bull; ' + escapeHtml(J.power || 'Güç') + ': ' + escapeHtml(m.guc) + ' ' + escapeHtml(m.gucBirim) + '</p>' +
         '<p class="machine-card-spec">' + escapeHtml(m.kapasite) + '</p>' +
+        (m.no ? '<p class="machine-card-meta machine-card-inventory" style="font-size:0.8125rem;margin-bottom:0">' + escapeHtml(J.inventoryNo || 'Envanter no') + ': ' + escapeHtml(String(m.no)) + '</p>' : '') +
         '<div class="machine-card-actions" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">' +
           '<a href="' + escapeHtml(addQuery(langPath('makine-detay'), 'id', m.id)) + '" class="btn btn-outline">' + escapeHtml(J.detail || 'Detay') + '</a>' +
           '<a href="' + escapeHtml(addQuery(langPath('satis-teklifi'), 'id', m.id)) + '" class="btn btn-primary">' + escapeHtml(J.getQuote || 'Teklif Al') + '</a>' +

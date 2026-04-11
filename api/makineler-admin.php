@@ -32,19 +32,26 @@ function saveMachines(string $file, array $items): bool
     return file_put_contents($file, $json, LOCK_EX) !== false;
 }
 
-/** Aynı satırın iki kez eklenmesini önlemek için parmak izi (tip, firma, model, yıl, şasi, motor SN). */
-function gravisaMachineFingerprint(array $m): string
+/**
+ * Kartta görünen teknik özet aynıysa aynı makine sayılır (şasi/motor seri ayrı tutulmaz).
+ * İki fiziksel ünite aynı model/yıl/güç/kapasitede ise tek kayıt veya modele ayırt edici not ekleyin.
+ */
+function gravisaMachineSpecFingerprint(array $m): string
 {
+    $guc = strtolower(str_replace(',', '.', trim((string) ($m['guc'] ?? ''))));
+    $gucBirim = strtolower(trim((string) ($m['gucBirim'] ?? '')));
+    $kap = strtolower(preg_replace('/\s+/', '', (string) ($m['kapasite'] ?? '')));
+
     $parts = [
         strtolower(trim((string) ($m['tip'] ?? ''))),
         strtolower(trim((string) ($m['firma'] ?? ''))),
         strtolower(trim((string) ($m['tipModel'] ?? ''))),
         strtolower(trim((string) ($m['modelYil'] ?? ''))),
-        strtolower(trim((string) ($m['saseSeriNo'] ?? ''))),
-        strtolower(trim((string) ($m['motorSeriNo'] ?? ''))),
+        $guc . '|' . $gucBirim,
+        $kap,
     ];
 
-    return implode('|', $parts);
+    return implode("\x1e", $parts);
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -160,7 +167,7 @@ if (!empty($_FILES['img']) && isset($_FILES['img']['tmp_name'])) {
     }
 }
 
-$fp = gravisaMachineFingerprint($machine);
+$fpSpec = gravisaMachineSpecFingerprint($machine);
 $noNorm = trim((string) $machine['no']);
 foreach ($items as $m) {
     $otherId = (int) ($m['id'] ?? 0);
@@ -173,10 +180,10 @@ foreach ($items as $m) {
             'message' => 'Bu envanter numarası (No) zaten kullanılıyor (ID #' . $otherId . '). Listeden o kaydı düzenleyin; yeni satır açmayın.',
         ]);
     }
-    if (gravisaMachineFingerprint($m) === $fp) {
+    if (gravisaMachineSpecFingerprint($m) === $fpSpec) {
         jsonResponse([
             'success' => false,
-            'message' => 'Bu bilgilerle başka bir makine zaten kayıtlı (ID #' . $otherId . '). Aynı kayıt iki kez eklenemez.',
+            'message' => 'Bu makine zaten listede (ID #' . $otherId . '): kategori, firma, model, yıl, güç ve kapasite aynı. Sitede kartlar tıpatıp aynı görünür. Yinelenen kaydı silin veya mevcut kaydı düzenleyin; gerçekten iki ayrı üniteyse model/kapasite alanına ayırt edici bilgi yazın.',
         ]);
     }
 }

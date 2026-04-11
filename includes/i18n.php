@@ -253,5 +253,6 @@ function gravisa_js_strings(): array
         'metaPower' => t('js.meta_power'),
         'stockBadgeIn' => t('js.stock_badge_in'),
         'noPhoto' => t('js.no_photo'),
+        'inventoryNo' => t('js.inventory_no'),
     ];
 }
