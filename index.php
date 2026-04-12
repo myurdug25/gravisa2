@@ -2,6 +2,14 @@
 require_once __DIR__ . '/config/config.php';
 require_once __DIR__ . '/includes/functions.php';
 $pageId = 'index';
+
+$heroVideoFilename = 'çıktı_2.mp4';
+$heroVideoPathFs = __DIR__ . DIRECTORY_SEPARATOR . 'videos' . DIRECTORY_SEPARATOR . $heroVideoFilename;
+$heroHasBgVideo = is_file($heroVideoPathFs);
+$heroVideoSrc = $heroHasBgVideo
+    ? (BASE_PATH . '/videos/' . rawurlencode($heroVideoFilename) . '?v=' . (int) @filemtime($heroVideoPathFs))
+    : '';
+$heroVideoPoster = BASE_PATH . '/images/IMG_9059.JPG.jpeg';
 ?>
 <!DOCTYPE html>
 <html lang="<?= htmlspecialchars(gravisa_html_lang(), ENT_QUOTES, 'UTF-8') ?>">
@@ -13,7 +21,23 @@ $pageId = 'index';
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="<?= BASE_PATH ?>/assets/css/styles.css?v=<?= @filemtime(__DIR__ . '/assets/css/styles.css') ?: 16 ?>" />
 </head>
-<body>
+<body<?= $heroHasBgVideo ? ' class="has-ambient-video"' : '' ?>>
+  <?php if ($heroHasBgVideo): ?>
+  <div class="ambient-video" aria-hidden="true">
+    <video
+      class="ambient-video__media"
+      poster="<?= htmlspecialchars($heroVideoPoster, ENT_QUOTES, 'UTF-8') ?>"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="auto"
+    >
+      <source src="<?= htmlspecialchars($heroVideoSrc, ENT_QUOTES, 'UTF-8') ?>" type="video/mp4" />
+    </video>
+    <div class="ambient-video__scrim"></div>
+  </div>
+  <?php endif; ?>
   <a href="<?= htmlspecialchars(getWaUrl(), ENT_QUOTES, 'UTF-8') ?>" class="whatsapp-float" target="_blank" rel="noopener" aria-label="<?= htmlspecialchars(t('pages.index.whatsapp_aria'), ENT_QUOTES, 'UTF-8') ?>">
     <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.87 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
   </a>
@@ -39,7 +63,7 @@ $pageId = 'index';
       </div>
     </section>
 
-    <section class="hero">
+    <section class="hero<?= $heroHasBgVideo ? ' hero--has-video' : '' ?>">
       <div class="hero-content">
         <div class="banner-card">
           <div class="banner-card-body">
@@ -167,60 +191,39 @@ $pageId = 'index';
     </section>
 
     <section class="section section-alt" id="servis-ozet">
-      <div class="container">
-        <div class="two-col-grid">
-          <div>
-            <h2 class="section-title section-title-left"><?= htmlspecialchars(t('pages.index.serv_block_title'), ENT_QUOTES, 'UTF-8') ?></h2>
-            <p class="section-desc section-desc-left"><?= htmlspecialchars(t('pages.index.serv_block_desc'), ENT_QUOTES, 'UTF-8') ?></p>
-            <div class="service-list">
-              <div class="service-list-item">
-                <div class="service-list-icon">🔧</div>
-                <div>
-                  <strong><?= htmlspecialchars(t('pages.index.serv_net'), ENT_QUOTES, 'UTF-8') ?></strong>
-                  <span><?= htmlspecialchars(t('pages.index.serv_net_desc'), ENT_QUOTES, 'UTF-8') ?></span>
-                </div>
-              </div>
-              <div class="service-list-item">
-                <div class="service-list-icon">🚛</div>
-                <div>
-                  <strong><?= htmlspecialchars(t('pages.index.mob_serv'), ENT_QUOTES, 'UTF-8') ?></strong>
-                  <span><?= htmlspecialchars(t('pages.index.mob_serv_desc'), ENT_QUOTES, 'UTF-8') ?></span>
-                </div>
-              </div>
-              <div class="service-list-item">
-                <div class="service-list-icon">⚙️</div>
-                <div>
-                  <strong><?= htmlspecialchars(t('pages.index.parts_short'), ENT_QUOTES, 'UTF-8') ?></strong>
-                  <span><?= htmlspecialchars(t('pages.index.parts_short_desc'), ENT_QUOTES, 'UTF-8') ?></span>
-                </div>
-              </div>
+      <div class="container servis-ozet-wrap">
+        <h2 class="section-title"><?= htmlspecialchars(t('pages.index.serv_block_title'), ENT_QUOTES, 'UTF-8') ?></h2>
+        <p class="section-desc"><?= htmlspecialchars(t('pages.index.serv_block_desc'), ENT_QUOTES, 'UTF-8') ?></p>
+        <div class="service-list">
+          <div class="service-list-item">
+            <div class="service-list-icon">🔧</div>
+            <div>
+              <strong><?= htmlspecialchars(t('pages.index.serv_net'), ENT_QUOTES, 'UTF-8') ?></strong>
+              <span><?= htmlspecialchars(t('pages.index.serv_net_desc'), ENT_QUOTES, 'UTF-8') ?></span>
             </div>
-            <a href="<?= htmlspecialchars(gravisa_url('servis'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-primary"><?= htmlspecialchars(t('pages.index.serv_cta'), ENT_QUOTES, 'UTF-8') ?></a>
           </div>
-          <div class="contact-quick-card">
-            <h3><?= htmlspecialchars(t('pages.index.quick_contact'), ENT_QUOTES, 'UTF-8') ?></h3>
-            <a href="tel:+<?= getWaNum() ?>" class="contact-quick-link">
-              <span class="contact-quick-icon">📞</span>
-              <div>
-                <strong><?= htmlspecialchars(t('pages.index.phone_lbl'), ENT_QUOTES, 'UTF-8') ?></strong>
-                <span><?= htmlspecialchars($siteSettings['phone_display'] ?? '') ?></span>
-              </div>
-            </a>
-            <a href="mailto:<?= htmlspecialchars($siteSettings['contact_email'] ?? '') ?>" class="contact-quick-link">
-              <span class="contact-quick-icon">✉️</span>
-              <div>
-                <strong><?= htmlspecialchars(t('pages.index.email_lbl'), ENT_QUOTES, 'UTF-8') ?></strong>
-                <span><?= htmlspecialchars($siteSettings['contact_email'] ?? '') ?></span>
-              </div>
-            </a>
-            <a href="<?= htmlspecialchars(getWaUrl(), ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener" class="contact-quick-link contact-quick-primary">
-              <span class="contact-quick-icon">💬</span>
-              <div>
-                <strong><?= htmlspecialchars(t('pages.index.wa_lbl'), ENT_QUOTES, 'UTF-8') ?></strong>
-                <span><?= htmlspecialchars(t('pages.index.wa_cta'), ENT_QUOTES, 'UTF-8') ?></span>
-              </div>
-            </a>
+          <div class="service-list-item">
+            <div class="service-list-icon">🚛</div>
+            <div>
+              <strong><?= htmlspecialchars(t('pages.index.mob_serv'), ENT_QUOTES, 'UTF-8') ?></strong>
+              <span><?= htmlspecialchars(t('pages.index.mob_serv_desc'), ENT_QUOTES, 'UTF-8') ?></span>
+            </div>
           </div>
+          <div class="service-list-item">
+            <div class="service-list-icon">⚙️</div>
+            <div>
+              <strong><?= htmlspecialchars(t('pages.index.parts_short'), ENT_QUOTES, 'UTF-8') ?></strong>
+              <span><?= htmlspecialchars(t('pages.index.parts_short_desc'), ENT_QUOTES, 'UTF-8') ?></span>
+            </div>
+          </div>
+        </div>
+        <div class="servis-ozet-actions">
+          <a href="<?= htmlspecialchars(gravisa_url('servis'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-primary servis-ozet-cta"><?= htmlspecialchars(t('pages.index.serv_cta'), ENT_QUOTES, 'UTF-8') ?></a>
+        </div>
+        <div class="servis-ozet-chips" role="group" aria-label="<?= htmlspecialchars(t('pages.index.quick_contact'), ENT_QUOTES, 'UTF-8') ?>">
+          <a href="tel:+<?= getWaNum() ?>" class="servis-chip"><?= htmlspecialchars(t('pages.index.phone_lbl'), ENT_QUOTES, 'UTF-8') ?>: <?= htmlspecialchars($siteSettings['phone_display'] ?? '', ENT_QUOTES, 'UTF-8') ?></a>
+          <a href="mailto:<?= htmlspecialchars($siteSettings['contact_email'] ?? '', ENT_QUOTES, 'UTF-8') ?>" class="servis-chip"><?= htmlspecialchars(t('pages.index.email_lbl'), ENT_QUOTES, 'UTF-8') ?>: <?= htmlspecialchars($siteSettings['contact_email'] ?? '', ENT_QUOTES, 'UTF-8') ?></a>
+          <a href="<?= htmlspecialchars(getWaUrl(), ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener" class="servis-chip servis-chip--wa"><strong><?= htmlspecialchars(t('pages.index.wa_lbl'), ENT_QUOTES, 'UTF-8') ?></strong> — <?= htmlspecialchars(t('pages.index.wa_cta'), ENT_QUOTES, 'UTF-8') ?></a>
         </div>
       </div>
     </section>
@@ -281,5 +284,19 @@ $pageId = 'index';
   <script src="<?= BASE_PATH ?>/assets/js/site-settings.js?v=9"></script>
   <script src="<?= BASE_PATH ?>/assets/js/app-makineler.js?v=14"></script>
   <script src="<?= BASE_PATH ?>/assets/js/app.js?v=<?= @filemtime(__DIR__ . '/assets/js/app.js') ?: 4 ?>"></script>
+  <?php if ($heroHasBgVideo): ?>
+  <script>
+  (function () {
+    var el = document.querySelector('.ambient-video__media');
+    if (!el) return;
+    function tryPlay() {
+      var p = el.play();
+      if (p && typeof p.catch === 'function') p.catch(function () {});
+    }
+    if (document.readyState === 'complete') tryPlay();
+    else window.addEventListener('load', tryPlay);
+  })();
+  </script>
+  <?php endif; ?>
 </body>
 </html>

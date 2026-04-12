@@ -443,6 +443,574 @@ a:hover {
   }
 }
 
+/* Ana sayfa: tam ekran sabit video (viewport arkası), içerik üstte cam katman */
+body.has-ambient-video {
+  background: #1e293b;
+}
+body.has-ambient-video main {
+  position: relative;
+  z-index: 1;
+}
+body.has-ambient-video .footer {
+  position: relative;
+  z-index: 1;
+}
+.ambient-video {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.ambient-video__media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-width: 100%;
+  min-height: 100%;
+  object-fit: cover;
+  /* Makine önü kadraj: kesilmiş hissi için dikey kaydırın (örn. 30%–45%) */
+  object-position: center 36%;
+}
+.ambient-video__scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    165deg,
+    rgba(15, 23, 42, 0.22) 0%,
+    rgba(248, 250, 252, 0.32) 35%,
+    rgba(226, 232, 240, 0.4) 70%,
+    rgba(203, 213, 225, 0.48) 100%
+  );
+}
+/* Stok bandı: hafif cam — video alttan görünsün */
+body.has-ambient-video #stokta.section-alt {
+  background: rgba(255, 255, 255, 0.58);
+  backdrop-filter: blur(18px) saturate(1.1);
+  -webkit-backdrop-filter: blur(18px) saturate(1.1);
+  border-top-color: rgba(255, 255, 255, 0.35);
+}
+/* Diğer section-alt blokları: cam; düz section zaten şeffaf — video görünür */
+body.has-ambient-video main > .section.section-alt:not(#stokta) {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(18px) saturate(1.08);
+  -webkit-backdrop-filter: blur(18px) saturate(1.08);
+  border-top-color: rgba(255, 255, 255, 0.4);
+}
+/* Video üzerindeki şeffaf bölümler: başlık + gövde açık renk, güçlü gölge */
+body.has-ambient-video #hizmetler .section-title,
+body.has-ambient-video #demo .section-title,
+body.has-ambient-video #kurumsal-ozet .section-title {
+  color: #ffffff;
+  font-size: clamp(1.4rem, 2.9vw, 1.9rem);
+  text-shadow:
+    0 2px 28px rgba(0, 0, 0, 0.55),
+    0 1px 5px rgba(0, 0, 0, 0.85);
+}
+body.has-ambient-video #hizmetler .section-desc,
+body.has-ambient-video #demo .section-desc,
+body.has-ambient-video #kurumsal-ozet .section-desc {
+  color: rgba(255, 255, 255, 0.98);
+  font-size: clamp(0.9375rem, 1.45vw, 1.0625rem);
+  font-weight: 500;
+  line-height: 1.68;
+  max-width: 42rem;
+  text-shadow:
+    0 1px 14px rgba(0, 0, 0, 0.78),
+    0 2px 5px rgba(0, 0, 0, 0.55);
+}
+/* Cam arka planlı section-alt: koyu, net metin */
+body.has-ambient-video #servis-ozet .section-title,
+body.has-ambient-video #iletisim .section-title {
+  color: #0f172a;
+  font-size: clamp(1.35rem, 2.6vw, 1.8rem);
+}
+body.has-ambient-video #servis-ozet .section-desc,
+body.has-ambient-video #iletisim .section-desc {
+  color: #1e293b;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  max-width: 36rem;
+}
+body.has-ambient-video .service-list-item span {
+  color: #334155;
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+body.has-ambient-video .service-list-item strong {
+  color: #0f172a;
+  font-size: 1.0625rem;
+}
+body.has-ambient-video .contact-quick-link span {
+  color: #334155;
+  font-weight: 500;
+}
+body.has-ambient-video #hizmetler .feature-card {
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(20px) saturate(1.05);
+  -webkit-backdrop-filter: blur(20px) saturate(1.05);
+  box-shadow: 0 8px 32px rgba(15, 23, 42, 0.12);
+}
+body.has-ambient-video #hizmetler .feature-card h3 {
+  font-size: 1.0625rem;
+  color: #0f172a;
+}
+body.has-ambient-video #hizmetler .feature-card p {
+  font-size: 0.9rem;
+  color: #334155;
+  font-weight: 500;
+  line-height: 1.6;
+}
+body.has-ambient-video #hizmetler .feature-card .btn {
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+body.has-ambient-video #demo .demo-form {
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(22px) saturate(1.05);
+  -webkit-backdrop-filter: blur(22px) saturate(1.05);
+  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.14);
+}
+body.has-ambient-video #demo .demo-form.form-block label span {
+  color: #0f172a;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+body.has-ambient-video #demo .custom-select-trigger {
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(30, 95, 138, 0.22);
+}
+body.has-ambient-video #kurumsal-ozet .trust-item {
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 6px 24px rgba(15, 23, 42, 0.1);
+}
+body.has-ambient-video #kurumsal-ozet .trust-item span {
+  color: #334155;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+body.has-ambient-video #kurumsal-ozet .value-card {
+  background: rgba(255, 255, 255, 0.78);
+  border-left-color: var(--color-primary);
+  border-top: 1px solid rgba(255, 255, 255, 0.45);
+  border-right: 1px solid rgba(255, 255, 255, 0.45);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 8px 28px rgba(15, 23, 42, 0.1);
+}
+body.has-ambient-video #kurumsal-ozet .value-card h4 {
+  color: #0f172a;
+  font-size: 1.08rem;
+}
+body.has-ambient-video #kurumsal-ozet .value-card p {
+  color: #334155;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.65;
+}
+body.has-ambient-video #iletisim .contact-card {
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 8px 28px rgba(15, 23, 42, 0.08);
+}
+body.has-ambient-video #iletisim .contact-card h3 {
+  color: #0f172a;
+}
+body.has-ambient-video #iletisim .contact-card p {
+  color: #334155;
+  font-weight: 500;
+}
+/* Hero + video: sağ kare yok, metin ortada, arka plan şeffaf, yazılar gölgeli açık renk */
+.hero--has-video {
+  background: transparent;
+  overflow: visible;
+  min-height: min(92vh, 700px);
+  padding-top: clamp(14px, 3vw, 28px);
+  padding-bottom: clamp(26px, 4vw, 40px);
+}
+.hero--has-video .banner-card {
+  grid-template-columns: 1fr;
+  max-width: 42rem;
+  margin-left: auto;
+  margin-right: auto;
+  gap: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  min-height: 0;
+}
+.hero--has-video .banner-card-media {
+  display: none !important;
+}
+.hero--has-video .banner-card-body {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  text-align: center;
+  align-items: center;
+  padding: 28px 20px 32px;
+}
+.hero--has-video .hero-badge {
+  margin-left: auto;
+  margin-right: auto;
+  background: rgba(15, 23, 42, 0.45);
+  color: #f1f5f9;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.hero--has-video .hero-title {
+  color: #ffffff;
+  font-size: clamp(1.35rem, 3.2vw, 1.95rem);
+  line-height: 1.28;
+  text-shadow:
+    0 2px 24px rgba(0, 0, 0, 0.58),
+    0 1px 5px rgba(0, 0, 0, 0.82);
+}
+.hero--has-video .hero-title span {
+  color: #bae6fd;
+  text-shadow:
+    0 2px 16px rgba(0, 0, 0, 0.5),
+    0 0 24px rgba(14, 116, 144, 0.45);
+}
+.hero--has-video .hero-subtitle {
+  color: rgba(255, 255, 255, 0.98);
+  font-size: clamp(0.9375rem, 1.35vw, 1.0625rem);
+  font-weight: 500;
+  line-height: 1.65;
+  text-shadow:
+    0 1px 10px rgba(0, 0, 0, 0.78),
+    0 2px 4px rgba(0, 0, 0, 0.45);
+  max-width: 38rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+.hero--has-video .hero-buttons {
+  justify-content: center;
+}
+.hero--has-video .hero-buttons .btn-outline {
+  border-color: rgba(255, 255, 255, 0.85);
+  color: #ffffff;
+  background: rgba(15, 23, 42, 0.25);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+.hero--has-video .hero-buttons .btn-outline:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: #ffffff;
+  color: #ffffff;
+}
+.hero--has-video .hero-buttons .btn-primary {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+.hero--has-video .hero-buttons .btn {
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 10px 18px;
+}
+.hero--has-video .hero-stats {
+  max-width: 36rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+.hero--has-video .hero-stat-card {
+  background: rgba(15, 23, 42, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+.hero--has-video .hero-stat-value {
+  color: #e0f2fe;
+  font-size: 1.35rem;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+.hero--has-video .hero-stat-label {
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.65);
+}
+.hero--has-video .hero-stat-icon {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4));
+}
+@media (max-width: 768px) {
+  .ambient-video__media {
+    object-position: center 30%;
+  }
+  .ambient-video__scrim {
+    background: linear-gradient(
+      180deg,
+      rgba(15, 23, 42, 0.2) 0%,
+      rgba(248, 250, 252, 0.44) 55%,
+      rgba(226, 232, 240, 0.5) 100%
+    );
+  }
+}
+@media (max-width: 480px) {
+  .hero--has-video {
+    min-height: min(85vh, 600px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ambient-video {
+    display: none !important;
+  }
+  body.has-ambient-video {
+    background: var(--color-bg);
+  }
+  body.has-ambient-video main,
+  body.has-ambient-video .footer {
+    z-index: auto;
+  }
+  body.has-ambient-video main > .section.section-alt:not(#stokta) {
+    background: var(--color-surface-alt);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-top-color: var(--color-border-light);
+  }
+  body.has-ambient-video #stokta.section-alt {
+    background: var(--color-surface);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-top-color: var(--color-border-light);
+  }
+  /* Video kapalıyken “video üstü” stilleri sıfırla — normal sayfa kontrastı */
+  body.has-ambient-video #hizmetler .section-title,
+  body.has-ambient-video #demo .section-title,
+  body.has-ambient-video #kurumsal-ozet .section-title {
+    color: var(--color-text);
+    font-size: clamp(1.25rem, 2.2vw, 1.5rem);
+    text-shadow: none;
+  }
+  body.has-ambient-video #hizmetler .section-desc,
+  body.has-ambient-video #demo .section-desc,
+  body.has-ambient-video #kurumsal-ozet .section-desc {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    font-weight: 400;
+    text-shadow: none;
+    max-width: 480px;
+  }
+  body.has-ambient-video #servis-ozet .section-title,
+  body.has-ambient-video #iletisim .section-title {
+    font-size: clamp(1.25rem, 2.2vw, 1.5rem);
+  }
+  body.has-ambient-video #servis-ozet .section-desc,
+  body.has-ambient-video #iletisim .section-desc {
+    font-size: 0.875rem;
+  }
+  body.has-ambient-video #hizmetler .feature-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-light);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: var(--shadow-sm);
+  }
+  body.has-ambient-video #hizmetler .feature-card h3 {
+    font-size: 0.9375rem;
+    color: var(--color-text);
+  }
+  body.has-ambient-video #hizmetler .feature-card p {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    font-weight: 400;
+  }
+  body.has-ambient-video #demo .demo-form {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-light);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: var(--shadow-sm);
+  }
+  body.has-ambient-video #demo .demo-form.form-block label span {
+    color: var(--color-text);
+    font-size: 0.8125rem;
+  }
+  body.has-ambient-video #demo .custom-select-trigger {
+    background: var(--color-surface);
+    border-color: var(--color-border);
+  }
+  body.has-ambient-video #kurumsal-ozet .trust-item {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-light);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: var(--shadow-sm);
+  }
+  body.has-ambient-video #kurumsal-ozet .trust-item span {
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+    font-weight: 500;
+  }
+  body.has-ambient-video #kurumsal-ozet .value-card {
+    background: var(--color-surface-alt);
+    border: 1px solid transparent;
+    border-left: 4px solid var(--color-primary);
+    border-right-color: transparent;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
+  }
+  body.has-ambient-video #kurumsal-ozet .value-card h4 {
+    font-size: 1.0625rem;
+    color: var(--color-text);
+  }
+  body.has-ambient-video #kurumsal-ozet .value-card p {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    font-weight: 400;
+  }
+  body.has-ambient-video #iletisim .contact-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-light);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: var(--shadow-sm);
+  }
+  body.has-ambient-video #iletisim .contact-card h3 {
+    color: var(--color-text);
+  }
+  body.has-ambient-video #iletisim .contact-card p {
+    color: var(--color-text-muted);
+    font-weight: 400;
+  }
+  body.has-ambient-video .servis-chip {
+    background: var(--color-surface);
+    border-color: var(--color-border);
+  }
+  body.has-ambient-video .servis-chip--wa {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #fff;
+  }
+  body.has-ambient-video .service-list-item span {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    font-weight: 400;
+  }
+  body.has-ambient-video .service-list-item strong {
+    color: var(--color-text);
+    font-size: 1rem;
+  }
+  .hero--has-video {
+    background: var(--color-bg-hero);
+    min-height: 0;
+    overflow: visible;
+  }
+  .hero--has-video .banner-card {
+    grid-template-columns: 1.05fr 1fr;
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+    background: #ffffff;
+    box-shadow: 0 6px 24px rgba(30, 95, 138, 0.08);
+    border: 1px solid rgba(30, 95, 138, 0.08);
+    min-height: 420px;
+  }
+  .hero--has-video .banner-card-body {
+    text-align: left;
+    align-items: stretch;
+    padding: 28px 32px 32px 36px;
+  }
+  .hero--has-video .hero-badge {
+    margin-left: 0;
+    margin-right: 0;
+    background: var(--gradient-primary-soft);
+    color: var(--color-text-muted);
+    border: none;
+  }
+  .hero--has-video .hero-title {
+    color: #1e293b;
+    text-shadow: none;
+  }
+  .hero--has-video .hero-title span {
+    color: var(--color-primary);
+    text-shadow: none;
+  }
+  .hero--has-video .hero-subtitle {
+    color: #64748b;
+    text-shadow: none;
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .hero--has-video .hero-buttons {
+    justify-content: flex-start;
+  }
+  .hero--has-video .hero-buttons .btn-outline {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background: transparent;
+    text-shadow: none;
+  }
+  .hero--has-video .hero-buttons .btn-outline:hover {
+    background: var(--color-primary-soft);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+  .hero--has-video .hero-buttons .btn-primary {
+    box-shadow: none;
+  }
+  .hero--has-video .hero-stats {
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .hero--has-video .banner-card-media {
+    display: flex !important;
+    background: linear-gradient(165deg, #eef2f6 0%, #f1f5f9 100%);
+    border-radius: 0 22px 22px 0;
+  }
+  .hero--has-video .hero-image-frame img {
+    opacity: 1;
+  }
+  .hero--has-video .hero-image-fallback {
+    opacity: 1;
+  }
+  .hero--has-video .hero-stat-card {
+    background: #f8fafc;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-color: #e2e8f0;
+    box-shadow: none;
+  }
+  .hero--has-video .hero-stat-value {
+    color: var(--color-primary);
+    text-shadow: none;
+  }
+  .hero--has-video .hero-stat-label {
+    color: #64748b;
+    text-shadow: none;
+  }
+  body.has-ambient-video #servis-ozet .servis-ozet-wrap {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: var(--color-surface);
+    border-color: var(--color-border-light);
+    box-shadow: var(--shadow-sm);
+  }
+  .servis-chip:hover,
+  .servis-chip--wa:hover,
+  body.has-ambient-video .servis-chip:not(.servis-chip--wa):hover,
+  body.has-ambient-video .servis-chip.servis-chip--wa:hover {
+    transform: none;
+  }
+}
+
 .hero-content {
   position: relative;
   z-index: 1;
@@ -959,6 +1527,150 @@ a:hover {
   font-size: 0.9rem;
 }
 
+/* Servis özeti: ortalı tek sütun + iletişim chip’leri */
+#servis-ozet .section-title {
+  font-size: clamp(1.35rem, 2.6vw, 1.85rem);
+  letter-spacing: -0.025em;
+}
+#servis-ozet .section-desc {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.65;
+  max-width: 36rem;
+  color: #334155;
+}
+#servis-ozet .servis-ozet-wrap .service-list-icon {
+  width: 52px;
+  height: 52px;
+  font-size: 1.35rem;
+  border: 1px solid rgba(30, 95, 138, 0.12);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+}
+#servis-ozet .servis-ozet-wrap .service-list-item strong {
+  font-size: 1.0625rem;
+}
+#servis-ozet .servis-ozet-wrap .service-list-item span {
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+.servis-ozet-wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+  padding: clamp(24px, 4vw, 40px) clamp(20px, 3vw, 32px);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.06);
+}
+body.has-ambient-video #servis-ozet .servis-ozet-wrap {
+  background: rgba(255, 255, 255, 0.48);
+  border-color: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(14px) saturate(1.05);
+  -webkit-backdrop-filter: blur(14px) saturate(1.05);
+  box-shadow: 0 16px 48px rgba(15, 23, 42, 0.1);
+}
+.servis-ozet-actions .servis-ozet-cta {
+  border-radius: var(--radius-full);
+  padding: 12px 28px;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+.servis-ozet-wrap .service-list {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+.servis-ozet-actions {
+  margin-top: 8px;
+}
+.servis-ozet-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 24px;
+}
+.servis-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 11px 18px;
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  text-decoration: none;
+  color: var(--color-text);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  transition:
+    border-color var(--transition),
+    background var(--transition),
+    box-shadow var(--transition),
+    transform 0.2s ease;
+  text-align: center;
+}
+.servis-chip:not(.servis-chip--wa):hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+.servis-chip--wa {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+.servis-chip--wa:hover {
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(22, 74, 110, 0.35);
+  transform: translateY(-1px);
+}
+.servis-chip--wa:hover strong {
+  color: #fff;
+}
+.servis-chip--wa strong {
+  font-weight: 700;
+}
+.servis-chip:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+.servis-chip--wa:focus-visible {
+  outline-color: #fff;
+  box-shadow: 0 0 0 3px rgba(30, 95, 138, 0.45);
+}
+body.has-ambient-video .servis-chip {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(30, 95, 138, 0.18);
+}
+/* WhatsApp dışındaki chip’ler — WA’ya asla beyaz hover uygulanmaz (özgüllük çakışması düzeltildi) */
+body.has-ambient-video .servis-chip:not(.servis-chip--wa):hover {
+  background: rgba(255, 255, 255, 0.98);
+  border-color: rgba(30, 95, 138, 0.35);
+  color: var(--color-text);
+}
+body.has-ambient-video .servis-chip--wa {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+body.has-ambient-video .servis-chip.servis-chip--wa:hover {
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+  color: #fff;
+  box-shadow: 0 8px 26px rgba(15, 23, 42, 0.28);
+  transform: translateY(-1px);
+}
+body.has-ambient-video .servis-chip.servis-chip--wa:hover strong {
+  color: #fff;
+}
+
 .contact-quick-card {
   background: var(--color-surface-alt);
   padding: 32px;
@@ -1016,7 +1728,8 @@ a:hover {
   color: #fff;
 }
 .contact-quick-primary span {
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.96);
+  font-weight: 600;
 }
 
 .contact-cards {
