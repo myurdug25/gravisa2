@@ -53,7 +53,9 @@ $id = saveSubmission('demo', $data);
 
 $mailer = new Mailer();
 $html = $mailer->buildHtmlFromData($data, 'Yeni Demo Makine Talebi');
-$mailer->setSubject('[Gravisa] Demo Makine Talebi - ' . $name)->setHtmlBody($html);
+$mailer->setSubject('[Gravisa] Demo Makine Talebi - ' . $name)
+    ->setReplyTo($email, $name)
+    ->setHtmlBody($html);
 $mailer->send();
 
 jsonResponse([

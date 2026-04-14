@@ -54,7 +54,9 @@ $id = saveSubmission('iletisim', $data);
 
 $mailer = new Mailer();
 $html = $mailer->buildHtmlFromData($data, 'Yeni İletişim Talebi - ' . $konuText);
-$mailer->setSubject('[Gravisa] İletişim Talebi - ' . $konuText . ' - ' . $adSoyad)->setHtmlBody($html);
+$mailer->setSubject('[Gravisa] İletişim Talebi - ' . $konuText . ' - ' . $adSoyad)
+    ->setReplyTo($email, $adSoyad)
+    ->setHtmlBody($html);
 $mailer->send();
 
 jsonResponse([

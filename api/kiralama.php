@@ -79,6 +79,7 @@ $id = saveSubmission('kiralama', $data);
 $mailer = new Mailer();
 $html = $mailer->buildHtmlFromData($data, 'Yeni Kiralama Talebi');
 $mailer->setSubject('[Gravisa] Yeni Kiralama Talebi - ' . $adSoyad)
+    ->setReplyTo($email, $adSoyad)
     ->setHtmlBody($html);
 
 $sent = $mailer->send();

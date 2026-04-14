@@ -9,6 +9,8 @@ class Mailer
     private $to;
     private $from;
     private $fromName;
+    private $replyTo = '';
+    private $replyToName = '';
     private $subject;
     private $body;
     private $headers = [];
@@ -43,6 +45,17 @@ class Mailer
     {
         $this->headers['Content-Type'] = 'Content-Type: text/html; charset=UTF-8';
         $this->body = $html;
+        return $this;
+    }
+
+    /** Admin'e giden bildirimlerde "Yanıtla" = müşteri e-postası için */
+    public function setReplyTo(string $email, string $name = ''): self
+    {
+        $email = trim($email);
+        if ($email !== '' && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $this->replyTo = $email;
+            $this->replyToName = trim($name);
+        }
         return $this;
     }
 
@@ -127,7 +140,7 @@ class Mailer
             'MIME-Version: 1.0',
             'Content-Type: text/html; charset=UTF-8',
             'From: ' . $this->fromName . ' <' . $this->from . '>',
-            'Reply-To: ' . $this->from,
+            'Reply-To: ' . ($this->replyTo ?: $this->from),
             'X-Mailer: PHP/' . phpversion(),
         ];
         return @mail($this->to, $this->subject, $this->body, implode("\r\n", $headers));
@@ -141,6 +154,17 @@ class Mailer
         $user = defined('MAIL_SMTP_USER') ? MAIL_SMTP_USER : '';
         $pass = defined('MAIL_SMTP_PASS') ? MAIL_SMTP_PASS : '';
         $secure = (defined('MAIL_SMTP_SECURE') && strtolower(MAIL_SMTP_SECURE) === 'ssl') ? 'ssl' : 'tls';
+
+        // SMTP kullanılacaksa kimlik bilgileri zorunlu olmalı
+        if ($host === '' || $port <= 0 || $user === '' || $pass === '') {
+            return false;
+        }
+        if ($this->to === '' || !filter_var($this->to, FILTER_VALIDATE_EMAIL)) {
+            return false;
+        }
+        if ($this->from === '' || !filter_var($this->from, FILTER_VALIDATE_EMAIL)) {
+            return false;
+        }
 
         $errno = 0;
         $errstr = '';
@@ -165,27 +189,46 @@ class Mailer
             return $read();
         };
 
-        $read();
-        $send("EHLO " . ($_SERVER['SERVER_NAME'] ?? 'localhost'));
+        $resp = $read();
+        if (substr((string) $resp, 0, 1) !== '2') { fclose($fp); return false; }
+
+        $resp = $send("EHLO " . ($_SERVER['SERVER_NAME'] ?? 'localhost'));
+        if (substr((string) $resp, 0, 1) !== '2') { fclose($fp); return false; }
+
         if ($secure === 'tls' && $port === 587) {
-            $send("STARTTLS");
-            stream_socket_enable_crypto($fp, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
-            $send("EHLO " . ($_SERVER['SERVER_NAME'] ?? 'localhost'));
+            $resp = $send("STARTTLS");
+            if (substr((string) $resp, 0, 1) !== '2') { fclose($fp); return false; }
+            if (!@stream_socket_enable_crypto($fp, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) { fclose($fp); return false; }
+            $resp = $send("EHLO " . ($_SERVER['SERVER_NAME'] ?? 'localhost'));
+            if (substr((string) $resp, 0, 1) !== '2') { fclose($fp); return false; }
         }
-        if ($user && $pass) {
-            $send("AUTH LOGIN");
-            $send(base64_encode($user));
-            $send(base64_encode($pass));
-        }
-        $send("MAIL FROM:<" . $this->from . ">");
-        $send("RCPT TO:<" . $this->to . ">");
-        $send("DATA");
+
+        // AUTH LOGIN
+        $resp = $send("AUTH LOGIN");
+        if (substr((string) $resp, 0, 3) !== '334') { fclose($fp); return false; }
+        $resp = $send(base64_encode($user));
+        if (substr((string) $resp, 0, 3) !== '334') { fclose($fp); return false; }
+        $resp = $send(base64_encode($pass));
+        if (substr((string) $resp, 0, 1) !== '2') { fclose($fp); return false; }
+
+        $resp = $send("MAIL FROM:<" . $this->from . ">");
+        if (substr((string) $resp, 0, 1) !== '2') { fclose($fp); return false; }
+        $resp = $send("RCPT TO:<" . $this->to . ">");
+        if (substr((string) $resp, 0, 1) !== '2') { fclose($fp); return false; }
+        $resp = $send("DATA");
+        if (substr((string) $resp, 0, 3) !== '354') { fclose($fp); return false; }
+
+        $replyTo = $this->replyTo ?: $this->from;
+        $replyToName = $this->replyToName ?: $this->fromName;
+
         $msg = "From: " . $this->fromName . " <" . $this->from . ">\r\n";
         $msg .= "To: " . $this->to . "\r\n";
+        $msg .= "Reply-To: " . $replyToName . " <" . $replyTo . ">\r\n";
         $msg .= "Subject: =?UTF-8?B?" . base64_encode($this->subject) . "?=\r\n";
         $msg .= "MIME-Version: 1.0\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n";
         $msg .= $this->body . "\r\n.";
-        $send($msg);
+        $resp = $send($msg);
+        if (substr((string) $resp, 0, 1) !== '2') { fclose($fp); return false; }
         $send("QUIT");
         fclose($fp);
         return true;

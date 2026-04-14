@@ -69,6 +69,7 @@ $id = saveSubmission('servis', $data);
 $mailer = new Mailer();
 $html = $mailer->buildHtmlFromData($data, 'Yeni Servis / Yedek Parça Talebi');
 $mailer->setSubject('[Gravisa] Servis Talebi - ' . $servisTuruText . ' - ' . $adSoyad)
+       ->setReplyTo($email, $adSoyad)
        ->setHtmlBody($html);
 $mailer->send();
 

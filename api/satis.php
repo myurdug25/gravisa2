@@ -60,7 +60,9 @@ $id = saveSubmission('satis', $data);
 
 $mailer = new Mailer();
 $html = $mailer->buildHtmlFromData($data, 'Yeni Satış Teklifi Talebi');
-$mailer->setSubject('[Gravisa] Satış Teklifi Talebi - ' . $adSoyad)->setHtmlBody($html);
+$mailer->setSubject('[Gravisa] Satış Teklifi Talebi - ' . $adSoyad)
+    ->setReplyTo($email, $adSoyad)
+    ->setHtmlBody($html);
 $mailer->send();
 
 jsonResponse([
