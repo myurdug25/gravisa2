@@ -287,6 +287,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
     .admin-table-wrap table { width: 100%; }
     .admin-table-wrap::-webkit-scrollbar { height: 10px; }
     .admin-table-wrap::-webkit-scrollbar-thumb { background: rgba(100,116,139,0.25); border-radius: 999px; }
+    .admin-table-wrap { touch-action: pan-x pan-y; }
 
     /* Mobilde aksiyon kolonuna erişim */
     .admin-table-row-clickable { cursor: pointer; }
@@ -405,6 +406,40 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
       }
       /* Sticky aksiyon kolonunun padding'i */
       .admin-table-sticky-last { min-width: 140px; }
+    }
+
+    /* Makineler: dar ekranda tablo yerine kart liste */
+    .admin-card-list { display: none; flex-direction: column; gap: 12px; }
+    .admin-card {
+      background: #fff;
+      border: 1px solid #e8e8e8;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+      overflow: hidden;
+    }
+    .admin-card__body { padding: 14px 14px; display: grid; gap: 10px; }
+    .admin-card__title { font-weight: 800; color: #0f172a; line-height: 1.25; }
+    .admin-card__meta { color: #475569; font-size: 0.92rem; }
+    .admin-card__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .admin-card__kv { background: #f8fafc; border: 1px solid #eef2f7; border-radius: 10px; padding: 10px 10px; }
+    .admin-card__k { font-size: 0.78rem; letter-spacing: 0.02em; color: #64748b; font-weight: 700; margin-bottom: 4px; }
+    .admin-card__v { color: #0f172a; font-weight: 700; font-size: 0.92rem; }
+    .admin-card__actions { padding: 12px 14px; border-top: 1px solid #eef2f7; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .admin-card__actions .btn-sm { width: 100%; }
+    .admin-card__img {
+      width: 100%;
+      height: 150px;
+      background: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid #eef2f7;
+    }
+    .admin-card__img img { max-height: 140px; object-fit: contain; }
+    @media (max-width: 680px) {
+      .admin-table--machines { display: none; }
+      #machineCardList { display: flex; }
+      .admin-card__grid { grid-template-columns: 1fr; }
     }
 
     /* Formlarda iki kolonlu satırı mobilde stack et */
@@ -550,6 +585,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
               <button type="button" class="admin-jump-btn" id="machineJumpToFormBtn" aria-label="Makine formuna git">Forma git</button>
             </div>
             <p class="machine-form-hint" style="margin:0 0 12px;">Liste, sitedeki kategorilerle aynı <strong>Tip</strong> alanına göre gruplanır. Bir satırı düzenleyip Kaydet dediğinizde yalnızca o makine güncellenir.</p>
+            <div id="machineCardList" class="admin-card-list" aria-label="Makine kart listesi"></div>
             <div class="admin-table-wrap">
               <table class="admin-table--machines" style="width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 720px;">
                 <thead>
@@ -1242,15 +1278,56 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
       }
 
       function renderRows(items) {
+        var cardList = document.getElementById('machineCardList');
+        var isNarrow = (window.innerWidth || 1024) <= 680;
         if (!machineAllItems.length) {
           tbody.innerHTML = '<tr><td colspan="9" style="padding:12px; text-align:center; color:#999;">Henüz makine eklenmemiş.</td></tr>';
+          if (cardList) cardList.innerHTML = '<div class="empty" style="padding:16px;">Henüz makine eklenmemiş.</div>';
           return;
         }
         if (!items || !items.length) {
           tbody.innerHTML = '<tr><td colspan="9" style="padding:12px; text-align:center; color:#999;">Aramanıza uygun makine yok.</td></tr>';
+          if (cardList) cardList.innerHTML = '<div class="empty" style="padding:16px;">Aramanıza uygun makine yok.</div>';
           return;
         }
+        if (cardList) cardList.innerHTML = '';
         tbody.innerHTML = '';
+
+        // Dar ekranda: kart listesi render et (yatay kaydırma ihtiyacını kaldır)
+        if (isNarrow && cardList) {
+          items.forEach(function(m) {
+            var noDisp = (m.no != null && String(m.no).trim() !== '') ? String(m.no) : '—';
+            var title = machineTitleUi(m) || (m.tip || '') || ('Makine #' + (m.id || ''));
+            var imgHtml = (m.img && String(m.img).trim())
+              ? '<div class="admin-card__img"><img src="../' + String(m.img).replace(/ /g, '%20') + '" alt="" loading="lazy"></div>'
+              : '';
+            var year = m.modelYil || '—';
+            var power = (m.guc || '') ? (String(m.guc || '') + ' ' + String(m.gucBirim || '')).trim() : '—';
+            var stok = m.stok ? 'Stokta' : 'Talebe göre';
+            var tip = m.tip || '—';
+
+            var el = document.createElement('article');
+            el.className = 'admin-card';
+            el.innerHTML =
+              imgHtml +
+              '<div class="admin-card__body">' +
+                '<div class="admin-card__title">' + String(noDisp) + ' • ' + String(title) + '</div>' +
+                '<div class="admin-card__meta">Tip: ' + String(tip) + ' • ID: ' + String(m.id || '') + '</div>' +
+                '<div class="admin-card__grid">' +
+                  '<div class="admin-card__kv"><div class="admin-card__k">Model Yılı</div><div class="admin-card__v">' + String(year) + '</div></div>' +
+                  '<div class="admin-card__kv"><div class="admin-card__k">Güç</div><div class="admin-card__v">' + String(power || '—') + '</div></div>' +
+                  '<div class="admin-card__kv"><div class="admin-card__k">Stok</div><div class="admin-card__v">' + String(stok) + '</div></div>' +
+                '</div>' +
+              '</div>' +
+              '<div class="admin-card__actions">' +
+                '<button type="button" class="btn-sm" data-edit="' + (m.id || '') + '">Düzenle</button>' +
+                '<button type="button" class="btn-sm secondary" data-delete="' + (m.id || '') + '">Sil</button>' +
+              '</div>';
+            cardList.appendChild(el);
+          });
+          return;
+        }
+
         items.forEach(function(m) {
           var imgPreviewCell = m.img
             ? '<img src="../' + String(m.img).replace(/ /g, '%20') + '" alt="" loading="lazy" style="width:56px; height:42px; object-fit:contain; border-radius:4px; background:#f1f5f9;">'
@@ -1363,6 +1440,42 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
           fillForm(mm);
           setMessage('Düzenleme modunda — alanları güncelleyip Kaydet\'e basın.', true);
           scrollToEditor();
+        }
+      });
+
+      // Kart listesi aksiyonları (mobil)
+      document.addEventListener('click', function(e) {
+        var cardList = document.getElementById('machineCardList');
+        if (!cardList || !cardList.contains(e.target)) return;
+        var btnEdit = e.target && e.target.closest ? e.target.closest('[data-edit]') : null;
+        var btnDel = e.target && e.target.closest ? e.target.closest('[data-delete]') : null;
+        if (btnEdit && btnEdit.dataset && btnEdit.dataset.edit) {
+          var id = btnEdit.dataset.edit;
+          var m = machineAllItems.find(function(x) { return String(x.id) === String(id); });
+          if (m) {
+            fillForm(m);
+            setMessage('Düzenleme modunda — alanları güncelleyip Kaydet\'e basın.', true);
+            scrollToEditor();
+          }
+        } else if (btnDel && btnDel.dataset && btnDel.dataset.delete) {
+          if (!confirm('Bu makineyi silmek istediğinize emin misiniz?')) return;
+          var idd = btnDel.dataset.delete;
+          var fd = new FormData();
+          fd.append('action', 'delete');
+          fd.append('id', idd);
+          if (csrf) fd.append('_csrf_token', csrf.value);
+          fetch('../api/makineler-admin.php', { method: 'POST', body: fd })
+            .then(function(r) { return r.json(); })
+            .then(function(res) {
+              setMessage(res.message || (res.success ? 'Silindi.' : 'Silme hatası.'), !!res.success);
+              if (res.success) {
+                machineAllItems = res.items || [];
+                rebuildTipFilter();
+                applyMachineFilter();
+                resetForm();
+              }
+            })
+            .catch(function() { setMessage('Silme işlemi başarısız.', false); });
         }
       });
 
