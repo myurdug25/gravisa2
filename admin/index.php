@@ -353,6 +353,19 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
       .admin-header { padding: 12px 14px; }
       .admin-header h1 { font-size: 1rem; }
       .admin-jump-btn { display: inline-flex; }
+
+      /* Makineler toolbar: input/select görünür kalsın */
+      .machine-list-toolbar {
+        display: grid;
+        grid-template-columns: 1fr;
+        align-items: stretch;
+      }
+      .machine-list-toolbar select,
+      .machine-list-toolbar input[type="search"] {
+        width: 100%;
+        min-width: 0;
+      }
+      #machine_search_count { white-space: normal !important; }
     }
     @media (max-width: 560px) {
       .admin-header__right { width: 100%; justify-content: flex-start; }
@@ -375,6 +388,23 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
       .admin-inline-msg { margin-left: 0; display: block; width: 100%; }
       .admin-btn-row { flex-direction: column; align-items: stretch; }
       .admin-btn-row .btn-sm { width: 100%; }
+    }
+
+    /* Makineler tablosu: mobilde taşmayı azalt (kolonları gizle) */
+    @media (max-width: 680px) {
+      table.admin-table--machines { min-width: 0 !important; }
+      table.admin-table--machines th:nth-child(5),
+      table.admin-table--machines td:nth-child(5), /* Yıl */
+      table.admin-table--machines th:nth-child(6),
+      table.admin-table--machines td:nth-child(6), /* Güç */
+      table.admin-table--machines th:nth-child(7),
+      table.admin-table--machines td:nth-child(7), /* Stok */
+      table.admin-table--machines th:nth-child(8),
+      table.admin-table--machines td:nth-child(8)  /* Görsel */ {
+        display: none;
+      }
+      /* Sticky aksiyon kolonunun padding'i */
+      .admin-table-sticky-last { min-width: 140px; }
     }
 
     /* Formlarda iki kolonlu satırı mobilde stack et */
@@ -521,7 +551,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
             </div>
             <p class="machine-form-hint" style="margin:0 0 12px;">Liste, sitedeki kategorilerle aynı <strong>Tip</strong> alanına göre gruplanır. Bir satırı düzenleyip Kaydet dediğinizde yalnızca o makine güncellenir.</p>
             <div class="admin-table-wrap">
-              <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 720px;">
+              <table class="admin-table--machines" style="width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 720px;">
                 <thead>
                   <tr style="background:#f5f7fa;">
                     <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">ID</th>
