@@ -447,6 +447,24 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
       #sahaCardList { display: flex; }
     }
 
+    /* Dar ekranda buton taşmalarını engelle */
+    @media (max-width: 420px) {
+      .admin-card__actions { grid-template-columns: 1fr; }
+      .btn-sm { white-space: normal; }
+    }
+
+    .admin-section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    @media (max-width: 560px) {
+      .admin-section-head { flex-direction: column; align-items: stretch; }
+      .admin-section-head .btn-sm { width: 100%; }
+    }
+
     /* Formlarda iki kolonlu satırı mobilde stack et */
     @media (max-width: 560px) {
       .admin-form-row { flex-direction: column !important; }
@@ -730,7 +748,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
             </div>
           </div>
           <div class="admin-split__col" style="flex: 1 1 0; min-width: 320px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <div class="admin-section-head" style="margin-bottom:12px;">
               <h3 style="margin: 0;">Fotoğraf Ekle / Düzenle</h3>
               <button type="button" class="btn-sm" id="sahaNewBtn">+ Yeni Saha Fotoğrafı Ekle</button>
             </div>
