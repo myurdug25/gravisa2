@@ -288,6 +288,25 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
     .admin-table-wrap::-webkit-scrollbar { height: 10px; }
     .admin-table-wrap::-webkit-scrollbar-thumb { background: rgba(100,116,139,0.25); border-radius: 999px; }
 
+    /* Mobilde aksiyon kolonuna erişim */
+    .admin-table-row-clickable { cursor: pointer; }
+    .admin-table-row-clickable:hover { background: #fafcff; }
+    .admin-table-sticky-last {
+      position: sticky;
+      right: 0;
+      background: #fff;
+      box-shadow: -10px 0 16px rgba(15,23,42,0.05);
+      border-left: 1px solid rgba(226,232,240,0.9);
+      z-index: 1;
+    }
+    .admin-table-sticky-last--head {
+      background: #f5f7fa;
+      z-index: 2;
+    }
+    /* File input mobilde taşmasın */
+    input[type="file"] { max-width: 100%; }
+    .machine-form-hint { overflow-wrap: anywhere; word-break: break-word; }
+
     .admin-actions-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
     .admin-actions-row > * { max-width: 100%; }
     .admin-actions-row input, .admin-actions-row select { min-width: 0; }
@@ -513,7 +532,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
                     <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Güç</th>
                     <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Stok</th>
                     <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Görsel</th>
-                    <th style="text-align:right; padding:8px; border-bottom:1px solid #eee;">İşlem</th>
+                    <th class="admin-table-sticky-last admin-table-sticky-last--head" style="text-align:right; padding:8px; border-bottom:1px solid #eee;">İşlem</th>
                   </tr>
                 </thead>
                 <tbody id="machineTableBody">
@@ -1208,6 +1227,8 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
             : '-';
           var noDisp = (m.no != null && String(m.no).trim() !== '') ? String(m.no) : '—';
           var tr = document.createElement('tr');
+          tr.className = 'admin-table-row-clickable';
+          tr.dataset.rowId = String(m.id || '');
           tr.innerHTML =
             '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0; font-size:0.8rem; color:#999;">' + (m.id || '') + '</td>' +
             '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0; font-weight:600; color:#164a6e;">' + noDisp + '</td>' +
@@ -1217,7 +1238,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
             '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0;">' + (m.guc || '') + ' ' + (m.gucBirim || '') + '</td>' +
             '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0;">' + (m.stok ? 'Stokta' : 'Talebe göre') + '</td>' +
             '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0;">' + imgPreviewCell + '</td>' +
-            '<td style="padding:6px 8px; border-bottom:1px solid #f0f0f0; text-align:right;">' +
+            '<td class="admin-table-sticky-last" style="padding:6px 8px; border-bottom:1px solid #f0f0f0; text-align:right;">' +
               '<button type="button" class="btn-sm" data-edit="' + (m.id || '') + '">Düzenle</button> ' +
               '<button type="button" class="btn-sm secondary" data-delete="' + (m.id || '') + '">Sil</button>' +
             '</td>';
@@ -1269,17 +1290,20 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
 
       tbody.addEventListener('click', function(e) {
         var t = e.target;
-        if (t.dataset.edit) {
-          var id = t.dataset.edit;
+        var btnEdit = t && t.closest ? t.closest('[data-edit]') : null;
+        var btnDel = t && t.closest ? t.closest('[data-delete]') : null;
+        if (btnEdit && btnEdit.dataset && btnEdit.dataset.edit) {
+          var id = btnEdit.dataset.edit;
           var m = machineAllItems.find(function(x) { return String(x.id) === String(id); });
           if (m) {
             fillForm(m);
             setMessage('Düzenleme modunda — alanları güncelleyip Kaydet\'e basın.', true);
             scrollToEditor();
           }
-        } else if (t.dataset.delete) {
+          return;
+        } else if (btnDel && btnDel.dataset && btnDel.dataset.delete) {
           if (!confirm('Bu makineyi silmek istediğinize emin misiniz?')) return;
-          var idd = t.dataset.delete;
+          var idd = btnDel.dataset.delete;
           var fd = new FormData();
           fd.append('action', 'delete');
           fd.append('id', idd);
@@ -1296,6 +1320,19 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
               }
             })
             .catch(function() { setMessage('Silme işlemi başarısız.', false); });
+          return;
+        }
+
+        // Satırın herhangi bir yerine tıklayınca düzenle (mobil erişim)
+        var tr = t && t.closest ? t.closest('tr.admin-table-row-clickable') : null;
+        if (!tr) return;
+        var rid = tr.getAttribute('data-row-id') || '';
+        if (!rid) return;
+        var mm = machineAllItems.find(function(x) { return String(x.id) === String(rid); });
+        if (mm) {
+          fillForm(mm);
+          setMessage('Düzenleme modunda — alanları güncelleyip Kaydet\'e basın.', true);
+          scrollToEditor();
         }
       });
 
