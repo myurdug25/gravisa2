@@ -409,13 +409,14 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
     }
 
     /* Makineler: dar ekranda tablo yerine kart liste */
-    .admin-card-list { display: none; flex-direction: column; gap: 12px; }
+    .admin-card-list { display: none; flex-direction: column; gap: 12px; width: 100%; }
     .admin-card {
       background: #fff;
       border: 1px solid #e8e8e8;
       border-radius: 12px;
       box-shadow: 0 2px 12px rgba(0,0,0,0.04);
       overflow: hidden;
+      width: 100%;
     }
     .admin-card__body { padding: 14px 14px; display: grid; gap: 10px; }
     .admin-card__title { font-weight: 800; color: #0f172a; line-height: 1.25; }
@@ -473,6 +474,14 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
     @media (max-width: 560px) {
       .admin-section-head { flex-direction: column; align-items: stretch; }
       .admin-section-head .btn-sm { width: 100%; }
+    }
+
+    /* Admin iç paneller: mobilde daha dengeli padding */
+    .admin-body-pad { padding: 24px; }
+    @media (max-width: 560px) {
+      .admin-body-pad { padding: 16px; }
+      .admin-card__body { padding: 12px 12px; }
+      .admin-card__actions { padding: 12px 12px; }
     }
 
     /* Formlarda iki kolonlu satırı mobilde stack et */
@@ -605,7 +614,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
     <?php elseif ($tab === 'makineler'): ?>
     <div class="card">
       <div class="card-header">Makineler</div>
-      <div class="body" style="padding: 24px;">
+      <div class="body admin-body-pad">
         <div class="admin-machines-layout admin-machines-layout--split">
           <div class="machine-list-column">
             <h3 style="margin:0 0 12px; font-size:1.1rem;">Makine listesi</h3>
@@ -732,7 +741,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
     <?php elseif ($tab === 'saha-fotograflari'): ?>
     <div class="card">
       <div class="card-header">Saha Fotoğrafları</div>
-      <div class="body" style="padding: 24px;">
+      <div class="body admin-body-pad">
         <div class="admin-split">
           <div class="admin-split__col" style="flex: 2 1 0; min-width: 320px;">
             <div class="admin-section-head" style="margin-top:0; margin-bottom:12px;">
