@@ -442,6 +442,11 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
       .admin-card__grid { grid-template-columns: 1fr; }
     }
 
+    @media (max-width: 680px) {
+      .admin-table--saha { display: none; }
+      #sahaCardList { display: flex; }
+    }
+
     /* Formlarda iki kolonlu satırı mobilde stack et */
     @media (max-width: 560px) {
       .admin-form-row { flex-direction: column !important; }
@@ -706,8 +711,9 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
               <h3 style="margin:0;">Fotoğraf Listesi</h3>
               <button type="button" class="admin-jump-btn" id="sahaJumpToFormBtn" aria-label="Saha fotoğraf formuna git">Forma git</button>
             </div>
+            <div id="sahaCardList" class="admin-card-list" aria-label="Saha fotoğraf kart listesi"></div>
             <div class="admin-table-wrap">
-              <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 620px;">
+              <table class="admin-table--saha" style="width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 620px;">
                 <thead>
                   <tr style="background:#f5f7fa;">
                     <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">ID</th>
@@ -1617,12 +1623,49 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
         return src;
       }
       function renderRows(items) {
+        var cardList = document.getElementById('sahaCardList');
+        var isNarrow = (window.innerWidth || 1024) <= 680;
         if (!items || !items.length) {
           tbody.innerHTML = '<tr><td colspan="5" style="padding:12px; text-align:center; color:#999;">Henüz fotoğraf eklenmemiş.</td></tr>';
+          if (cardList) cardList.innerHTML = '<div class="empty" style="padding:16px;">Henüz fotoğraf eklenmemiş.</div>';
           return;
         }
         items.sort(function(a,b){ return (a.sort_order||0) - (b.sort_order||0); });
         tbody.innerHTML = '';
+        if (cardList) cardList.innerHTML = '';
+
+        if (isNarrow && cardList) {
+          items.forEach(function(p) {
+            var imgSrc = safeImg(p.img);
+            var imgHtml = imgSrc
+              ? '<div class="admin-card__img"><img src="../' + esc(imgSrc).replace(/ /g, '%20') + '" alt="" loading="lazy"></div>'
+              : '';
+            var title = esc(p.title || '—');
+            var desc = esc(p.description || '');
+            var id = esc(p.id || '');
+            var order = esc(String(p.sort_order != null ? p.sort_order : 0));
+
+            var el = document.createElement('article');
+            el.className = 'admin-card';
+            el.innerHTML =
+              imgHtml +
+              '<div class="admin-card__body">' +
+                '<div class="admin-card__title">' + title + '</div>' +
+                (desc ? '<div class="admin-card__meta">' + desc + '</div>' : '<div class="admin-card__meta">Açıklama yok</div>') +
+                '<div class="admin-card__grid">' +
+                  '<div class="admin-card__kv"><div class="admin-card__k">ID</div><div class="admin-card__v">' + id + '</div></div>' +
+                  '<div class="admin-card__kv"><div class="admin-card__k">Sıra</div><div class="admin-card__v">' + order + '</div></div>' +
+                '</div>' +
+              '</div>' +
+              '<div class="admin-card__actions">' +
+                '<button type="button" class="btn-sm" data-edit="' + id + '">Düzenle</button>' +
+                '<button type="button" class="btn-sm secondary" data-delete="' + id + '">Sil</button>' +
+              '</div>';
+            cardList.appendChild(el);
+          });
+          return;
+        }
+
         items.forEach(function(p) {
           var imgSrc = safeImg(p.img);
           var imgPreview = imgSrc ? '<img src="../' + esc(imgSrc).replace(/ /g, '%20') + '" alt="" style="width:60px; height:40px; object-fit:cover; border-radius:4px;">' : '-';
@@ -1655,8 +1698,10 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
 
       tbody.addEventListener('click', function(e) {
         var t = e.target;
-        if (t.dataset.edit) {
-          var id = t.dataset.edit;
+        var btnEdit = t && t.closest ? t.closest('[data-edit]') : null;
+        var btnDel = t && t.closest ? t.closest('[data-delete]') : null;
+        if (btnEdit && btnEdit.dataset && btnEdit.dataset.edit) {
+          var id = btnEdit.dataset.edit;
           fetch('../api/saha-fotograflari-admin.php')
             .then(function(r) { return r.json(); })
             .then(function(res) {
@@ -1664,11 +1709,42 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
               var p = res.items.find(function(x) { return String(x.id) === String(id); });
               if (p) { fillForm(p); setMessage('Düzenleme modunda.', true); scrollToSahaForm(); }
             });
-        } else if (t.dataset.delete) {
+        } else if (btnDel && btnDel.dataset && btnDel.dataset.delete) {
           if (!confirm('Bu fotoğrafı silmek istediğinize emin misiniz?')) return;
           var fd = new FormData();
           fd.append('action', 'delete');
-          fd.append('id', t.dataset.delete);
+          fd.append('id', btnDel.dataset.delete);
+          if (csrf) fd.append('_csrf_token', csrf.value);
+          fetch('../api/saha-fotograflari-admin.php', { method: 'POST', body: fd })
+            .then(function(r) { return r.json(); })
+            .then(function(res) {
+              setMessage(res.message || (res.success ? 'Silindi.' : 'Hata.'), !!res.success);
+              if (res.success) { renderRows(res.items || []); resetForm(); }
+            })
+            .catch(function() { setMessage('Silme başarısız.', false); });
+        }
+      });
+
+      // Kart listesi aksiyonları (mobil)
+      document.addEventListener('click', function(e) {
+        var cardList = document.getElementById('sahaCardList');
+        if (!cardList || !cardList.contains(e.target)) return;
+        var btnEdit = e.target && e.target.closest ? e.target.closest('[data-edit]') : null;
+        var btnDel = e.target && e.target.closest ? e.target.closest('[data-delete]') : null;
+        if (btnEdit && btnEdit.dataset && btnEdit.dataset.edit) {
+          var id = btnEdit.dataset.edit;
+          fetch('../api/saha-fotograflari-admin.php')
+            .then(function(r) { return r.json(); })
+            .then(function(res) {
+              if (!res.success || !Array.isArray(res.items)) return;
+              var p = res.items.find(function(x) { return String(x.id) === String(id); });
+              if (p) { fillForm(p); setMessage('Düzenleme modunda.', true); scrollToSahaForm(); }
+            });
+        } else if (btnDel && btnDel.dataset && btnDel.dataset.delete) {
+          if (!confirm('Bu fotoğrafı silmek istediğinize emin misiniz?')) return;
+          var fd = new FormData();
+          fd.append('action', 'delete');
+          fd.append('id', btnDel.dataset.delete);
           if (csrf) fd.append('_csrf_token', csrf.value);
           fetch('../api/saha-fotograflari-admin.php', { method: 'POST', body: fd })
             .then(function(r) { return r.json(); })
