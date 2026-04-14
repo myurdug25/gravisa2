@@ -295,6 +295,24 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
     .admin-btn-row .admin-inline-msg { color: var(--admin-muted); font-size: 0.9rem; }
     .admin-inline-msg { margin-left: 12px; }
 
+    .admin-jump-btn {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(30,95,138,0.20);
+      background: rgba(30,95,138,0.08);
+      color: var(--admin-primary);
+      cursor: pointer;
+      font: inherit;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .admin-jump-btn:hover { background: rgba(30,95,138,0.12); }
+    .admin-jump-btn:focus-visible { outline: 2px solid rgba(30,95,138,0.45); outline-offset: 2px; }
+
     /* Card header içerikleri taşmasın */
     .card-header { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
     .card-header > span { margin-left: 0 !important; }
@@ -315,6 +333,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
       .admin-content { padding: 16px; }
       .admin-header { padding: 12px 14px; }
       .admin-header h1 { font-size: 1rem; }
+      .admin-jump-btn { display: inline-flex; }
     }
     @media (max-width: 560px) {
       .admin-header__right { width: 100%; justify-content: flex-start; }
@@ -479,6 +498,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
               </select>
               <input type="search" id="machine_search" placeholder="ID, no, tip, firma, model…" autocomplete="off" />
               <span id="machine_search_count" style="font-size:0.85rem; color:#666; white-space:nowrap;"></span>
+              <button type="button" class="admin-jump-btn" id="machineJumpToFormBtn" aria-label="Makine formuna git">Forma git</button>
             </div>
             <p class="machine-form-hint" style="margin:0 0 12px;">Liste, sitedeki kategorilerle aynı <strong>Tip</strong> alanına göre gruplanır. Bir satırı düzenleyip Kaydet dediğinizde yalnızca o makine güncellenir.</p>
             <div class="admin-table-wrap">
@@ -597,7 +617,10 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
       <div class="body" style="padding: 24px;">
         <div class="admin-split">
           <div class="admin-split__col" style="flex: 2 1 0; min-width: 320px;">
-            <h3 style="margin-top: 0; margin-bottom: 12px;">Fotoğraf Listesi</h3>
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:0; margin-bottom:12px;">
+              <h3 style="margin:0;">Fotoğraf Listesi</h3>
+              <button type="button" class="admin-jump-btn" id="sahaJumpToFormBtn" aria-label="Saha fotoğraf formuna git">Forma git</button>
+            </div>
             <div class="admin-table-wrap">
               <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 620px;">
                 <thead>
@@ -620,7 +643,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
               <h3 style="margin: 0;">Fotoğraf Ekle / Düzenle</h3>
               <button type="button" class="btn-sm" id="sahaNewBtn">+ Yeni Saha Fotoğrafı Ekle</button>
             </div>
-            <form id="sahaForm" enctype="multipart/form-data">
+            <form id="sahaForm" enctype="multipart/form-data" data-scroll-anchor="saha-editor-anchor">
               <?php echo csrfField(); ?>
               <input type="hidden" name="id" id="saha_id" value="">
               <div style="display:flex; flex-direction:column; gap:10px;">
@@ -1326,6 +1349,14 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
         });
       }
 
+      // Mobilde hızlı erişim: "Forma git"
+      var jumpBtn = document.getElementById('machineJumpToFormBtn');
+      if (jumpBtn) {
+        jumpBtn.addEventListener('click', function() {
+          scrollToEditor();
+        });
+      }
+
       if (searchInput) {
         searchInput.addEventListener('input', function() {
           applyMachineFilter();
@@ -1382,6 +1413,15 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
         document.getElementById('saha_description').value = p.description || '';
         document.getElementById('saha_sort_order').value = p.sort_order || 0;
         if (imgInfo) imgInfo.textContent = p.img ? ('Mevcut: ' + p.img) : 'Görsel yüklenmemiş.';
+      }
+
+      function scrollToSahaForm() {
+        // formun kendisi sağ kolonda, mobilde aşağıda kalıyor; güvenli scroll
+        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setTimeout(function() {
+          var t = document.getElementById('saha_title');
+          if (t) t.focus();
+        }, 250);
       }
 
       function esc(s) {
@@ -1442,7 +1482,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
             .then(function(res) {
               if (!res.success || !Array.isArray(res.items)) return;
               var p = res.items.find(function(x) { return String(x.id) === String(id); });
-              if (p) { fillForm(p); setMessage('Düzenleme modunda.', true); }
+              if (p) { fillForm(p); setMessage('Düzenleme modunda.', true); scrollToSahaForm(); }
             });
         } else if (t.dataset.delete) {
           if (!confirm('Bu fotoğrafı silmek istediğinize emin misiniz?')) return;
@@ -1483,8 +1523,16 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
       var newBtn = document.getElementById('sahaNewBtn');
       if (newBtn) newBtn.addEventListener('click', function() {
         resetForm();
-        document.getElementById('saha_title').focus();
+        scrollToSahaForm();
       });
+
+      // Mobilde hızlı erişim: "Forma git"
+      var jumpBtn = document.getElementById('sahaJumpToFormBtn');
+      if (jumpBtn) {
+        jumpBtn.addEventListener('click', function() {
+          scrollToSahaForm();
+        });
+      }
       loadSaha();
     })();
   </script>
