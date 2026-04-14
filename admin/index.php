@@ -453,6 +453,16 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
       .btn-sm { white-space: normal; }
     }
 
+    /* Kart içerikleri daha ferah ve hizalı */
+    .admin-card__title { font-size: 1.05rem; }
+    .admin-card__meta { line-height: 1.4; }
+    .admin-card__img { border-bottom: 1px solid #eef2f7; }
+
+    /* "Forma git" butonu küçük ekranda tam genişlik */
+    @media (max-width: 560px) {
+      .admin-jump-btn { width: 100%; }
+    }
+
     .admin-section-head {
       display: flex;
       justify-content: space-between;
@@ -725,7 +735,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
       <div class="body" style="padding: 24px;">
         <div class="admin-split">
           <div class="admin-split__col" style="flex: 2 1 0; min-width: 320px;">
-            <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:0; margin-bottom:12px;">
+            <div class="admin-section-head" style="margin-top:0; margin-bottom:12px;">
               <h3 style="margin:0;">Fotoğraf Listesi</h3>
               <button type="button" class="admin-jump-btn" id="sahaJumpToFormBtn" aria-label="Saha fotoğraf formuna git">Forma git</button>
             </div>
