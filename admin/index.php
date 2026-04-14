@@ -369,6 +369,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
       #machine_search_count { white-space: normal !important; }
     }
     @media (max-width: 560px) {
+      .admin-content { padding: 12px; }
       .admin-header__right { width: 100%; justify-content: flex-start; }
       .admin-header a { font-size: 0.9rem; }
       .card-header { padding: 16px 16px; }
@@ -385,10 +386,17 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
 
       .admin-split { flex-direction: column; gap: 16px; }
       .admin-split__col { width: 100%; }
+      /* Inline min-width:320px değerlerini mobilde ez (layout kaymasını engeller) */
+      .admin-split__col { min-width: 0 !important; }
 
       .admin-inline-msg { margin-left: 0; display: block; width: 100%; }
       .admin-btn-row { flex-direction: column; align-items: stretch; }
       .admin-btn-row .btn-sm { width: 100%; }
+    }
+
+    @media (max-width: 360px) {
+      .admin-content { padding: 10px; }
+      .admin-body-pad { padding: 12px; }
     }
 
     /* Makineler tablosu: mobilde taşmayı azalt (kolonları gizle) */
