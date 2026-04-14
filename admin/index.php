@@ -229,7 +229,8 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
     .btn-sm.secondary { background: #6c757d; }
     .btn-sm.secondary:hover { background: #596068; }
     .empty { padding: 48px; text-align: center; color: #999; }
-    .detail-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 24px; }
+    /* Detay modal: header'ın üstünde kalmalı (header z-index:1100) */
+    .detail-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2200; align-items: flex-start; justify-content: center; padding: calc(24px + var(--admin-header-h)) 24px 24px; }
     .detail-overlay.show { display: flex; }
     .detail-box { background: #fff; border-radius: 12px; max-width: 520px; width: 100%; max-height: 90vh; overflow-y: auto; }
     .detail-box h3 { margin: 0 0 20px; padding: 20px 24px; border-bottom: 1px solid #eee; color: #1e5f8a; }
@@ -374,7 +375,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
       .admin-header a { font-size: 0.9rem; }
       .card-header { padding: 16px 16px; }
       .item { padding: 16px 16px; }
-      .detail-overlay { padding: 14px; }
+      .detail-overlay { padding: calc(14px + var(--admin-header-h)) 14px 14px; }
       .detail-box { border-radius: 12px; max-height: 92vh; }
       .detail-box h3 { padding: 16px 16px; margin-bottom: 12px; }
       .detail-box .body { padding: 16px; }
