@@ -61,17 +61,160 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
   <style>
     * { box-sizing: border-box; }
     body { font-family: 'DM Sans', sans-serif; margin: 0; background: #f5f7fa; color: #333; }
-    .admin-header { background: linear-gradient(135deg, #1e5f8a, #164a6e); color: #fff; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
-    .admin-header h1 { margin: 0; font-size: 1.35rem; }
-    .admin-header a { color: rgba(255,255,255,0.9); text-decoration: none; font-size: 0.9rem; }
+    :root {
+      --admin-bg: #f5f7fa;
+      --admin-surface: #fff;
+      --admin-border: #e8e8e8;
+      --admin-border-soft: #eef1f4;
+      --admin-text: #0f172a;
+      --admin-muted: #64748b;
+      --admin-primary: #1e5f8a;
+      --admin-primary-dark: #164a6e;
+      --admin-radius: 12px;
+      --admin-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      --admin-sidebar-w: 280px;
+      --admin-header-h: 72px;
+    }
+
+    body { background: var(--admin-bg); color: var(--admin-text); }
+
+    .admin-header {
+      position: sticky;
+      top: 0;
+      z-index: 1100;
+      background: linear-gradient(135deg, var(--admin-primary), var(--admin-primary-dark));
+      color: #fff;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: var(--admin-header-h);
+    }
+    .admin-header h1 { margin: 0; font-size: 1.05rem; letter-spacing: -0.01em; }
+    .admin-header a { color: rgba(255,255,255,0.92); text-decoration: none; font-size: 0.92rem; }
     .admin-header a:hover { color: #fff; }
-    .admin-nav { background: #fff; padding: 0 32px; border-bottom: 1px solid #e0e0e0; display: flex; gap: 0; }
-    .admin-nav a { padding: 16px 20px; text-decoration: none; color: #666; font-weight: 500; border-bottom: 3px solid transparent; }
-    .admin-nav a:hover { color: #1e5f8a; }
-    .admin-nav a.active { color: #1e5f8a; border-bottom-color: #1e5f8a; }
-    .admin-content { padding: 32px; max-width: 1200px; margin: 0 auto; }
+    .admin-header__left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .admin-header__right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+
+    .admin-icon-btn {
+      appearance: none;
+      border: 1px solid rgba(255,255,255,0.22);
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      border-radius: 10px;
+      padding: 10px 10px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 0;
+      flex: 0 0 auto;
+    }
+    .admin-icon-btn:hover { background: rgba(255,255,255,0.18); }
+    .admin-icon-btn:focus-visible { outline: 2px solid rgba(255,255,255,0.85); outline-offset: 2px; }
+    .admin-burger { width: 20px; height: 14px; position: relative; }
+    .admin-burger span { position: absolute; left: 0; right: 0; height: 2px; background: #fff; border-radius: 2px; }
+    .admin-burger span:nth-child(1) { top: 0; }
+    .admin-burger span:nth-child(2) { top: 6px; opacity: 0.95; }
+    .admin-burger span:nth-child(3) { bottom: 0; }
+
+    .admin-shell {
+      display: grid;
+      grid-template-columns: var(--admin-sidebar-w) minmax(0, 1fr);
+      gap: 0;
+      min-height: calc(100vh - var(--admin-header-h));
+    }
+
+    .admin-sidebar {
+      position: sticky;
+      top: var(--admin-header-h);
+      align-self: start;
+      height: calc(100vh - var(--admin-header-h));
+      overflow: auto;
+      background: var(--admin-surface);
+      border-right: 1px solid var(--admin-border-soft);
+      padding: 14px 12px;
+    }
+    .admin-sidebar__title {
+      display: block;
+      padding: 10px 12px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--admin-muted);
+    }
+    .admin-sidebar__nav { display: flex; flex-direction: column; gap: 6px; }
+    .admin-sidebar__link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      text-decoration: none;
+      color: #334155;
+      font-weight: 600;
+      line-height: 1.25;
+      border: 1px solid transparent;
+    }
+    .admin-sidebar__link:hover { background: #f8fafc; border-color: #eef2f7; color: var(--admin-primary); }
+    .admin-sidebar__link.active { background: rgba(30,95,138,0.10); border-color: rgba(30,95,138,0.18); color: var(--admin-primary); }
+
+    .admin-sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      z-index: 1200;
+    }
+    .admin-sidebar-drawer {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1250;
+      pointer-events: none;
+    }
+    .admin-sidebar-drawer__panel {
+      pointer-events: auto;
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: min(var(--admin-sidebar-w), 92vw);
+      background: var(--admin-surface);
+      border-right: 1px solid var(--admin-border-soft);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.25);
+      transform: translateX(-102%);
+      transition: transform 0.2s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .admin-sidebar-drawer__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 14px 14px;
+      border-bottom: 1px solid var(--admin-border-soft);
+      background: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    .admin-sidebar-drawer__header strong { font-size: 0.95rem; color: #0f172a; }
+    .admin-sidebar-drawer__body { padding: 12px; overflow: auto; }
+
+    body.admin-drawer-open { overflow: hidden; }
+    body.admin-drawer-open .admin-sidebar-overlay { display: block; }
+    body.admin-drawer-open .admin-sidebar-drawer { display: block; }
+    body.admin-drawer-open .admin-sidebar-drawer__panel { transform: translateX(0); }
+
+    .admin-main { min-width: 0; }
+    .admin-content { padding: 22px; max-width: 1200px; margin: 0 auto; }
     .admin-content--wide { max-width: 1480px; }
-    .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); border: 1px solid #e8e8e8; overflow: hidden; }
+
+    .card { background: var(--admin-surface); border-radius: var(--admin-radius); box-shadow: var(--admin-shadow); border: 1px solid var(--admin-border); overflow: hidden; }
     .card-header { padding: 20px 24px; border-bottom: 1px solid #eee; font-weight: 700; font-size: 1.1rem; color: #1e5f8a; }
     .item { padding: 20px 24px; border-bottom: 1px solid #f0f0f0; }
     .item:last-child { border-bottom: none; }
@@ -81,9 +224,10 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
     .item-meta { font-size: 0.875rem; color: #666; }
     .item-date { font-size: 0.8rem; color: #999; margin-top: 8px; }
     .item-actions { margin-top: 12px; }
-    .btn-sm { display: inline-block; padding: 6px 12px; background: #1e5f8a; color: #fff; border-radius: 6px; font-size: 0.8rem; text-decoration: none; font-family: inherit; border: none; cursor: pointer; }
+    .btn-sm { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 8px 12px; background: #1e5f8a; color: #fff; border-radius: 10px; font-size: 0.85rem; text-decoration: none; font-family: inherit; border: none; cursor: pointer; white-space: nowrap; }
     .btn-sm:hover { background: #164a6e; }
     .btn-sm.secondary { background: #6c757d; }
+    .btn-sm.secondary:hover { background: #596068; }
     .empty { padding: 48px; text-align: center; color: #999; }
     .detail-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 24px; }
     .detail-overlay.show { display: flex; }
@@ -137,24 +281,119 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
     .machine-edit-context.is-new { background: #f1f5f9; border-color: #e2e8f0; color: #475569; }
     .admin-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .machine-form-hint { font-size: 0.8rem; color: #64748b; margin-top: 4px; line-height: 1.4; }
+
+    /* Genel responsive iyileştirmeler */
+    .admin-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; }
+    .admin-table-wrap table { width: 100%; }
+    .admin-table-wrap::-webkit-scrollbar { height: 10px; }
+    .admin-table-wrap::-webkit-scrollbar-thumb { background: rgba(100,116,139,0.25); border-radius: 999px; }
+
+    .admin-actions-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .admin-actions-row > * { max-width: 100%; }
+    .admin-actions-row input, .admin-actions-row select { min-width: 0; }
+    .admin-btn-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .admin-btn-row .admin-inline-msg { color: var(--admin-muted); font-size: 0.9rem; }
+    .admin-inline-msg { margin-left: 12px; }
+
+    /* Card header içerikleri taşmasın */
+    .card-header { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+    .card-header > span { margin-left: 0 !important; }
+    .card-header code { word-break: break-word; }
+
+    /* Hamburger sadece tablet/mobil */
+    @media (min-width: 993px) {
+      #adminSidebarToggle { display: none; }
+    }
+
+    .admin-split { display: flex; gap: 24px; flex-wrap: wrap; }
+    .admin-split__col { min-width: 0; }
+
+    /* Mobil/tablet */
+    @media (max-width: 992px) {
+      .admin-shell { grid-template-columns: 1fr; }
+      .admin-sidebar { display: none; }
+      .admin-content { padding: 16px; }
+      .admin-header { padding: 12px 14px; }
+      .admin-header h1 { font-size: 1rem; }
+    }
+    @media (max-width: 560px) {
+      .admin-header__right { width: 100%; justify-content: flex-start; }
+      .admin-header a { font-size: 0.9rem; }
+      .card-header { padding: 16px 16px; }
+      .item { padding: 16px 16px; }
+      .detail-overlay { padding: 14px; }
+      .detail-box { border-radius: 12px; max-height: 92vh; }
+      .detail-box h3 { padding: 16px 16px; margin-bottom: 12px; }
+      .detail-box .body { padding: 16px; }
+      .detail-row { flex-direction: column; gap: 6px; }
+      .detail-label { width: auto; }
+      .detail-close { padding: 14px 16px; }
+      .item-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+      .item-actions .btn-sm { width: auto; }
+
+      .admin-split { flex-direction: column; gap: 16px; }
+      .admin-split__col { width: 100%; }
+
+      .admin-inline-msg { margin-left: 0; display: block; width: 100%; }
+      .admin-btn-row { flex-direction: column; align-items: stretch; }
+      .admin-btn-row .btn-sm { width: 100%; }
+    }
+
+    /* Formlarda iki kolonlu satırı mobilde stack et */
+    @media (max-width: 560px) {
+      .admin-form-row { flex-direction: column !important; }
+      .admin-form-row > * { flex: 1 1 auto !important; width: 100% !important; }
+    }
   </style>
 </head>
 <body>
   <input type="hidden" id="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>" />
   <header class="admin-header">
-    <h1>Gravisa Admin Panel</h1>
-    <div>
+    <div class="admin-header__left">
+      <button type="button" class="admin-icon-btn" id="adminSidebarToggle" aria-label="Menü" aria-expanded="false">
+        <span class="admin-burger" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
+      <h1>Gravisa Admin Panel</h1>
+    </div>
+    <div class="admin-header__right">
       <a href="../">Siteye Git</a>
-      <span style="margin: 0 12px; opacity: 0.6;">|</span>
+      <span style="margin: 0 4px; opacity: 0.6;">|</span>
       <a href="logout.php">Çıkış</a>
     </div>
   </header>
-  <nav class="admin-nav">
-    <?php foreach ($allowedTabs as $t): ?>
-    <a href="?tab=<?= $t ?>" class="<?= $tab === $t ? 'active' : '' ?>"><?= $labels[$t] ?></a>
-    <?php endforeach; ?>
-  </nav>
-  <main class="admin-content<?= $tab === 'makineler' ? ' admin-content--wide' : '' ?>">
+
+  <div class="admin-sidebar-overlay" id="adminSidebarOverlay" aria-hidden="true"></div>
+  <div class="admin-sidebar-drawer" id="adminSidebarDrawer" aria-hidden="true">
+    <aside class="admin-sidebar-drawer__panel" role="dialog" aria-modal="true" aria-label="Admin menü">
+      <div class="admin-sidebar-drawer__header">
+        <strong>Menü</strong>
+        <button type="button" class="admin-icon-btn" id="adminSidebarClose" aria-label="Kapat">
+          <span aria-hidden="true" style="font-weight:700; font-size:16px; line-height:1;">✕</span>
+        </button>
+      </div>
+      <div class="admin-sidebar-drawer__body">
+        <span class="admin-sidebar__title">Sayfalar</span>
+        <nav class="admin-sidebar__nav" aria-label="Admin navigasyon">
+          <?php foreach ($allowedTabs as $t): ?>
+          <a href="?tab=<?= $t ?>" class="admin-sidebar__link <?= $tab === $t ? 'active' : '' ?>"><?= $labels[$t] ?></a>
+          <?php endforeach; ?>
+        </nav>
+      </div>
+    </aside>
+  </div>
+
+  <div class="admin-shell">
+    <aside class="admin-sidebar" aria-label="Admin menü">
+      <span class="admin-sidebar__title">Sayfalar</span>
+      <nav class="admin-sidebar__nav">
+        <?php foreach ($allowedTabs as $t): ?>
+        <a href="?tab=<?= $t ?>" class="admin-sidebar__link <?= $tab === $t ? 'active' : '' ?>"><?= $labels[$t] ?></a>
+        <?php endforeach; ?>
+      </nav>
+    </aside>
+
+    <div class="admin-main">
+      <main class="admin-content<?= $tab === 'makineler' ? ' admin-content--wide' : '' ?>">
     <?php if ($tab === 'ayarlar'): ?>
     <div class="card">
       <div class="card-header">Site Ayarları</div>
@@ -297,7 +536,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
                   <span style="display:block; font-weight:600; margin-bottom:4px; color:#555;">Model Yılı</span>
                   <input type="text" name="modelYil" id="machine_modelYil" style="width:100%; padding:8px 10px; border:1px solid #ddd; border-radius:8px;">
                 </label>
-                <div style="display:flex; gap:8px;">
+                <div class="admin-form-row" style="display:flex; gap:8px;">
                   <label style="flex:2;">
                     <span style="display:block; font-weight:600; margin-bottom:4px; color:#555;">Güç</span>
                     <input type="text" name="guc" id="machine_guc" style="width:100%; padding:8px 10px; border:1px solid #ddd; border-radius:8px;">
@@ -340,10 +579,10 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
                     <img id="machine_img_preview" src="" alt="Önizleme" />
                   </div>
                 </label>
-                <div>
+                <div class="admin-btn-row">
                   <button type="submit" class="btn-sm" id="machineSaveBtn">Kaydet</button>
-                  <button type="button" class="btn-sm secondary" id="machineResetBtn" style="margin-left:8px;">Temizle</button>
-                  <span id="machineMsg" style="margin-left:8px; font-size:0.85rem;"></span>
+                  <button type="button" class="btn-sm secondary" id="machineResetBtn">Temizle</button>
+                  <span id="machineMsg" class="admin-inline-msg" style="font-size:0.85rem;"></span>
                 </div>
               </div>
             </form>
@@ -356,25 +595,27 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
     <div class="card">
       <div class="card-header">Saha Fotoğrafları</div>
       <div class="body" style="padding: 24px;">
-        <div style="display: flex; gap: 24px; flex-wrap: wrap;">
-          <div style="flex: 2 1 0; min-width: 320px;">
+        <div class="admin-split">
+          <div class="admin-split__col" style="flex: 2 1 0; min-width: 320px;">
             <h3 style="margin-top: 0; margin-bottom: 12px;">Fotoğraf Listesi</h3>
-            <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
-              <thead>
-                <tr style="background:#f5f7fa;">
-                  <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">ID</th>
-                  <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Başlık</th>
-                  <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Açıklama</th>
-                  <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Görsel</th>
-                  <th style="text-align:right; padding:8px; border-bottom:1px solid #eee;">İşlem</th>
-                </tr>
-              </thead>
-              <tbody id="sahaTableBody">
-                <tr><td colspan="5" style="padding:12px; text-align:center; color:#999;">Yükleniyor...</td></tr>
-              </tbody>
-            </table>
+            <div class="admin-table-wrap">
+              <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 620px;">
+                <thead>
+                  <tr style="background:#f5f7fa;">
+                    <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">ID</th>
+                    <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Başlık</th>
+                    <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Açıklama</th>
+                    <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Görsel</th>
+                    <th style="text-align:right; padding:8px; border-bottom:1px solid #eee;">İşlem</th>
+                  </tr>
+                </thead>
+                <tbody id="sahaTableBody">
+                  <tr><td colspan="5" style="padding:12px; text-align:center; color:#999;">Yükleniyor...</td></tr>
+                </tbody>
+              </table>
+            </div>
           </div>
-          <div style="flex: 1 1 0; min-width: 320px;">
+          <div class="admin-split__col" style="flex: 1 1 0; min-width: 320px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
               <h3 style="margin: 0;">Fotoğraf Ekle / Düzenle</h3>
               <button type="button" class="btn-sm" id="sahaNewBtn">+ Yeni Saha Fotoğrafı Ekle</button>
@@ -400,10 +641,10 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
                   <input type="file" name="img" id="saha_img" accept="image/*" style="width:100%; font-size:0.85rem;">
                   <small id="saha_img_info" style="display:block; margin-top:4px; font-size:0.8rem; color:#777;"></small>
                 </label>
-                <div>
+                <div class="admin-btn-row">
                   <button type="submit" class="btn-sm" id="sahaSaveBtn">Kaydet</button>
-                  <button type="button" class="btn-sm secondary" id="sahaResetBtn" style="margin-left:8px;">Temizle</button>
-                  <span id="sahaMsg" style="margin-left:8px; font-size:0.85rem;"></span>
+                  <button type="button" class="btn-sm secondary" id="sahaResetBtn">Temizle</button>
+                  <span id="sahaMsg" class="admin-inline-msg" style="font-size:0.85rem;"></span>
                 </div>
               </div>
             </form>
@@ -415,9 +656,9 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
     <div class="card">
       <div class="card-header">
         <?= $labels[$tab] ?>
-        <span style="margin-left:8px; font-size:0.85rem; color:#666;">(Toplam <?= count($items) ?> kayıt)</span>
+        <span style="font-size:0.85rem; color:#666;">(Toplam <?= count($items) ?> kayıt)</span>
         <?php if (!empty($items)): ?>
-        <div style="margin-top:8px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+        <div class="admin-actions-row" style="margin-top:8px;">
           <input type="text" id="requestSearch" placeholder="İsim, e-posta, telefon, konu ara..." style="flex:1; min-width:220px; padding:6px 10px; border-radius:8px; border:1px solid #d0d7de; font-size:0.85rem;">
           <select id="requestDateFilter" style="padding:6px 10px; border-radius:8px; border:1px solid #d0d7de; font-size:0.85rem;">
             <option value="all">Tüm tarihler</option>
@@ -454,14 +695,16 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
         </div>
         <div class="item-actions">
           <button type="button" class="btn-sm" onclick="showDetail(<?= htmlspecialchars(json_encode($id), ENT_QUOTES) ?>, <?= htmlspecialchars(json_encode($data), ENT_QUOTES) ?>)">Detay</button>
-          <button type="button" class="btn-sm secondary" data-delete-request="<?= htmlspecialchars($id) ?>" style="margin-left:8px;">Sil</button>
+          <button type="button" class="btn-sm secondary" data-delete-request="<?= htmlspecialchars($id) ?>">Sil</button>
         </div>
       </div>
       <?php endforeach; ?>
       <?php endif; ?>
     </div>
     <?php endif; ?>
-  </main>
+      </main>
+    </div>
+  </div>
 
   <div class="detail-overlay" id="detailOverlay">
     <div class="detail-box">
@@ -546,6 +789,52 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
     document.getElementById('detailOverlay').addEventListener('click', function(e) {
       if (e.target === this) closeDetail();
     });
+
+    // Admin sidebar drawer (mobil)
+    (function() {
+      var toggle = document.getElementById('adminSidebarToggle');
+      var overlay = document.getElementById('adminSidebarOverlay');
+      var drawer = document.getElementById('adminSidebarDrawer');
+      var closeBtn = document.getElementById('adminSidebarClose');
+      if (!toggle || !overlay || !drawer) return;
+
+      function openDrawer() {
+        document.body.classList.add('admin-drawer-open');
+        overlay.setAttribute('aria-hidden', 'false');
+        drawer.setAttribute('aria-hidden', 'false');
+        toggle.setAttribute('aria-expanded', 'true');
+      }
+      function closeDrawer() {
+        document.body.classList.remove('admin-drawer-open');
+        overlay.setAttribute('aria-hidden', 'true');
+        drawer.setAttribute('aria-hidden', 'true');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+      function isMobile() {
+        return (window.innerWidth || 1024) <= 992;
+      }
+
+      toggle.addEventListener('click', function() {
+        if (!isMobile()) return;
+        if (document.body.classList.contains('admin-drawer-open')) closeDrawer();
+        else openDrawer();
+      });
+      overlay.addEventListener('click', closeDrawer);
+      if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeDrawer();
+      });
+      window.addEventListener('resize', function() {
+        // desktop'a geçince drawer state'i temizle
+        if (!isMobile()) closeDrawer();
+      });
+
+      // Drawer içindeki linke tıklayınca kapat
+      drawer.addEventListener('click', function(e) {
+        var a = e.target && e.target.closest && e.target.closest('a.admin-sidebar__link');
+        if (a) closeDrawer();
+      });
+    })();
 
     // Talep listesi filtreleme ve silme
     (function() {

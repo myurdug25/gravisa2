@@ -31,7 +31,8 @@ $heroVideoPoster = BASE_PATH . '/images/IMG_9059.JPG.jpeg';
       muted
       loop
       playsinline
-      preload="auto"
+      preload="metadata"
+      fetchpriority="low"
     >
       <source src="<?= htmlspecialchars($heroVideoSrc, ENT_QUOTES, 'UTF-8') ?>" type="video/mp4" />
     </video>
@@ -44,7 +45,7 @@ $heroVideoPoster = BASE_PATH . '/images/IMG_9059.JPG.jpeg';
 
   <?php include __DIR__ . '/includes/site-header.php'; ?>
 
-  <main>
+  <main<?= $heroHasBgVideo ? ' class="page-home page-home--video"' : '' ?>>
     <section class="section section-alt section-stock-top" id="stokta">
       <div class="container">
         <div class="section-header-flex">
@@ -71,9 +72,9 @@ $heroVideoPoster = BASE_PATH . '/images/IMG_9059.JPG.jpeg';
             <h1 class="hero-title"><?= htmlspecialchars(t('pages.index.hero_title_line1'), ENT_QUOTES, 'UTF-8') ?> <span><?= htmlspecialchars(t('pages.index.hero_title_line2'), ENT_QUOTES, 'UTF-8') ?></span></h1>
             <p class="hero-subtitle"><?= htmlspecialchars(t('pages.index.hero_subtitle'), ENT_QUOTES, 'UTF-8') ?></p>
             <div class="hero-buttons">
-              <a href="<?= htmlspecialchars(gravisa_url('makineler'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-primary"><?= htmlspecialchars(t('pages.index.btn_browse'), ENT_QUOTES, 'UTF-8') ?></a>
-              <a href="<?= htmlspecialchars(gravisa_url('satis-teklifi'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline"><?= htmlspecialchars(t('pages.index.btn_sales'), ENT_QUOTES, 'UTF-8') ?></a>
-              <a href="<?= htmlspecialchars(gravisa_url('kiralama'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline"><?= htmlspecialchars(t('pages.index.btn_rent'), ENT_QUOTES, 'UTF-8') ?></a>
+              <a href="<?= htmlspecialchars(gravisa_url('makineler'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-primary btn--hero-primary"><?= htmlspecialchars(t('pages.index.btn_browse'), ENT_QUOTES, 'UTF-8') ?></a>
+              <a href="<?= htmlspecialchars(gravisa_url('satis-teklifi'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline btn--hero-secondary"><?= htmlspecialchars(t('pages.index.btn_sales'), ENT_QUOTES, 'UTF-8') ?></a>
+              <a href="<?= htmlspecialchars(gravisa_url('kiralama'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline btn--hero-secondary"><?= htmlspecialchars(t('pages.index.btn_rent'), ENT_QUOTES, 'UTF-8') ?></a>
             </div>
             <div class="hero-stats">
               <div class="hero-stat-card">
@@ -109,7 +110,7 @@ $heroVideoPoster = BASE_PATH . '/images/IMG_9059.JPG.jpeg';
     </section>
 
     <section class="section" id="hizmetler">
-      <div class="container">
+      <div class="container<?= $heroHasBgVideo ? ' home-surface' : '' ?>">
         <h2 class="section-title"><?= htmlspecialchars(t('pages.index.services_title'), ENT_QUOTES, 'UTF-8') ?></h2>
         <p class="section-desc"><?= htmlspecialchars(t('pages.index.services_desc'), ENT_QUOTES, 'UTF-8') ?></p>
         <div class="features-grid">
@@ -142,7 +143,7 @@ $heroVideoPoster = BASE_PATH . '/images/IMG_9059.JPG.jpeg';
     </section>
 
     <section class="section" id="demo">
-      <div class="container section-inner-card">
+      <div class="container section-inner-card<?= $heroHasBgVideo ? ' home-surface' : '' ?>">
         <h2 class="section-title"><?= htmlspecialchars(t('pages.index.demo_title'), ENT_QUOTES, 'UTF-8') ?></h2>
         <p class="section-desc"><?= htmlspecialchars(t('pages.index.demo_desc'), ENT_QUOTES, 'UTF-8') ?></p>
         <form class="demo-form form-block" id="demo-form">
@@ -185,7 +186,9 @@ $heroVideoPoster = BASE_PATH . '/images/IMG_9059.JPG.jpeg';
             <span><?= htmlspecialchars(t('pages.index.label_note'), ENT_QUOTES, 'UTF-8') ?></span>
             <textarea name="note" rows="3" placeholder="<?= htmlspecialchars(t('pages.index.ph_note'), ENT_QUOTES, 'UTF-8') ?>"></textarea>
           </label>
-          <button type="submit" class="btn btn-primary"><?= htmlspecialchars(t('pages.index.demo_submit'), ENT_QUOTES, 'UTF-8') ?></button>
+          <div class="demo-form-actions">
+            <button type="submit" class="btn btn-primary"><?= htmlspecialchars(t('pages.index.demo_submit'), ENT_QUOTES, 'UTF-8') ?></button>
+          </div>
         </form>
       </div>
     </section>
@@ -229,7 +232,7 @@ $heroVideoPoster = BASE_PATH . '/images/IMG_9059.JPG.jpeg';
     </section>
 
     <section class="section" id="kurumsal-ozet">
-      <div class="container">
+      <div class="container<?= $heroHasBgVideo ? ' home-surface' : '' ?>">
         <h2 class="section-title"><?= htmlspecialchars(t('pages.index.why_title'), ENT_QUOTES, 'UTF-8') ?></h2>
         <p class="section-desc"><?= htmlspecialchars(t('pages.index.why_sub'), ENT_QUOTES, 'UTF-8') ?></p>
         <p class="section-desc" style="max-width: 720px; margin: 0 auto 28px;"><?= htmlspecialchars(t('pages.index.why_p'), ENT_QUOTES, 'UTF-8') ?></p>
