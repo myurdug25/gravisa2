@@ -104,6 +104,32 @@
     return '';
   }
 
+  // Katalog kategori kartı görseli: önce admin'de seçilen, yoksa kategorideki makinelerden ilk görsel
+  function categoryCardImgSrc(key, groups) {
+    var u = categoryImageSrc(key);
+    if (u) return u;
+    var group = (groups && groups[key]) ? (groups[key] || []).slice() : [];
+    if (!group.length) return '';
+    group.sort(function(a, b) {
+      return (parseInt(a && a.id, 10) || 0) - (parseInt(b && b.id, 10) || 0);
+    });
+    var resolveImg = (typeof window.gravisaResolveMachineImage === 'function')
+      ? window.gravisaResolveMachineImage
+      : null;
+    for (var i = 0; i < group.length; i++) {
+      var m = group[i];
+      if (!m) continue;
+      var img = '';
+      if (resolveImg) {
+        img = resolveImg(m) || '';
+      } else if (m.img && String(m.img).trim() !== '') {
+        img = safeImgSrc(m.img, m.img_mtime) || '';
+      }
+      if (img) return img;
+    }
+    return '';
+  }
+
   function getCatFromQuery() {
     var params = new URLSearchParams(window.location.search);
     var c = params.get('cat');
@@ -329,10 +355,10 @@
       a.type = 'button';
       a.className = 'category-card';
       a.setAttribute('data-label', String(labelByKey[k] || categoryLabelFromKey(k)));
-      var imgSrc = categoryImageSrc(k);
+      var imgSrc = categoryCardImgSrc(k, groups);
       var iconHtml = imgSrc
         ? '<img class="category-card__icon-img" src="' + escapeHtml(imgSrc) + '" alt="" loading="lazy" />'
-        : escapeHtml(categoryIcon(k));
+        : '<span class="category-card__icon-fallback" aria-hidden="true">' + escapeHtml((labelByKey[k] || categoryLabelFromKey(k)).slice(0, 1)) + '</span>';
       a.innerHTML =
         '<div class="category-card__icon" aria-hidden="true">' + iconHtml + '</div>' +
         '<div class="category-card__body">' +
