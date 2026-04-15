@@ -36,7 +36,11 @@ $gravisaHrefEn = $gravisaAbs . (function_exists('gravisa_url_for_lang') ? gravis
 <?php if (!empty($pageKeywords)): ?>
 <meta name="keywords" content="<?= htmlspecialchars($pageKeywords) ?>" />
 <?php endif; ?>
-<link rel="icon" type="image/png" href="<?= (defined('BASE_PATH') ? BASE_PATH : '') ?>/images/gravisa-transparan-logo.png" />
+<?php $bp = (defined('BASE_PATH') ? BASE_PATH : ''); ?>
+<link rel="icon" href="<?= $bp ?>/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" href="<?= $bp ?>/favicon-32x32.png" sizes="32x32" />
+<link rel="icon" type="image/png" href="<?= $bp ?>/favicon-16x16.png" sizes="16x16" />
+<link rel="apple-touch-icon" href="<?= $bp ?>/apple-touch-icon.png" sizes="180x180" />
 <?php if (function_exists('gravisa_url_for_lang')): ?>
 <link rel="alternate" hreflang="tr" href="<?= htmlspecialchars($gravisaHrefTr, ENT_QUOTES, 'UTF-8') ?>" />
 <link rel="alternate" hreflang="en" href="<?= htmlspecialchars($gravisaHrefEn, ENT_QUOTES, 'UTF-8') ?>" />
