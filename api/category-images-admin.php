@@ -107,10 +107,21 @@ if (empty($_FILES['file']) || !is_array($_FILES['file'])) {
 }
 $f = $_FILES['file'];
 if (!empty($f['error'])) {
-    jsonResponse(['success' => false, 'message' => 'Dosya yüklenemedi.'], 400);
+    $err = (int)($f['error'] ?? 0);
+    $errMsg = [
+        UPLOAD_ERR_INI_SIZE   => 'Dosya çok büyük (sunucu upload limiti).',
+        UPLOAD_ERR_FORM_SIZE  => 'Dosya çok büyük (form limiti).',
+        UPLOAD_ERR_PARTIAL    => 'Dosya kısmen yüklendi, tekrar deneyin.',
+        UPLOAD_ERR_NO_FILE    => 'Dosya seçilmedi.',
+        UPLOAD_ERR_NO_TMP_DIR => 'Sunucu geçici klasörü yok.',
+        UPLOAD_ERR_CANT_WRITE => 'Sunucuya yazılamadı (izin).',
+        UPLOAD_ERR_EXTENSION  => 'Yükleme bir eklenti tarafından engellendi.',
+    ];
+    $msg = $errMsg[$err] ?? ('Dosya yüklenemedi (kod: ' . $err . ').');
+    jsonResponse(['success' => false, 'message' => $msg], 400);
 }
-if (($f['size'] ?? 0) > 8 * 1024 * 1024) {
-    jsonResponse(['success' => false, 'message' => 'Dosya 8MB\'dan küçük olmalı.'], 400);
+if (($f['size'] ?? 0) > 12 * 1024 * 1024) {
+    jsonResponse(['success' => false, 'message' => 'Dosya 12MB\'dan küçük olmalı.'], 400);
 }
 $name = (string)($f['name'] ?? '');
 $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
@@ -119,6 +130,12 @@ $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
 $dir = dirname($abs);
 if (!is_dir($dir)) {
     @mkdir($dir, 0755, true);
+}
+if (!is_dir($dir)) {
+    jsonResponse(['success' => false, 'message' => 'Klasör oluşturulamadı: images/categories (izin).'], 500);
+}
+if (!is_writable($dir)) {
+    jsonResponse(['success' => false, 'message' => 'Klasör yazılabilir değil: images/categories (izin).'], 500);
 }
 if (!@move_uploaded_file((string)$f['tmp_name'], $abs)) {
     jsonResponse(['success' => false, 'message' => 'Dosya kaydedilemedi.'], 500);

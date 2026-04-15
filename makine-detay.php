@@ -42,7 +42,7 @@ $pageId = 'makine-detay';
 
   <script src="<?= BASE_PATH ?>/assets/js/site-settings.js?v=9"></script>
   <script src="<?= BASE_PATH ?>/assets/js/app.js?v=<?= @filemtime(__DIR__ . '/assets/js/app.js') ?: 4 ?>"></script>
-  <script src="<?= BASE_PATH ?>/assets/js/app-makineler.js?v=14"></script>
+  <script src="<?= BASE_PATH ?>/assets/js/app-makineler.js?v=<?= @filemtime(__DIR__ . '/assets/js/app-makineler.js') ?: 14 ?>"></script>
   <script>
     (function () {
       var J = window.__GRAVISA_JS || {};

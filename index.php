@@ -285,7 +285,7 @@ $heroVideoPoster = BASE_PATH . '/images/IMG_9059.JPG.jpeg';
 
   <script src="<?= BASE_PATH ?>/assets/js/form-api.js?v=3"></script>
   <script src="<?= BASE_PATH ?>/assets/js/site-settings.js?v=9"></script>
-  <script src="<?= BASE_PATH ?>/assets/js/app-makineler.js?v=14"></script>
+  <script src="<?= BASE_PATH ?>/assets/js/app-makineler.js?v=<?= @filemtime(__DIR__ . '/assets/js/app-makineler.js') ?: 14 ?>"></script>
   <script src="<?= BASE_PATH ?>/assets/js/app.js?v=<?= @filemtime(__DIR__ . '/assets/js/app.js') ?: 4 ?>"></script>
   <?php if ($heroHasBgVideo): ?>
   <script>
