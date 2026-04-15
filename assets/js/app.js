@@ -211,7 +211,8 @@
           if (Array.isArray(dec)) preferred = dec;
         }
       } catch (e) {}
-      preferred = (preferred || []).map(function(k){ return String(k || '').toLowerCase().replace(/[^a-z0-9-]+/g,''); }).filter(Boolean);
+      // Key/label karışık gelebilir; tipKey ile aynı normalize et (TR karakterler + yeralti)
+      preferred = (preferred || []).map(function(k){ return tipKey(String(k || '')); }).filter(Boolean);
       var preferredExisting = preferred.filter(function(k){ return (groups[k] || []).length > 0; });
       var rest = available.filter(function(k){ return preferredExisting.indexOf(k) === -1; });
       var firstScreen = preferredExisting.concat(rest);

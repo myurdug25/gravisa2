@@ -319,8 +319,13 @@ function gravisa_sanitize_home_categories($value): array
     }
     if (is_array($value)) {
         foreach ($value as $k) {
-            $k = strtolower(trim((string)$k));
-            $k = preg_replace('/[^a-z0-9-]+/i', '', $k);
+            $k = mb_strtolower(trim((string)$k), 'UTF-8');
+            // Türkçe karakterleri ASCII'ye çevir (ı -> i vs.)
+            $k = strtr($k, ['ğ'=>'g','ü'=>'u','ş'=>'s','ı'=>'i','ö'=>'o','ç'=>'c']);
+            $k = preg_replace('/\byeralti\b/u', 'yer alti', $k);
+            // label gibi geldiyse slug'a çevir
+            $k = preg_replace('/[^a-z0-9]+/u', '-', $k);
+            $k = trim($k, '-');
             if ($k === '') continue;
             $keys[] = $k;
         }
