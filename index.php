@@ -3,7 +3,7 @@ require_once __DIR__ . '/config/config.php';
 require_once __DIR__ . '/includes/functions.php';
 $pageId = 'index';
 
-$heroVideoFilename = 'çıktı_2.mp4';
+$heroVideoFilename = '0415.mp4';
 $heroVideoPathFs = __DIR__ . DIRECTORY_SEPARATOR . 'videos' . DIRECTORY_SEPARATOR . $heroVideoFilename;
 $heroHasBgVideo = is_file($heroVideoPathFs);
 $heroVideoSrc = $heroHasBgVideo
