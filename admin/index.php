@@ -614,6 +614,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
                 </div>
                 <div class="admin-split__col" style="min-width:0;">
                   <div style="font-size:0.85rem; font-weight:700; color:#334155; margin:0 0 6px;">Tüm kategoriler</div>
+                  <input type="search" id="homeCatsSearch" placeholder="Kategori ara (isim / key)..." autocomplete="off" style="width:100%; padding:10px 12px; border:1px solid #e2e8f0; border-radius:10px; margin:0 0 8px;" />
                   <div id="homeCatsAll" style="display:grid; gap:8px; max-height: 320px; overflow:auto; padding-right:4px;"></div>
                 </div>
               </div>
@@ -656,6 +657,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
           Ana sayfa ve makine kataloğundaki kategori görsellerini buradan manuel ayarlayabilirsiniz. Seçilmezse sistem kategori altındaki makinelerden görsel bulmaya devam eder.
         </p>
         <div id="catImgMsg" style="margin:0 0 12px; font-size:0.9rem;"></div>
+        <input type="search" id="catImgSearch" placeholder="Kategori ara (isim / key)..." autocomplete="off" style="width:100%; max-width:520px; padding:10px 12px; border:1px solid #e2e8f0; border-radius:10px; margin:0 0 12px;" />
         <div id="catImgList" style="display:grid; gap:12px;"></div>
       </div>
     </div>
@@ -1183,6 +1185,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
       var hid = document.getElementById('home_categories');
       var countEl = document.getElementById('homeCatsCount');
       var resetBtn = document.getElementById('homeCatsResetBtn');
+      var searchEl = document.getElementById('homeCatsSearch');
       if (!allEl || !selEl || !hid) return;
 
       var DEFAULTS = ['yer-alti-delici','ekskavator','kamyon','mixer','teleskopik-yukleyici','beton-puskurtme','beton-yas-puskurtme','portal-vinci'];
@@ -1237,9 +1240,14 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
           allEl.innerHTML = '<div style="color:#64748b;">Kategori bulunamadı.</div>';
           return;
         }
+        var q = (searchEl && searchEl.value) ? String(searchEl.value).toLowerCase().trim() : '';
         cats.forEach(function(c){
           var key = normKey(c.key);
           var label = String(c.label || key);
+          if (q) {
+            var hay = (label + ' ' + key).toLowerCase();
+            if (hay.indexOf(q) === -1) return;
+          }
           var count = (c.count != null ? String(c.count) : '');
           var row = document.createElement('div');
           row.style.display = 'flex';
@@ -1350,6 +1358,11 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
           setSelected(DEFAULTS.slice());
         });
       }
+      if (searchEl) {
+        searchEl.addEventListener('input', function(){
+          renderAll(CATS);
+        });
+      }
 
       // init
       setSelected(getSelected().length ? getSelected() : DEFAULTS.slice());
@@ -1371,6 +1384,9 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
       if (!list) return;
       var msg = document.getElementById('catImgMsg');
       var csrf = document.getElementById('csrf_token');
+      var search = document.getElementById('catImgSearch');
+      var _lastCategories = [];
+      var _lastItems = {};
 
       function setMsg(text, ok) {
         if (!msg) return;
@@ -1396,7 +1412,9 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
           })
           .then(function(res){
             if (!res.success) { setMsg(res.message || 'Yüklenemedi.', false); return; }
-            render(res.categories || [], res.items || {});
+            _lastCategories = res.categories || [];
+            _lastItems = res.items || {};
+            render(_lastCategories, _lastItems);
             setMsg('', true);
           })
           .catch(function(){ setMsg('Yüklenemedi.', false); });
@@ -1408,9 +1426,14 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
           list.innerHTML = '<div style="color:#64748b;">Kategori bulunamadı (makineler verisi yok).</div>';
           return;
         }
+        var q = (search && search.value) ? String(search.value).toLowerCase().trim() : '';
         categories.forEach(function(c) {
           var key = String(c.key || '');
           var label = String(c.label || key);
+          if (q) {
+            var hay = (label + ' ' + key).toLowerCase();
+            if (hay.indexOf(q) === -1) return;
+          }
           var count = String(c.count != null ? c.count : '');
           var path = items && items[key] ? String(items[key]) : '';
           var img = path ? ('<img src="../' + esc(path).replace(/ /g,'%20') + '" alt="" style="width:48px;height:48px;object-fit:cover;border-radius:10px;border:1px solid #e2e8f0;background:#fff;">') : '<div style="width:48px;height:48px;border-radius:10px;border:1px dashed #cbd5e1;background:#f8fafc;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-weight:700;">—</div>';
@@ -1503,6 +1526,11 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
         }
       });
 
+      if (search) {
+        search.addEventListener('input', function(){
+          render(_lastCategories, _lastItems);
+        });
+      }
       fetchData();
     })();
 
