@@ -1434,6 +1434,14 @@ body.has-ambient-video main.page-home--video .btn-outline:hover {
   font-size: 1.25rem;
   flex-shrink: 0;
 }
+.category-card__icon img,
+.category-card__icon .category-card__icon-img {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  object-fit: cover;
+  display: block;
+}
 .category-card__body {
   min-width: 0;
   flex: 1;

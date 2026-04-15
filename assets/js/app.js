@@ -156,6 +156,14 @@
       /* Kategori görseli: bu kategorideki makineleri ID sırasıyla dene; görsel, katalog kartıyla aynı kaynaktan
          (gravisaResolveMachineImage = kendi img veya sitedeki havuz yedeği). Sadece JSON’daki img’ye bakmak yetmez. */
       function categoryCardImgSrc(k) {
+        // Admin'de manuel seçilmiş kategori görseli varsa onu kullan
+        try {
+          var map = window.__categoryImages || {};
+          if (map && map[k]) {
+            var u0 = safeImg(String(map[k]));
+            if (u0) return u0;
+          }
+        } catch (e) {}
         var group = (groups[k] || []).slice().sort(function(a, b) {
           return (parseInt(a && a.id, 10) || 0) - (parseInt(b && b.id, 10) || 0);
         });

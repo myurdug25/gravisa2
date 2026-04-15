@@ -620,6 +620,17 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
         </form>
       </div>
     </div>
+
+    <div class="card" style="margin-top: 18px;">
+      <div class="card-header">Kategori Görselleri</div>
+      <div class="body" style="padding: 24px;">
+        <p style="margin:0 0 12px; color:#64748b; font-size:0.9rem;">
+          Ana sayfa ve makine kataloğundaki kategori görsellerini buradan manuel ayarlayabilirsiniz. Seçilmezse sistem kategori altındaki makinelerden görsel bulmaya devam eder.
+        </p>
+        <div id="catImgMsg" style="margin:0 0 12px; font-size:0.9rem;"></div>
+        <div id="catImgList" style="display:grid; gap:12px;"></div>
+      </div>
+    </div>
     <?php elseif ($tab === 'makineler'): ?>
     <div class="card">
       <div class="card-header">Makineler</div>
@@ -1128,6 +1139,137 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
           .catch(function() { msg.textContent = 'Bağlantı hatası.'; msg.style.color = '#c00'; })
           .finally(function() { btn.disabled = false; });
       });
+    })();
+
+    // Kategori görselleri (ayarlar sekmesi)
+    (function() {
+      var list = document.getElementById('catImgList');
+      if (!list) return;
+      var msg = document.getElementById('catImgMsg');
+      var csrf = document.getElementById('csrf_token');
+
+      function setMsg(text, ok) {
+        if (!msg) return;
+        msg.textContent = text || '';
+        msg.style.color = ok ? '#0a0' : '#c00';
+      }
+
+      function esc(s) {
+        if (s == null || s === undefined) return '';
+        var d = document.createElement('div');
+        d.textContent = String(s);
+        return d.innerHTML;
+      }
+
+      function fetchData() {
+        setMsg('Yükleniyor...', true);
+        fetch('../api/category-images-admin.php')
+          .then(function(r){ return r.json(); })
+          .then(function(res){
+            if (!res.success) { setMsg(res.message || 'Yüklenemedi.', false); return; }
+            render(res.categories || [], res.items || {});
+            setMsg('', true);
+          })
+          .catch(function(){ setMsg('Yüklenemedi.', false); });
+      }
+
+      function render(categories, items) {
+        list.innerHTML = '';
+        if (!categories || !categories.length) {
+          list.innerHTML = '<div style="color:#64748b;">Kategori bulunamadı (makineler verisi yok).</div>';
+          return;
+        }
+        categories.forEach(function(c) {
+          var key = String(c.key || '');
+          var label = String(c.label || key);
+          var count = String(c.count != null ? c.count : '');
+          var path = items && items[key] ? String(items[key]) : '';
+          var img = path ? ('<img src="../' + esc(path).replace(/ /g,'%20') + '" alt="" style="width:48px;height:48px;object-fit:cover;border-radius:10px;border:1px solid #e2e8f0;background:#fff;">') : '<div style="width:48px;height:48px;border-radius:10px;border:1px dashed #cbd5e1;background:#f8fafc;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-weight:700;">—</div>';
+
+          var row = document.createElement('div');
+          row.style.display = 'grid';
+          row.style.gridTemplateColumns = '56px minmax(0, 1fr)';
+          row.style.gap = '12px';
+          row.style.alignItems = 'start';
+          row.style.padding = '12px';
+          row.style.border = '1px solid #e2e8f0';
+          row.style.borderRadius = '12px';
+          row.style.background = '#fff';
+
+          row.innerHTML =
+            '<div>' + img + '</div>' +
+            '<div style="min-width:0;">' +
+              '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">' +
+                '<div style="min-width:0;">' +
+                  '<div style="font-weight:800;color:#0f172a;line-height:1.2;word-break:break-word;">' + esc(label) + '</div>' +
+                  '<div style="color:#64748b;font-size:0.85rem;margin-top:2px;">key: <code>' + esc(key) + '</code>' + (count ? (' • ' + esc(count) + ' makine') : '') + '</div>' +
+                '</div>' +
+              '</div>' +
+              '<div class="admin-actions-row" style="margin-top:10px;">' +
+                '<input type="file" accept="image/*" data-file="' + esc(key) + '" style="flex:1;min-width:220px;">' +
+                '<button type="button" class="btn-sm" data-save="' + esc(key) + '">Kaydet</button>' +
+                '<button type="button" class="btn-sm secondary" data-del="' + esc(key) + '"' + (path ? '' : ' disabled') + '>Kaldır</button>' +
+              '</div>' +
+              (path ? ('<div style="margin-top:8px;color:#64748b;font-size:0.85rem;">Mevcut: <code>' + esc(path) + '</code></div>') : '') +
+            '</div>';
+          list.appendChild(row);
+        });
+      }
+
+      function postForm(fd) {
+        if (csrf) fd.append('_csrf_token', csrf.value);
+        return fetch('../api/category-images-admin.php', { method:'POST', body: fd })
+          .then(function(r){ return r.json(); });
+      }
+
+      list.addEventListener('click', function(e) {
+        var saveBtn = e.target.closest && e.target.closest('[data-save]');
+        var delBtn = e.target.closest && e.target.closest('[data-del]');
+        if (!saveBtn && !delBtn) return;
+
+        if (saveBtn) {
+          var key = saveBtn.getAttribute('data-save');
+          var input = list.querySelector('input[type="file"][data-file="' + CSS.escape(key) + '"]');
+          if (!input || !input.files || !input.files[0]) {
+            setMsg('Lütfen bir görsel seçin.', false);
+            return;
+          }
+          var fd = new FormData();
+          fd.append('action', 'save');
+          fd.append('key', key);
+          fd.append('file', input.files[0]);
+          saveBtn.disabled = true;
+          setMsg('Kaydediliyor...', true);
+          postForm(fd)
+            .then(function(res){
+              if (!res.success) { setMsg(res.message || 'Hata.', false); return; }
+              setMsg('Kaydedildi.', true);
+              fetchData();
+            })
+            .catch(function(){ setMsg('Bağlantı hatası.', false); })
+            .finally(function(){ saveBtn.disabled = false; });
+        }
+
+        if (delBtn) {
+          var key2 = delBtn.getAttribute('data-del');
+          if (!confirm('Bu kategori görselini kaldırmak istiyor musunuz?')) return;
+          var fd2 = new FormData();
+          fd2.append('action', 'delete');
+          fd2.append('key', key2);
+          delBtn.disabled = true;
+          setMsg('Kaldırılıyor...', true);
+          postForm(fd2)
+            .then(function(res){
+              if (!res.success) { setMsg(res.message || 'Hata.', false); return; }
+              setMsg('Kaldırıldı.', true);
+              fetchData();
+            })
+            .catch(function(){ setMsg('Bağlantı hatası.', false); })
+            .finally(function(){ delBtn.disabled = false; });
+        }
+      });
+
+      fetchData();
     })();
 
     // Makineler yönetimi

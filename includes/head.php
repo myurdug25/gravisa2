@@ -50,6 +50,7 @@ $gravisaHrefEn = $gravisaAbs . (function_exists('gravisa_url_for_lang') ? gravis
   'phone_display'=>$siteSettings['phone_display']??'',
   'address'=>$siteSettings['address']??''
 ], JSON_UNESCAPED_UNICODE) ?>;</script>
+<script>window.__categoryImages=<?= json_encode(function_exists('gravisa_get_category_images') ? gravisa_get_category_images() : [], JSON_UNESCAPED_UNICODE) ?>;</script>
 <script>
 (function () {
   var memoBase = null;

@@ -94,6 +94,16 @@
     return '🏷️';
   }
 
+  function categoryImageSrc(key) {
+    try {
+      var map = window.__categoryImages || {};
+      if (map && map[key]) {
+        return safeImgSrc(String(map[key]));
+      }
+    } catch (e) {}
+    return '';
+  }
+
   function getCatFromQuery() {
     var params = new URLSearchParams(window.location.search);
     var c = params.get('cat');
@@ -319,8 +329,12 @@
       a.type = 'button';
       a.className = 'category-card';
       a.setAttribute('data-label', String(labelByKey[k] || categoryLabelFromKey(k)));
+      var imgSrc = categoryImageSrc(k);
+      var iconHtml = imgSrc
+        ? '<img class="category-card__icon-img" src="' + escapeHtml(imgSrc) + '" alt="" loading="lazy" />'
+        : escapeHtml(categoryIcon(k));
       a.innerHTML =
-        '<div class="category-card__icon" aria-hidden="true">' + escapeHtml(categoryIcon(k)) + '</div>' +
+        '<div class="category-card__icon" aria-hidden="true">' + iconHtml + '</div>' +
         '<div class="category-card__body">' +
           '<div class="category-card__title">' + escapeHtml(labelByKey[k] || categoryLabelFromKey(k)) + '</div>' +
           '<div class="category-card__meta">' + escapeHtml(String((groups[k] || []).length)) + ' ' + escapeHtml(J.machineLabel || 'makine') + '</div>' +

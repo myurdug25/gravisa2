@@ -288,6 +288,52 @@ function getSettings(): array
     return $merged;
 }
 
+/**
+ * Kategori görselleri haritası (admin’den yönetilen)
+ * key => relative image path (örn. images/categories/ekskavator.webp)
+ */
+function gravisa_get_category_images(): array
+{
+    $file = defined('DATA_PATH') ? (DATA_PATH . '/category_images.json') : (dirname(__DIR__) . '/data/category_images.json');
+    if (!file_exists($file)) {
+        return [];
+    }
+    $raw = json_decode(file_get_contents($file), true);
+    if (!is_array($raw)) {
+        return [];
+    }
+    $out = [];
+    foreach ($raw as $k => $v) {
+        $key = preg_replace('/[^a-z0-9-]+/i', '', strtolower((string)$k));
+        if ($key === '') continue;
+        $path = trim((string)$v);
+        if ($path === '' || strpos($path, '..') !== false) continue;
+        $path = str_replace('\\', '/', $path);
+        $out[$key] = $path;
+    }
+    return $out;
+}
+
+function gravisa_save_category_images(array $map): bool
+{
+    if (!defined('DATA_PATH')) {
+        return false;
+    }
+    ensureDataDir();
+    $file = DATA_PATH . '/category_images.json';
+    $clean = [];
+    foreach ($map as $k => $v) {
+        $key = preg_replace('/[^a-z0-9-]+/i', '', strtolower((string)$k));
+        if ($key === '') continue;
+        $path = trim((string)$v);
+        if ($path === '' || strpos($path, '..') !== false) continue;
+        $path = str_replace('\\', '/', $path);
+        $clean[$key] = $path;
+    }
+    $bytes = @file_put_contents($file, json_encode($clean, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), LOCK_EX);
+    return $bytes !== false;
+}
+
 /** WhatsApp/tel için formatlanmış numara (905331447286) */
 function getWaNum(): string
 {
