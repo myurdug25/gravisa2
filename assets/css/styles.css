@@ -529,6 +529,12 @@ body.has-ambient-video .footer {
   );
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .ambient-video__media {
+    display: none !important;
+  }
+}
+
 /* ─── Bölüm düzeni ───────────────────────────────────── */
 body.has-ambient-video main.page-home--video > .section {
   padding-top: var(--section-space-y);

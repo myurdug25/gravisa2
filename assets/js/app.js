@@ -202,7 +202,20 @@
         return 8;
       }
       var limit = calcLimit();
-      var listToRender = isExpanded ? available : available.slice(0, limit);
+      // Admin’den seçilen sıralama varsa: ilk ekranda önce onu göster, sonra kalanları doldur
+      var preferred = [];
+      try {
+        if (Array.isArray(window.__homeCategories)) preferred = window.__homeCategories.slice();
+        else if (typeof window.__homeCategories === 'string' && window.__homeCategories.trim() !== '') {
+          var dec = JSON.parse(window.__homeCategories);
+          if (Array.isArray(dec)) preferred = dec;
+        }
+      } catch (e) {}
+      preferred = (preferred || []).map(function(k){ return String(k || '').toLowerCase().replace(/[^a-z0-9-]+/g,''); }).filter(Boolean);
+      var preferredExisting = preferred.filter(function(k){ return (groups[k] || []).length > 0; });
+      var rest = available.filter(function(k){ return preferredExisting.indexOf(k) === -1; });
+      var firstScreen = preferredExisting.concat(rest);
+      var listToRender = isExpanded ? available : firstScreen.slice(0, limit);
 
       stoktaCats.innerHTML = '';
 

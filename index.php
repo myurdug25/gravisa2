@@ -292,12 +292,39 @@ $heroVideoPoster = BASE_PATH . '/images/IMG_9059.JPG.jpeg';
   (function () {
     var el = document.querySelector('.ambient-video__media');
     if (!el) return;
+    var holder = el.closest ? el.closest('.ambient-video') : null;
+    var shouldPlay = true;
     function tryPlay() {
+      if (!shouldPlay) return;
       var p = el.play();
       if (p && typeof p.catch === 'function') p.catch(function () {});
     }
+    function pause() {
+      try { el.pause(); } catch (e) {}
+    }
     if (document.readyState === 'complete') tryPlay();
     else window.addEventListener('load', tryPlay);
+
+    // Sekme görünür değilken video decode yükünü azalt
+    document.addEventListener('visibilitychange', function () {
+      shouldPlay = (document.visibilityState === 'visible');
+      if (shouldPlay) tryPlay();
+      else pause();
+    });
+
+    // Video viewport dışında kalırsa durdur (bazı cihazlarda ciddi kazanç)
+    if (holder && 'IntersectionObserver' in window) {
+      try {
+        var io = new IntersectionObserver(function (entries) {
+          var ent = entries && entries[0];
+          var inView = !!(ent && ent.isIntersecting);
+          shouldPlay = inView && (document.visibilityState === 'visible');
+          if (shouldPlay) tryPlay();
+          else pause();
+        }, { root: null, threshold: 0.01 });
+        io.observe(holder);
+      } catch (e) {}
+    }
   })();
   </script>
   <?php endif; ?>

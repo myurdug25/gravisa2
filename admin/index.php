@@ -597,6 +597,31 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
               <input type="email" name="mail_from" value="<?= htmlspecialchars($settings['mail_from'] ?? '') ?>" style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px;" />
             </label>
             <hr style="border: none; border-top: 1px solid #eee;" />
+            <p style="font-weight: 600; color: #1e5f8a;">Ana Sayfa — İlk 8 Kategori</p>
+            <p style="margin:0; font-size:0.9rem; color:#64748b;">
+              Ana sayfadaki “Stokta Makineler” bölümünde ilk ekranda görünen kategorileri buradan seçip sıralayabilirsiniz. (Maksimum 8)
+            </p>
+            <input type="hidden" name="home_categories" id="home_categories" value="<?= htmlspecialchars(json_encode($settings['home_categories'] ?? [], JSON_UNESCAPED_UNICODE), ENT_QUOTES, 'UTF-8') ?>" />
+            <div id="homeCatsPicker" style="display:grid; gap:12px; border:1px solid #e2e8f0; border-radius:12px; padding:12px; background:#fff;">
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+                <div style="font-weight:700; color:#0f172a;">Seçili kategoriler (<span id="homeCatsCount">0</span>/8)</div>
+                <button type="button" class="btn-sm secondary" id="homeCatsResetBtn">Varsayılanları yükle</button>
+              </div>
+              <div class="admin-split" style="gap:12px;">
+                <div class="admin-split__col" style="min-width:0;">
+                  <div style="font-size:0.85rem; font-weight:700; color:#334155; margin:0 0 6px;">Seçili (sıralı)</div>
+                  <div id="homeCatsSelected" style="display:grid; gap:8px;"></div>
+                </div>
+                <div class="admin-split__col" style="min-width:0;">
+                  <div style="font-size:0.85rem; font-weight:700; color:#334155; margin:0 0 6px;">Tüm kategoriler</div>
+                  <div id="homeCatsAll" style="display:grid; gap:8px; max-height: 320px; overflow:auto; padding-right:4px;"></div>
+                </div>
+              </div>
+              <div style="font-size:0.82rem; color:#64748b;">
+                Not: Kategori “key” değerleri, sitenin kategori kartlarıyla aynıdır (örn. <code>ekskavator</code>, <code>yer-alti-delici</code>).
+              </div>
+            </div>
+            <hr style="border: none; border-top: 1px solid #eee;" />
             <p style="font-weight: 600; color: #1e5f8a;">SEO Ayarları</p>
             <label style="display: block;">
               <span style="display: block; font-weight: 600; margin-bottom: 6px; color: #555;">Site başlığı (marka adı)</span>
@@ -1147,6 +1172,197 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
           .catch(function() { msg.textContent = 'Bağlantı hatası.'; msg.style.color = '#c00'; })
           .finally(function() { btn.disabled = false; });
       });
+    })();
+
+    // Ana sayfa ilk 8 kategori seçimi (ayarlar sekmesi)
+    (function() {
+      var picker = document.getElementById('homeCatsPicker');
+      if (!picker) return;
+      var allEl = document.getElementById('homeCatsAll');
+      var selEl = document.getElementById('homeCatsSelected');
+      var hid = document.getElementById('home_categories');
+      var countEl = document.getElementById('homeCatsCount');
+      var resetBtn = document.getElementById('homeCatsResetBtn');
+      if (!allEl || !selEl || !hid) return;
+
+      var DEFAULTS = ['yer-alti-delici','ekskavator','kamyon','mixer','teleskopik-yukleyici','beton-puskurtme','beton-yas-puskurtme','portal-vinci'];
+      function safeParse(v) {
+        try {
+          if (Array.isArray(v)) return v;
+          if (typeof v === 'string' && v.trim() !== '') {
+            var d = JSON.parse(v);
+            if (Array.isArray(d)) return d;
+          }
+        } catch (e) {}
+        return [];
+      }
+      function normKey(k) {
+        return String(k || '').toLowerCase().replace(/[^a-z0-9-]+/g, '');
+      }
+      function getSelected() {
+        var arr = safeParse(hid.value);
+        var out = [];
+        arr.forEach(function(k){
+          k = normKey(k);
+          if (!k) return;
+          if (out.indexOf(k) !== -1) return;
+          out.push(k);
+        });
+        return out.slice(0, 8);
+      }
+      function setSelected(arr) {
+        var out = [];
+        (arr || []).forEach(function(k){
+          k = normKey(k);
+          if (!k) return;
+          if (out.indexOf(k) !== -1) return;
+          out.push(k);
+        });
+        out = out.slice(0, 8);
+        hid.value = JSON.stringify(out);
+        if (countEl) countEl.textContent = String(out.length);
+        renderSelected(out);
+        updateAllButtons(out);
+      }
+      function esc(s) {
+        var d = document.createElement('div');
+        d.textContent = String(s == null ? '' : s);
+        return d.innerHTML;
+      }
+
+      var CATS = []; // [{key,label,count}]
+      function renderAll(cats) {
+        allEl.innerHTML = '';
+        if (!cats || !cats.length) {
+          allEl.innerHTML = '<div style="color:#64748b;">Kategori bulunamadı.</div>';
+          return;
+        }
+        cats.forEach(function(c){
+          var key = normKey(c.key);
+          var label = String(c.label || key);
+          var count = (c.count != null ? String(c.count) : '');
+          var row = document.createElement('div');
+          row.style.display = 'flex';
+          row.style.alignItems = 'center';
+          row.style.justifyContent = 'space-between';
+          row.style.gap = '10px';
+          row.style.padding = '10px 12px';
+          row.style.border = '1px solid #e2e8f0';
+          row.style.borderRadius = '12px';
+          row.style.background = '#f8fafc';
+          row.innerHTML =
+            '<div style="min-width:0;">' +
+              '<div style="font-weight:800;color:#0f172a;line-height:1.15;word-break:break-word;">' + esc(label) + '</div>' +
+              '<div style="color:#64748b;font-size:0.82rem;margin-top:2px;">key: <code>' + esc(key) + '</code>' + (count ? (' • ' + esc(count) + ' makine') : '') + '</div>' +
+            '</div>' +
+            '<button type="button" class="btn-sm" data-homecats-add="' + esc(key) + '">Ekle</button>';
+          allEl.appendChild(row);
+        });
+        updateAllButtons(getSelected());
+      }
+      function findCat(key) {
+        key = normKey(key);
+        for (var i = 0; i < CATS.length; i++) {
+          if (normKey(CATS[i].key) === key) return CATS[i];
+        }
+        return null;
+      }
+      function renderSelected(keys) {
+        selEl.innerHTML = '';
+        if (!keys.length) {
+          selEl.innerHTML = '<div style="color:#64748b;">Henüz seçim yok.</div>';
+          return;
+        }
+        keys.forEach(function(key, idx){
+          var c = findCat(key);
+          var label = c ? String(c.label || key) : key;
+          var row = document.createElement('div');
+          row.style.display = 'grid';
+          row.style.gridTemplateColumns = 'minmax(0, 1fr) auto';
+          row.style.gap = '10px';
+          row.style.alignItems = 'center';
+          row.style.padding = '10px 12px';
+          row.style.border = '1px solid #e2e8f0';
+          row.style.borderRadius = '12px';
+          row.style.background = '#fff';
+          row.innerHTML =
+            '<div style="min-width:0;">' +
+              '<div style="font-weight:900;color:#0f172a;line-height:1.15;word-break:break-word;">' + esc(label) + '</div>' +
+              '<div style="color:#64748b;font-size:0.82rem;margin-top:2px;">' + esc(String(idx + 1)) + '. <code>' + esc(key) + '</code></div>' +
+            '</div>' +
+            '<div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">' +
+              '<button type="button" class="btn-sm secondary" data-homecats-up="' + esc(key) + '"' + (idx === 0 ? ' disabled' : '') + '>↑</button>' +
+              '<button type="button" class="btn-sm secondary" data-homecats-down="' + esc(key) + '"' + (idx === keys.length - 1 ? ' disabled' : '') + '>↓</button>' +
+              '<button type="button" class="btn-sm secondary" data-homecats-del="' + esc(key) + '">Kaldır</button>' +
+            '</div>';
+          selEl.appendChild(row);
+        });
+      }
+      function updateAllButtons(selected) {
+        var btns = allEl.querySelectorAll('[data-homecats-add]');
+        btns.forEach(function(b){
+          var k = normKey(b.getAttribute('data-homecats-add'));
+          var already = selected.indexOf(k) !== -1;
+          b.disabled = already || selected.length >= 8;
+          b.textContent = already ? 'Seçili' : 'Ekle';
+        });
+      }
+
+      function swap(arr, i, j) {
+        var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+        return arr;
+      }
+
+      picker.addEventListener('click', function(e){
+        var addBtn = e.target.closest && e.target.closest('[data-homecats-add]');
+        var upBtn  = e.target.closest && e.target.closest('[data-homecats-up]');
+        var downBtn= e.target.closest && e.target.closest('[data-homecats-down]');
+        var delBtn = e.target.closest && e.target.closest('[data-homecats-del]');
+        if (!addBtn && !upBtn && !downBtn && !delBtn) return;
+        var sel = getSelected();
+
+        if (addBtn) {
+          var k = normKey(addBtn.getAttribute('data-homecats-add'));
+          if (k && sel.indexOf(k) === -1 && sel.length < 8) sel.push(k);
+          setSelected(sel);
+        }
+        if (delBtn) {
+          var k2 = normKey(delBtn.getAttribute('data-homecats-del'));
+          sel = sel.filter(function(x){ return x !== k2; });
+          setSelected(sel);
+        }
+        if (upBtn) {
+          var ku = normKey(upBtn.getAttribute('data-homecats-up'));
+          var ix = sel.indexOf(ku);
+          if (ix > 0) swap(sel, ix, ix - 1);
+          setSelected(sel);
+        }
+        if (downBtn) {
+          var kd = normKey(downBtn.getAttribute('data-homecats-down'));
+          var ix2 = sel.indexOf(kd);
+          if (ix2 >= 0 && ix2 < sel.length - 1) swap(sel, ix2, ix2 + 1);
+          setSelected(sel);
+        }
+      });
+
+      if (resetBtn) {
+        resetBtn.addEventListener('click', function(){
+          setSelected(DEFAULTS.slice());
+        });
+      }
+
+      // init
+      setSelected(getSelected().length ? getSelected() : DEFAULTS.slice());
+      fetch('../api/category-images-admin.php')
+        .then(function(r){ return r.json(); })
+        .then(function(res){
+          if (!res || !res.success) return;
+          CATS = Array.isArray(res.categories) ? res.categories.slice() : [];
+          renderAll(CATS);
+          // label eşleşmesi için bir daha selected render
+          setSelected(getSelected());
+        })
+        .catch(function(){ /* sessiz */ });
     })();
 
     // Kategori görselleri (ayarlar sekmesi)

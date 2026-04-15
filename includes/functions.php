@@ -239,6 +239,17 @@ function getSettings(): array
         'seo_default_keywords' => 'iş makineleri, satış, kiralama, ekskavatör, yükleyici, Gravisa',
         'seo_pages'     => '', // JSON string: {"index":{"title":"...","description":"..."},...}
         'prefer_env_contact' => false,
+        // Ana sayfa: ilk ekranda görünecek kategori sırası (kategori key listesi)
+        'home_categories' => [
+            'yer-alti-delici',
+            'ekskavator',
+            'kamyon',
+            'mixer',
+            'teleskopik-yukleyici',
+            'beton-puskurtme',
+            'beton-yas-puskurtme',
+            'portal-vinci',
+        ],
     ];
     $file = defined('DATA_PATH') ? DATA_PATH . '/settings.json' : (dirname(__DIR__) . '/data/settings.json');
     clearstatcache(true, $file);
@@ -250,6 +261,9 @@ function getSettings(): array
         return $defaults;
     }
     $merged = array_merge($defaults, $saved);
+
+    // home_categories normalize
+    $merged['home_categories'] = gravisa_sanitize_home_categories($merged['home_categories'] ?? $defaults['home_categories']);
 
     // Panel: "İletişimde .env öncelikli" → JSON’daki e-posta/telefon/WhatsApp yok sayılır (sadece .env)
     if (!empty($merged['prefer_env_contact'])) {
@@ -286,6 +300,39 @@ function getSettings(): array
     }
 
     return $merged;
+}
+
+/** home_categories: JSON array veya array/string -> normalize edilmiş key listesi */
+function gravisa_sanitize_home_categories($value): array
+{
+    $keys = [];
+    if (is_string($value)) {
+        $trim = trim($value);
+        if ($trim !== '' && ($trim[0] === '[' || $trim[0] === '{')) {
+            $dec = json_decode($trim, true);
+            if (is_array($dec)) {
+                $value = $dec;
+            }
+        } else {
+            $value = array_filter(array_map('trim', preg_split('/[,\n]+/', $trim)));
+        }
+    }
+    if (is_array($value)) {
+        foreach ($value as $k) {
+            $k = strtolower(trim((string)$k));
+            $k = preg_replace('/[^a-z0-9-]+/i', '', $k);
+            if ($k === '') continue;
+            $keys[] = $k;
+        }
+    }
+    // unique, limit 32
+    $out = [];
+    foreach ($keys as $k) {
+        if (in_array($k, $out, true)) continue;
+        $out[] = $k;
+        if (count($out) >= 32) break;
+    }
+    return $out;
 }
 
 /**
@@ -368,13 +415,16 @@ function saveSettings(array $settings): bool
     $current = file_exists($file) ? (json_decode(file_get_contents($file), true) ?: []) : [];
     $allowed = ['contact_email', 'servis_email', 'whatsapp_number', 'phone_display', 'address', 'mail_to', 'mail_from_name', 'mail_from',
         'seo_site_title', 'seo_default_description', 'seo_default_keywords', 'seo_pages',
-        'prefer_env_contact'];
+        'prefer_env_contact', 'home_categories'];
     foreach ($allowed as $key) {
         if (!array_key_exists($key, $settings)) {
             continue;
         }
         if ($key === 'seo_pages') {
             $current[$key] = is_string($settings[$key]) ? $settings[$key] : json_encode($settings[$key], JSON_UNESCAPED_UNICODE);
+        } elseif ($key === 'home_categories') {
+            $arr = gravisa_sanitize_home_categories($settings[$key]);
+            $current[$key] = json_encode($arr, JSON_UNESCAPED_UNICODE);
         } elseif ($key === 'prefer_env_contact') {
             $current[$key] = (bool) $settings[$key];
         } else {

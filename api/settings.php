@@ -52,6 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'seo_default_description' => sanitize($input['seo_default_description'] ?? ''),
         'seo_default_keywords'    => sanitize($input['seo_default_keywords'] ?? ''),
         'seo_pages'        => sanitizeJsonPages($input['seo_pages'] ?? ''),
+        'home_categories'  => isset($input['home_categories']) ? json_encode(gravisa_sanitize_home_categories($input['home_categories']), JSON_UNESCAPED_UNICODE) : '',
         'prefer_env_contact' => !empty($input['prefer_env_contact']),
     ];
     if (saveSettings($settings)) {
