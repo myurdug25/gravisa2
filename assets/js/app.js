@@ -86,12 +86,8 @@
         return;
       }
       
-      // Stokta olan makineler
+      // Stokta olan makineler (adet/rozet için)
       var stoktaMakineler = makineler.filter(function(m) { return m && m.stok === true; });
-      if (stoktaMakineler.length === 0) {
-        // Eğer stokta makine yoksa yine de ilk 8 makineyi göster (boş kalmasın)
-        stoktaMakineler = makineler.slice(0, 8);
-      }
       
       function esc(s) {
         if (s == null || s === undefined) return '';
@@ -139,17 +135,25 @@
         return key;
       }
 
-      var groups = {};
+      // Kategorileri tüm makinelerden çıkar (admin seçimi bire bir yansısın),
+      // stok bilgisi ayrıca tutulur.
+      var groupsAll = {};
+      var groupsStock = {};
       var labelByKey = {};
       var firstByKey = {};
-      stoktaMakineler.forEach(function(m) {
+      makineler.forEach(function(m) {
+        if (!m) return;
         var k = categoryKey(m);
-        if (!groups[k]) groups[k] = [];
-        groups[k].push(m);
+        if (!groupsAll[k]) groupsAll[k] = [];
+        groupsAll[k].push(m);
         if (!firstByKey[k]) firstByKey[k] = m;
         if (!labelByKey[k]) {
           if (k === 'other') labelByKey[k] = (J.catOther || 'Diğer');
           else labelByKey[k] = String(m.tip || categoryLabelFromKey(k));
+        }
+        if (m.stok === true) {
+          if (!groupsStock[k]) groupsStock[k] = [];
+          groupsStock[k].push(m);
         }
       });
 
@@ -164,7 +168,9 @@
             if (u0) return u0;
           }
         } catch (e) {}
-        var group = (groups[k] || []).slice().sort(function(a, b) {
+        // Önce stoktan dene (daha güncel/görseli olan), yoksa tüm gruptan dene
+        var srcGroup = (groupsStock[k] && groupsStock[k].length) ? groupsStock[k] : (groupsAll[k] || []);
+        var group = srcGroup.slice().sort(function(a, b) {
           return (parseInt(a && a.id, 10) || 0) - (parseInt(b && b.id, 10) || 0);
         });
         var resolveImg = (typeof window.gravisaResolveMachineImage === 'function')
@@ -184,11 +190,11 @@
         }
         return '';
       }
-      var available = Object.keys(groups).filter(function(k) { return (groups[k] || []).length > 0; });
-      // Önce en çok ürün olan kategoriler; aynı sayıda ise Türkçe alfabetik
+      var available = Object.keys(groupsAll).filter(function(k) { return (groupsAll[k] || []).length > 0; });
+      // Önce en çok ürün olan kategoriler; aynı sayıda ise Türkçe alfabetik (fallback)
       available.sort(function(a, b) {
-        var ca = (groups[a] || []).length;
-        var cb = (groups[b] || []).length;
+        var ca = (groupsAll[a] || []).length;
+        var cb = (groupsAll[b] || []).length;
         if (cb !== ca) return cb - ca;
         return String(labelByKey[a] || a).localeCompare(String(labelByKey[b] || b), 'tr');
       });
@@ -213,7 +219,7 @@
       } catch (e) {}
       // Key/label karışık gelebilir; tipKey ile aynı normalize et (TR karakterler + yeralti)
       preferred = (preferred || []).map(function(k){ return tipKey(String(k || '')); }).filter(Boolean);
-      var preferredExisting = preferred.filter(function(k){ return (groups[k] || []).length > 0; });
+      var preferredExisting = preferred.filter(function(k){ return (groupsAll[k] || []).length > 0; });
       var rest = available.filter(function(k){ return preferredExisting.indexOf(k) === -1; });
       var firstScreen = preferredExisting.concat(rest);
       var listToRender = isExpanded ? available : firstScreen.slice(0, limit);
@@ -221,10 +227,12 @@
       stoktaCats.innerHTML = '';
 
       listToRender.forEach(function(k) {
-        var count = (groups[k] || []).length;
+        var totalCount = (groupsAll[k] || []).length;
+        var stockCount = (groupsStock[k] || []).length;
         var imgSrc = categoryCardImgSrc(k);
         var label = labelByKey[k] || categoryLabelFromKey(k);
         var href = addQuery(langPath('makineler'), 'cat', k);
+        var badgeText = stockCount > 0 ? (J.stockIn || 'Stokta') : (J.inCatalog || 'Listede');
         var catImgHtml = imgSrc
           ? '<div class="machine-card-image"><img src="' + esc(imgSrc) + '" alt="' + esc(label) + '" loading="lazy" /></div>'
           : '<div class="machine-card-image machine-card-image--empty" role="img" aria-label="' + esc(J.noPhoto || '') + '"><span>' + esc(J.noPhoto || '') + '</span></div>';
@@ -236,10 +244,10 @@
           '<div class="machine-card-body">' +
             '<div class="machine-card-badges">' +
               '<span class="machine-card-badge">' + esc(label) + '</span>' +
-              '<span class="machine-card-badge machine-card-badge--stock">' + esc(J.stockIn || 'Stokta') + '</span>' +
+              '<span class="machine-card-badge machine-card-badge--stock">' + esc(badgeText) + '</span>' +
             '</div>' +
             '<h3 class="machine-card-title">' + esc(label) + '</h3>' +
-            '<p class="machine-card-meta">' + esc(String(count)) + ' ' + esc(J.machineLabel || 'makine') + '</p>' +
+            '<p class="machine-card-meta">' + esc(String(stockCount > 0 ? stockCount : totalCount)) + ' ' + esc(J.machineLabel || 'makine') + '</p>' +
             '<div class="machine-card-actions" style="display:grid;grid-template-columns:1fr;gap:10px">' +
               '<a href="' + esc(href) + '" class="btn btn-primary">' + esc(J.viewCategory || 'Makineleri Gör') + '</a>' +
             '</div>' +
