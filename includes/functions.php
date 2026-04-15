@@ -309,6 +309,17 @@ function gravisa_get_category_images(): array
         $path = trim((string)$v);
         if ($path === '' || strpos($path, '..') !== false) continue;
         $path = str_replace('\\', '/', $path);
+        // Cache bust: kategori görseli güncellendiğinde tarayıcı eskiyi tutmasın
+        if (defined('ROOT_PATH')) {
+            $abs = ROOT_PATH . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $path);
+            if (is_file($abs)) {
+                $mtime = @filemtime($abs);
+                if ($mtime !== false) {
+                    $sep = (strpos($path, '?') !== false) ? '&' : '?';
+                    $path = $path . $sep . 'v=' . (int)$mtime;
+                }
+            }
+        }
         $out[$key] = $path;
     }
     return $out;

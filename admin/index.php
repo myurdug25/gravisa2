@@ -1172,7 +1172,12 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
       function fetchData() {
         setMsg('Yükleniyor...', true);
         fetch('../api/category-images-admin.php')
-          .then(function(r){ return r.json(); })
+          .then(function(r){
+            return r.text().then(function(txt){
+              try { return JSON.parse(txt); }
+              catch (e) { return { success:false, message:'Sunucudan beklenmeyen cevap (HTTP ' + r.status + '). ' + String(txt || '').slice(0, 200) }; }
+            });
+          })
           .then(function(res){
             if (!res.success) { setMsg(res.message || 'Yüklenemedi.', false); return; }
             render(res.categories || [], res.items || {});
@@ -1227,7 +1232,12 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
       function postForm(fd) {
         if (csrf) fd.append('_csrf_token', csrf.value);
         return fetch('../api/category-images-admin.php', { method:'POST', body: fd })
-          .then(function(r){ return r.json(); });
+          .then(function(r){
+            return r.text().then(function(txt){
+              try { return JSON.parse(txt); }
+              catch (e) { return { success:false, message:'Sunucudan beklenmeyen cevap (HTTP ' + r.status + '). ' + String(txt || '').slice(0, 200) }; }
+            });
+          });
       }
 
       list.addEventListener('click', function(e) {
