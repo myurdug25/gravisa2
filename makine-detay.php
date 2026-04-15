@@ -142,8 +142,6 @@ $pageId = 'makine-detay';
           { label: J.labelModelYear || 'Model Yılı', value: makine.modelYil || ns },
           { label: J.labelPower || 'Güç', value: makine.guc ? makine.guc + ' ' + makine.gucBirim : ns },
           { label: J.labelCapacity || 'Kapasite', value: makine.kapasite || ns },
-          { label: J.labelChassisSn || 'Şasi Seri No', value: makine.saseSeriNo || ns },
-          { label: J.labelMotorSn || 'Motor Seri No', value: makine.motorSeriNo || ns },
           { label: J.labelMotorBrand || 'Motor Marka', value: makine.motorMarka || ns },
           { label: J.labelMotorType || 'Motor Tip', value: makine.motorTip || ns },
           { label: J.labelStock || 'Stok Durumu', value: makine.stok ? (J.stockIn || 'Stokta') : (J.stockOrder || 'Talebe göre') }
@@ -160,6 +158,23 @@ $pageId = 'makine-detay';
 
         html += '</div>';
         html += '</div>';
+
+        // Admin'den girilen teknik özellikler (çok satırlı)
+        if (makine.teknik && String(makine.teknik).trim() !== '') {
+          var lines = String(makine.teknik).split(/\r?\n/).map(function(s){ return String(s||'').trim(); }).filter(Boolean);
+          if (lines.length) {
+            html += '<div class="machine-detail-tech-modern">';
+            html += '<h2>' + esc(J.specsTitle || 'Teknik Özellikler') + '</h2>';
+            html += '<div class="specs-grid">';
+            lines.forEach(function(ln){
+              var ix = ln.indexOf(':');
+              var k = ix > 0 ? ln.slice(0, ix).trim() : ln;
+              var v = ix > 0 ? ln.slice(ix + 1).trim() : '';
+              html += '<div class="spec-item"><span class="spec-label">' + esc(k) + '</span><span class="spec-value">' + esc(v || ns) + '</span></div>';
+            });
+            html += '</div></div>';
+          }
+        }
 
         html += '<div class="machine-detail-actions-modern">';
         html += '<a href="' + esc(langPath('satis-teklifi')) + '?id=' + esc(makine.id) + '" class="btn btn-primary btn-large">' + esc(J.btnSalesLarge || 'Satış Teklifi Al') + '</a>';

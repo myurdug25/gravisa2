@@ -552,6 +552,9 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
     <div class="card">
       <div class="card-header">Site Ayarları</div>
       <div class="body" style="padding: 24px;">
+        <div class="admin-actions-row" style="margin: 0 0 12px;">
+          <a class="btn-sm secondary" href="#cat-images">Kategori görsellerine git</a>
+        </div>
         <form id="settingsForm">
           <?php echo csrfField(); ?>
           <div style="display: grid; gap: 20px; max-width: 520px;">
@@ -621,7 +624,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
       </div>
     </div>
 
-    <div class="card" style="margin-top: 18px;">
+    <div class="card" id="cat-images" style="margin-top: 18px;">
       <div class="card-header">Kategori Görselleri</div>
       <div class="body" style="padding: 24px;">
         <p style="margin:0 0 12px; color:#64748b; font-size:0.9rem;">
@@ -732,6 +735,11 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
                 <label>
                   <span style="display:block; font-weight:600; margin-bottom:4px; color:#555;">Motor Tip</span>
                   <input type="text" name="motorTip" id="machine_motorTip" style="width:100%; padding:8px 10px; border:1px solid #ddd; border-radius:8px;">
+                </label>
+                <label>
+                  <span style="display:block; font-weight:600; margin-bottom:4px; color:#555;">Teknik Özellikler</span>
+                  <textarea name="teknik" id="machine_teknik" rows="5" placeholder="Örn.\nÇalışma Ağırlığı: 12 ton\nKepçe Kapasitesi: 0.8 m³\nYakıt: Dizel" style="width:100%; padding:8px 10px; border:1px solid #ddd; border-radius:8px; font-family:inherit; resize:vertical;"></textarea>
+                  <span class="machine-form-hint">Her satırı <strong>Anahtar: Değer</strong> şeklinde yazın. Bu alan makine detay sayfasında “Teknik Özellikler” bölümünde gösterilir.</span>
                 </label>
                 <label style="display:flex; align-items:center; gap:8px;">
                   <input type="checkbox" name="stok" id="machine_stok" checked>
@@ -1410,6 +1418,8 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
         document.getElementById('machine_id').value = '';
         var noEl = document.getElementById('machine_no');
         if (noEl) noEl.value = '';
+        var techEl = document.getElementById('machine_teknik');
+        if (techEl) techEl.value = '';
         if (imgExisting) imgExisting.value = '';
         if (imgInput) imgInput.value = '';
         if (imgInfo) imgInfo.textContent = '';
@@ -1436,6 +1446,8 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
         document.getElementById('machine_motorSeriNo').value = m.motorSeriNo || '';
         document.getElementById('machine_motorMarka').value = m.motorMarka || '';
         document.getElementById('machine_motorTip').value = m.motorTip || '';
+        var techEl = document.getElementById('machine_teknik');
+        if (techEl) techEl.value = m.teknik || '';
         document.getElementById('machine_stok').checked = !!m.stok;
         var path = (m.img && String(m.img).trim()) ? String(m.img).trim() : '';
         if (imgExisting) imgExisting.value = path;

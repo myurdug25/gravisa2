@@ -403,6 +403,24 @@
     var dImgBlock = dImg
       ? '<div class="machine-detail-image"><img src="' + escapeHtml(dImg) + '" alt="' + escapeHtml(m.tipModel) + '" /></div>'
       : '<div class="machine-detail-image machine-detail-image--empty"><span>' + escapeHtml(J.noPhoto || '') + '</span></div>';
+    var techHtml = '';
+    if (m && m.teknik && String(m.teknik).trim() !== '') {
+      var lines = String(m.teknik).split(/\r?\n/).map(function (s) { return String(s || '').trim(); }).filter(Boolean);
+      if (lines.length) {
+        techHtml = '<div class="machine-tech-block"><h3 class="machine-tech-title">' + escapeHtml(J.specsTitle || 'Teknik Özellikler') + '</h3><ul class="machine-tech-list">';
+        lines.forEach(function (ln) {
+          var ix = ln.indexOf(':');
+          if (ix > 0) {
+            var k = ln.slice(0, ix).trim();
+            var v = ln.slice(ix + 1).trim();
+            techHtml += '<li><span>' + escapeHtml(k) + '</span><span>' + escapeHtml(v) + '</span></li>';
+          } else {
+            techHtml += '<li><span>' + escapeHtml(ln) + '</span><span></span></li>';
+          }
+        });
+        techHtml += '</ul></div>';
+      }
+    }
     return (
       dImgBlock +
       '<div>' +
@@ -416,12 +434,11 @@
           '<li><span>' + escapeHtml(J.labelModelYear || 'Model Yılı') + '</span><span>' + escapeHtml(m.modelYil) + '</span></li>' +
           '<li><span>' + escapeHtml(J.labelPower || 'Güç') + '</span><span>' + escapeHtml(m.guc) + ' ' + escapeHtml(m.gucBirim) + '</span></li>' +
           '<li><span>' + escapeHtml(J.labelCapacity || 'Kapasite') + '</span><span>' + escapeHtml(m.kapasite) + '</span></li>' +
-          '<li><span>' + escapeHtml(J.labelChassisSn || 'Şasi Seri No') + '</span><span>' + escapeHtml(m.saseSeriNo) + '</span></li>' +
-          '<li><span>' + escapeHtml(J.labelMotorSn || 'Motor Seri No') + '</span><span>' + escapeHtml(m.motorSeriNo) + '</span></li>' +
           '<li><span>' + escapeHtml(J.labelMotorBrand || 'Motor Marka') + '</span><span>' + escapeHtml(m.motorMarka) + '</span></li>' +
           '<li><span>' + escapeHtml(J.labelMotorType || 'Motor Tip') + '</span><span>' + escapeHtml(m.motorTip) + '</span></li>' +
           '<li><span>' + escapeHtml(J.labelStock || 'Stok Durumu') + '</span><span>' + escapeHtml(m.stok ? (J.stockIn || 'Stokta') : (J.stockOrder || 'Talebe göre')) + '</span></li>' +
         '</ul>' +
+        techHtml +
         '<div class="machine-detail-actions">' +
           '<a href="' + escapeHtml(addQuery(langPath('satis-teklifi'), 'model', machineDisplayTitle(m))) + '" class="btn btn-primary">' + escapeHtml(J.btnSalesLarge || 'Satış Teklifi Al') + '</a>' +
           '<a href="' + escapeHtml(addQuery(langPath('kiralama'), 'model', machineDisplayTitle(m))) + '" class="btn btn-secondary">' + escapeHtml(J.btnRentLarge || 'Kiralama Yap') + '</a>' +

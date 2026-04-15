@@ -113,6 +113,8 @@ $machine = [
     'motorSeriNo' => sanitize($_POST['motorSeriNo'] ?? '', 100),
     'motorMarka'  => sanitize($_POST['motorMarka'] ?? '', 50),
     'motorTip'    => sanitize($_POST['motorTip'] ?? '', 50),
+    // Çok satırlı teknik özellikler (örn. "Çalışma Ağırlığı: 12 ton")
+    'teknik'      => sanitize($_POST['teknik'] ?? '', 4000),
     'stok'        => !empty($_POST['stok']) ? true : false,
     'img'         => $imgExisting,
 ];
