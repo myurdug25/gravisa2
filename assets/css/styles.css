@@ -516,6 +516,22 @@ body.has-ambient-video .footer {
   transform: scale(1.02);
   transform-origin: center center;
 }
+/* Dar ekran: ekstra scale + decode maliyetini azalt */
+@media (max-width: 896px) {
+  .ambient-video__media {
+    transform: scale(1);
+  }
+}
+/* Ağır video kapatıldığında (JS): poster ile arka plan, video gizli */
+.ambient-video--poster-only .ambient-video__media {
+  display: none !important;
+}
+.ambient-video--poster-only {
+  background-color: #1e293b;
+  background-size: cover;
+  background-position: center 36%;
+  background-repeat: no-repeat;
+}
 /* ─── Scrim: hafif, video görünür ────────────────────── */
 .ambient-video__scrim {
   position: absolute;

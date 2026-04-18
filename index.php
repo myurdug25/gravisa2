@@ -9,6 +9,14 @@ $heroHasBgVideo = is_file($heroVideoPathFs);
 $heroVideoSrc = $heroHasBgVideo
     ? (BASE_PATH . '/videos/' . rawurlencode($heroVideoFilename) . '?v=' . (int) @filemtime($heroVideoPathFs))
     : '';
+// Aynı isimle hafif sürüm: 0415.mp4 → 0415-mobile.mp4 (düşük çözünürlük/bitrate; telefon için FTP ile yükleyin)
+$heroVideoStem = pathinfo($heroVideoFilename, PATHINFO_FILENAME);
+$heroVideoMobileFilename = $heroVideoStem . '-mobile.mp4';
+$heroVideoMobilePathFs = __DIR__ . DIRECTORY_SEPARATOR . 'videos' . DIRECTORY_SEPARATOR . $heroVideoMobileFilename;
+$heroHasMobileVideo = $heroHasBgVideo && is_file($heroVideoMobilePathFs);
+$heroVideoMobileSrc = $heroHasMobileVideo
+    ? (BASE_PATH . '/videos/' . rawurlencode($heroVideoMobileFilename) . '?v=' . (int) @filemtime($heroVideoMobilePathFs))
+    : '';
 $heroVideoPoster = BASE_PATH . '/images/IMG_9059.JPG.jpeg';
 ?>
 <!DOCTYPE html>
@@ -23,7 +31,7 @@ $heroVideoPoster = BASE_PATH . '/images/IMG_9059.JPG.jpeg';
 </head>
 <body<?= $heroHasBgVideo ? ' class="has-ambient-video"' : '' ?>>
   <?php if ($heroHasBgVideo): ?>
-  <div class="ambient-video" aria-hidden="true">
+  <div class="ambient-video" aria-hidden="true" data-has-mobile-src="<?= $heroHasMobileVideo ? '1' : '0' ?>">
     <video
       class="ambient-video__media"
       poster="<?= htmlspecialchars($heroVideoPoster, ENT_QUOTES, 'UTF-8') ?>"
@@ -34,6 +42,9 @@ $heroVideoPoster = BASE_PATH . '/images/IMG_9059.JPG.jpeg';
       preload="metadata"
       fetchpriority="low"
     >
+      <?php if ($heroHasMobileVideo): ?>
+      <source src="<?= htmlspecialchars($heroVideoMobileSrc, ENT_QUOTES, 'UTF-8') ?>" type="video/mp4" media="(max-width: 896px)" />
+      <?php endif; ?>
       <source src="<?= htmlspecialchars($heroVideoSrc, ENT_QUOTES, 'UTF-8') ?>" type="video/mp4" />
     </video>
     <div class="ambient-video__scrim"></div>
@@ -290,12 +301,43 @@ $heroVideoPoster = BASE_PATH . '/images/IMG_9059.JPG.jpeg';
   <?php if ($heroHasBgVideo): ?>
   <script>
   (function () {
-    var el = document.querySelector('.ambient-video__media');
+    var holder = document.querySelector('.ambient-video');
+    if (!holder) return;
+    var el = holder.querySelector('.ambient-video__media');
     if (!el) return;
-    var holder = el.closest ? el.closest('.ambient-video') : null;
+
+    var hasMobileSrc = holder.getAttribute('data-has-mobile-src') === '1';
+    var mqNarrow = window.matchMedia('(max-width: 896px)');
+    var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    var saveData = !!(conn && conn.saveData);
+    var slowNet = !!(conn && /^(2g|slow-2g)$/i.test(String(conn.effectiveType || '')));
+
+    function goPosterOnly() {
+      holder.classList.add('ambient-video--poster-only');
+      var poster = el.getAttribute('poster');
+      if (poster) {
+        holder.style.backgroundImage = 'url("' + String(poster).replace(/"/g, '\\"') + '")';
+      }
+      try {
+        el.pause();
+        el.removeAttribute('src');
+        var sources = el.querySelectorAll('source');
+        for (var i = 0; i < sources.length; i++) {
+          sources[i].removeAttribute('src');
+        }
+        el.load();
+      } catch (e) {}
+    }
+
+    // Telefonda ağır videoyu zorlamayalım: -mobile.mp4 yoksa poster; saveData / yavaş şebekede de poster
+    if (!hasMobileSrc && (mqNarrow.matches || saveData || slowNet)) {
+      goPosterOnly();
+      return;
+    }
+
     var shouldPlay = true;
     function tryPlay() {
-      if (!shouldPlay) return;
+      if (!shouldPlay || holder.classList.contains('ambient-video--poster-only')) return;
       var p = el.play();
       if (p && typeof p.catch === 'function') p.catch(function () {});
     }
@@ -305,15 +347,13 @@ $heroVideoPoster = BASE_PATH . '/images/IMG_9059.JPG.jpeg';
     if (document.readyState === 'complete') tryPlay();
     else window.addEventListener('load', tryPlay);
 
-    // Sekme görünür değilken video decode yükünü azalt
     document.addEventListener('visibilitychange', function () {
       shouldPlay = (document.visibilityState === 'visible');
       if (shouldPlay) tryPlay();
       else pause();
     });
 
-    // Video viewport dışında kalırsa durdur (bazı cihazlarda ciddi kazanç)
-    if (holder && 'IntersectionObserver' in window) {
+    if ('IntersectionObserver' in window) {
       try {
         var io = new IntersectionObserver(function (entries) {
           var ent = entries && entries[0];
