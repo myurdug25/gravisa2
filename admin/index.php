@@ -651,18 +651,18 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
     </div>
 
     <div class="card" id="makpark-import" style="margin-top: 18px;">
-      <div class="card-header">Makpark İçe Aktarım (CSV)</div>
+      <div class="card-header">Makpark İçe Aktarım (XLSX / CSV)</div>
       <div class="body" style="padding: 24px;">
         <p style="margin:0 0 12px; color:#64748b; font-size:0.9rem;">
-          <strong>Makpark.xlsx</strong> dosyanızı Excel’den <strong>CSV (UTF-8)</strong> olarak kaydedip buradan yükleyin. Sistem mevcut makinelerdeki <code>img</code>, <code>stok</code>, <code>teknik</code> alanlarını koruyarak listeyi günceller.
+          <strong>Makpark.xlsx</strong> dosyanızı buradan doğrudan yükleyebilirsiniz. Sistem mevcut makinelerdeki <code>img</code>, <code>stok</code>, <code>teknik</code> alanlarını koruyarak listeyi günceller.
         </p>
         <div id="makparkMsg" style="margin:0 0 12px; font-size:0.9rem;"></div>
         <form id="makparkForm" enctype="multipart/form-data">
           <?php echo csrfField(); ?>
           <div class="admin-actions-row" style="align-items:flex-end;">
             <label style="display:block; flex:1; min-width:240px;">
-              <span style="display:block; font-weight:700; margin-bottom:6px; color:#334155;">CSV Dosyası</span>
-              <input type="file" name="file" accept=".csv,text/csv" required style="width:100%; padding:10px 12px; border:1px solid #e2e8f0; border-radius:10px; background:#fff;" />
+              <span style="display:block; font-weight:700; margin-bottom:6px; color:#334155;">Dosya</span>
+              <input type="file" name="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.csv,text/csv" required style="width:100%; padding:10px 12px; border:1px solid #e2e8f0; border-radius:10px; background:#fff;" />
             </label>
             <label style="display:block; min-width:220px;">
               <span style="display:block; font-weight:700; margin-bottom:6px; color:#334155;">Mod</span>
@@ -675,7 +675,7 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
           </div>
         </form>
         <div style="margin-top:10px; font-size:0.85rem; color:#64748b;">
-          İpucu: Excel’de <em>Farklı Kaydet</em> → <strong>CSV UTF-8</strong>. Başlıklar: <code>NO</code>, <code>TİP</code>, <code>FIRMA</code>, <code>TİP/PLAKA</code> veya <code>KOD</code>, <code>Model</code>, <code>S.No</code>.
+          Not: XLSX okumak için sunucuda <code>ZipArchive</code> ve <code>SimpleXML</code> gerekir. Olmazsa Excel’den CSV’ye kaydedip tekrar deneyebilirsiniz.
         </div>
       </div>
     </div>

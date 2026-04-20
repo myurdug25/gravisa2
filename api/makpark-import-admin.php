@@ -18,6 +18,7 @@
 require_once dirname(__DIR__) . '/config/config.php';
 require_once dirname(__DIR__) . '/includes/functions.php';
 require_once dirname(__DIR__) . '/includes/security.php';
+require_once dirname(__DIR__) . '/includes/xlsx-reader.php';
 
 secureSessionStart();
 header('Content-Type: application/json; charset=utf-8');
@@ -38,7 +39,7 @@ if (!in_array($mode, ['merge', 'replace'], true)) {
 }
 
 if (empty($_FILES['file']) || !isset($_FILES['file']['tmp_name'])) {
-    jsonResponse(['success' => false, 'message' => 'CSV dosyası seçin.'], 400);
+    jsonResponse(['success' => false, 'message' => 'Dosya seçin (CSV veya XLSX).'], 400);
 }
 $err = (int)($_FILES['file']['error'] ?? UPLOAD_ERR_OK);
 if ($err !== UPLOAD_ERR_OK) {
@@ -57,6 +58,8 @@ $tmp = $_FILES['file']['tmp_name'];
 if (!is_uploaded_file($tmp)) {
     jsonResponse(['success' => false, 'message' => 'Dosya yükleme doğrulanamadı.'], 400);
 }
+$origName = (string)($_FILES['file']['name'] ?? '');
+$ext = strtolower(pathinfo($origName, PATHINFO_EXTENSION));
 
 $dataFile = DATA_PATH . '/makineler_admin.json';
 $current = [];
@@ -95,30 +98,72 @@ function _clean_cell($v): string {
     return $s;
 }
 
-// CSV oku (utf-8 veya windows-1254 olabilir → best-effort iconv)
-$raw = file_get_contents($tmp);
-if ($raw === false) {
-    jsonResponse(['success' => false, 'message' => 'CSV okunamadı.'], 400);
+// rows: [ [header...], [row...], ... ]
+$rows = [];
+if ($ext === 'xlsx') {
+    $sheets = function_exists('gravisa_xlsx_read_all_rows') ? gravisa_xlsx_read_all_rows($tmp) : [];
+    if (!$sheets) {
+        jsonResponse(['success' => false, 'message' => 'XLSX okunamadı (ZipArchive/SimpleXML gerekli). CSV olarak kaydedip deneyin.'], 400);
+    }
+    // flatten all sheets
+    foreach ($sheets as $sheetRows) {
+        if (!is_array($sheetRows) || count($sheetRows) < 2) continue;
+        // first non-empty header row
+        $header = null;
+        $start = 0;
+        for ($i = 0; $i < count($sheetRows); $i++) {
+            $r = $sheetRows[$i];
+            if (!is_array($r)) continue;
+            $joined = implode('', array_map('trim', $r));
+            if ($joined === '') continue;
+            $header = $r;
+            $start = $i + 1;
+            break;
+        }
+        if (!$header) continue;
+        $rows[] = $header;
+        for ($i = $start; $i < count($sheetRows); $i++) {
+            $r = $sheetRows[$i];
+            if (!is_array($r)) continue;
+            $rows[] = $r;
+        }
+    }
+    if (count($rows) < 2) {
+        jsonResponse(['success' => false, 'message' => 'XLSX içinde okunabilir tablo bulunamadı.'], 400);
+    }
+} else {
+    // CSV oku (utf-8 veya windows-1254 olabilir → best-effort iconv)
+    $raw = file_get_contents($tmp);
+    if ($raw === false) {
+        jsonResponse(['success' => false, 'message' => 'CSV okunamadı.'], 400);
+    }
+    // BOM temizle
+    $raw = preg_replace('/^\xEF\xBB\xBF/', '', $raw);
+    $lines = preg_split("/\r\n|\n|\r/", $raw);
+    if (!$lines || count($lines) < 2) {
+        jsonResponse(['success' => false, 'message' => 'CSV boş görünüyor.'], 400);
+    }
+    // delimiter tespit
+    $firstLine = $lines[0];
+    $delim = (substr_count($firstLine, ';') >= substr_count($firstLine, ',')) ? ';' : ',';
+    foreach ($lines as $ln) {
+        if (trim($ln) === '') continue;
+        $rows[] = str_getcsv($ln, $delim);
+    }
+    if (count($rows) < 2) {
+        jsonResponse(['success' => false, 'message' => 'CSV boş görünüyor.'], 400);
+    }
 }
-// BOM temizle
-$raw = preg_replace('/^\xEF\xBB\xBF/', '', $raw);
-$lines = preg_split("/\r\n|\n|\r/", $raw);
-if (!$lines || count($lines) < 2) {
-    jsonResponse(['success' => false, 'message' => 'CSV boş görünüyor.'], 400);
-}
-
-// delimiter tespit
-$firstLine = $lines[0];
-$delim = (substr_count($firstLine, ';') >= substr_count($firstLine, ',')) ? ';' : ',';
 
 // header parse
-$header = str_getcsv($lines[0], $delim);
+$header = $rows[0];
 if (!$header || count($header) < 2) {
-    jsonResponse(['success' => false, 'message' => 'CSV başlığı okunamadı.'], 400);
+    jsonResponse(['success' => false, 'message' => 'Dosya başlığı okunamadı.'], 400);
 }
 $map = [];
 foreach ($header as $idx => $h) {
-    $hn = _norm_header($h);
+    $hn = _norm_header((string)$h);
+    if ($hn === '') continue;
     $map[$hn] = $idx;
 }
 // kolon bul (Makpark varyasyonları)
@@ -154,10 +199,8 @@ $skipped = 0;
 $added = 0;
 $merged = 0;
 
-for ($i = 1; $i < count($lines); $i++) {
-    $line = $lines[$i];
-    if (trim($line) === '') continue;
-    $row = str_getcsv($line, $delim);
+for ($i = 1; $i < count($rows); $i++) {
+    $row = $rows[$i];
     if (!$row || count($row) < 2) continue;
 
     $no = _clean_cell($row[$ixNo] ?? '');
