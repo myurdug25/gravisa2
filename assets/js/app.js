@@ -121,6 +121,18 @@
         var t = normalize(label);
         t = t.replace(/\byeralti\b/g, 'yer alti');
         t = t.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+        // Aynı şeyi ifade eden yazımlar / çoğullar tek kategori olsun
+        var map = {
+          'jeneratorler': 'jenerator',
+          'kompresorler': 'kompresor',
+          'elektrikli-kompresorler': 'elektrikli-kompresor',
+          'dizel-kompresorler': 'dizel-kompresor',
+          'ekskavatorler': 'ekskavator',
+          'kamyonlar': 'kamyon',
+          'mikserler': 'mikser',
+          'jenerator': 'jenerator',
+        };
+        t = map[t] || t;
         return t || 'other';
       }
 

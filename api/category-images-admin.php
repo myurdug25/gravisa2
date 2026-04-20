@@ -24,6 +24,20 @@ function _cat_norm(string $s): string {
     $s = preg_replace('/\byeralti\b/u', 'yer alti', $s);
     $s = preg_replace('/[^a-z0-9]+/u', '-', $s);
     $s = trim($s, '-');
+    // Canonical category keys (plural/synonym normalize)
+    $aliases = [
+        'jeneratorler' => 'jenerator',
+        'jenerator' => 'jenerator',
+        'kompresorler' => 'kompresor',
+        'elektrikli-kompresorler' => 'elektrikli-kompresor',
+        'dizel-kompresorler' => 'dizel-kompresor',
+        'ekskavatorler' => 'ekskavator',
+        'kamyonlar' => 'kamyon',
+        'mikserler' => 'mikser',
+    ];
+    if (isset($aliases[$s])) {
+        $s = $aliases[$s];
+    }
     return $s !== '' ? $s : 'other';
 }
 

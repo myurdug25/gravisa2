@@ -121,11 +121,29 @@
       .replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's').replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ç/g, 'c');
   }
 
+  function canonicalCatKey(key) {
+    var k = String(key || '').toLowerCase().trim();
+    // Aynı şeyi ifade eden yazımlar / çoğullar tek kategori olsun
+    var map = {
+      'jeneratorler': 'jenerator',
+      'kompresorler': 'kompresor',
+      'elektrikli-kompresorler': 'elektrikli-kompresor',
+      'dizel-kompresorler': 'dizel-kompresor',
+      'ekskavatorler': 'ekskavator',
+      'kamyonlar': 'kamyon',
+      'mikserler': 'mikser',
+      // also map singular to canonical for safety
+      'jenerator': 'jenerator',
+    };
+    return map[k] || k;
+  }
+
   function tipKey(label) {
     var t = normalize(label);
     // Excel: "YERALTI ..." tek kelime — "YER ALTI ..." ile aynı kategori anahtarı (yer-alti-...)
     t = t.replace(/\byeralti\b/g, 'yer alti');
     t = t.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    t = canonicalCatKey(t);
     return t || 'other';
   }
 
