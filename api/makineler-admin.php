@@ -8,6 +8,9 @@ require_once dirname(__DIR__) . '/includes/security.php';
 
 secureSessionStart();
 header('Content-Type: application/json; charset=utf-8');
+// Admin panelde liste güncel kalsın (browser/proxy cache eski JSON'u tutmasın)
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Pragma: no-cache');
 
 if (empty($_SESSION['admin_logged']) || $_SESSION['admin_logged'] !== true) {
     jsonResponse(['success' => false, 'message' => 'Yetkisiz.'], 403);
