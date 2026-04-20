@@ -397,6 +397,50 @@ function gravisa_save_category_images(array $map): bool
     return $bytes !== false;
 }
 
+/**
+ * Kategori sayıları (admin’den manuel override)
+ * key => int total count
+ */
+function gravisa_get_category_counts(): array
+{
+    $file = defined('DATA_PATH') ? (DATA_PATH . '/category_counts.json') : (dirname(__DIR__) . '/data/category_counts.json');
+    if (!file_exists($file)) {
+        return [];
+    }
+    $raw = json_decode(file_get_contents($file), true);
+    if (!is_array($raw)) {
+        return [];
+    }
+    $out = [];
+    foreach ($raw as $k => $v) {
+        $key = preg_replace('/[^a-z0-9-]+/i', '', strtolower((string)$k));
+        if ($key === '') continue;
+        $n = (int)$v;
+        if ($n < 0) $n = 0;
+        $out[$key] = $n;
+    }
+    return $out;
+}
+
+function gravisa_save_category_counts(array $map): bool
+{
+    if (!defined('DATA_PATH')) {
+        return false;
+    }
+    ensureDataDir();
+    $file = DATA_PATH . '/category_counts.json';
+    $clean = [];
+    foreach ($map as $k => $v) {
+        $key = preg_replace('/[^a-z0-9-]+/i', '', strtolower((string)$k));
+        if ($key === '') continue;
+        $n = (int)$v;
+        if ($n < 0) $n = 0;
+        $clean[$key] = $n;
+    }
+    $bytes = @file_put_contents($file, json_encode($clean, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), LOCK_EX);
+    return $bytes !== false;
+}
+
 /** WhatsApp/tel için formatlanmış numara (905331447286) */
 function getWaNum(): string
 {

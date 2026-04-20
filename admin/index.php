@@ -691,6 +691,18 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
         <div id="catImgList" style="display:grid; gap:12px;"></div>
       </div>
     </div>
+
+    <div class="card" id="cat-counts" style="margin-top: 18px;">
+      <div class="card-header">Kategori Sayıları (Manuel Toplam)</div>
+      <div class="body" style="padding: 24px;">
+        <p style="margin:0 0 12px; color:#64748b; font-size:0.9rem;">
+          Buradan kategori kartlarında görünen <strong>toplam makine sayısını</strong> manuel girebilirsiniz. Boş bırakılırsa sistem otomatik sayar.
+        </p>
+        <div id="catCountMsg" style="margin:0 0 12px; font-size:0.9rem;"></div>
+        <input type="search" id="catCountSearch" placeholder="Kategori ara (isim / key)..." autocomplete="off" style="width:100%; max-width:520px; padding:10px 12px; border:1px solid #e2e8f0; border-radius:10px; margin:0 0 12px;" />
+        <div id="catCountList" style="display:grid; gap:12px;"></div>
+      </div>
+    </div>
     <?php elseif ($tab === 'makineler'): ?>
     <div class="card">
       <div class="card-header">Makineler</div>
@@ -1589,6 +1601,122 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
           .catch(function(){ setMsg('Bağlantı hatası.', false); })
           .finally(function(){ if (btn) btn.disabled = false; });
       });
+    })();
+
+    // Kategori sayıları (manuel toplam) (ayarlar sekmesi)
+    (function() {
+      var list = document.getElementById('catCountList');
+      if (!list) return;
+      var msg = document.getElementById('catCountMsg');
+      var search = document.getElementById('catCountSearch');
+      var csrf = document.getElementById('csrf_token');
+      var _lastCategories = [];
+      var _lastItems = {};
+
+      function setMsg(text, ok) {
+        if (!msg) return;
+        msg.textContent = text || '';
+        msg.style.color = ok ? '#0a0' : '#c00';
+      }
+      function esc(s) {
+        var d = document.createElement('div');
+        d.textContent = String(s == null ? '' : s);
+        return d.innerHTML;
+      }
+      function fetchData() {
+        setMsg('Yükleniyor...', true);
+        fetch('../api/category-counts-admin.php')
+          .then(function(r){ return r.json(); })
+          .then(function(res){
+            if (!res.success) { setMsg(res.message || 'Yüklenemedi.', false); return; }
+            _lastCategories = res.categories || [];
+            _lastItems = res.items || {};
+            render(_lastCategories, _lastItems);
+            setMsg('', true);
+          })
+          .catch(function(){ setMsg('Yüklenemedi.', false); });
+      }
+      function render(categories, items) {
+        list.innerHTML = '';
+        if (!categories || !categories.length) {
+          list.innerHTML = '<div style="color:#64748b;">Kategori bulunamadı.</div>';
+          return;
+        }
+        var q = (search && search.value) ? String(search.value).toLowerCase().trim() : '';
+        categories.forEach(function(c){
+          var key = String(c.key || '');
+          var label = String(c.label || key);
+          if (q) {
+            var hay = (label + ' ' + key).toLowerCase();
+            if (hay.indexOf(q) === -1) return;
+          }
+          var autoCount = (c.count != null ? String(c.count) : '');
+          var manual = (items && items[key] != null) ? String(items[key]) : '';
+          var row = document.createElement('div');
+          row.style.display = 'grid';
+          row.style.gridTemplateColumns = 'minmax(0, 1fr) auto';
+          row.style.gap = '12px';
+          row.style.alignItems = 'center';
+          row.style.padding = '12px';
+          row.style.border = '1px solid #e2e8f0';
+          row.style.borderRadius = '12px';
+          row.style.background = '#fff';
+          row.innerHTML =
+            '<div style="min-width:0;">' +
+              '<div style="font-weight:800;color:#0f172a;line-height:1.2;word-break:break-word;">' + esc(label) + '</div>' +
+              '<div style="color:#64748b;font-size:0.85rem;margin-top:2px;">key: <code>' + esc(key) + '</code> • otomatik: ' + esc(autoCount) + '</div>' +
+            '</div>' +
+            '<div class="admin-actions-row" style="justify-content:flex-end;">' +
+              '<input type="number" min="0" step="1" inputmode="numeric" data-cc-input="' + esc(key) + '" value="' + esc(manual) + '" placeholder="Boş=otomatik" style="width:140px; padding:10px 12px; border:1px solid #e2e8f0; border-radius:10px; background:#fff;">' +
+              '<button type="button" class="btn-sm" data-cc-save="' + esc(key) + '">Kaydet</button>' +
+              '<button type="button" class="btn-sm secondary" data-cc-del="' + esc(key) + '"' + (manual !== '' ? '' : ' disabled') + '>Sıfırla</button>' +
+            '</div>';
+          list.appendChild(row);
+        });
+      }
+      function post(fd) {
+        if (csrf) fd.append('_csrf_token', csrf.value);
+        return fetch('../api/category-counts-admin.php', { method:'POST', body: fd }).then(function(r){ return r.json(); });
+      }
+      list.addEventListener('click', function(e){
+        var saveBtn = e.target.closest && e.target.closest('[data-cc-save]');
+        var delBtn = e.target.closest && e.target.closest('[data-cc-del]');
+        if (!saveBtn && !delBtn) return;
+        if (saveBtn) {
+          var key = saveBtn.getAttribute('data-cc-save');
+          var input = list.querySelector('input[data-cc-input=\"' + CSS.escape(key) + '\"]');
+          var fd = new FormData();
+          fd.append('action', 'save');
+          fd.append('key', key);
+          fd.append('count', input ? (input.value || '0') : '0');
+          saveBtn.disabled = true;
+          setMsg('Kaydediliyor...', true);
+          post(fd).then(function(res){
+            if (!res.success) { setMsg(res.message || 'Hata.', false); return; }
+            setMsg('Kaydedildi.', true);
+            fetchData();
+          }).catch(function(){ setMsg('Bağlantı hatası.', false); })
+            .finally(function(){ saveBtn.disabled = false; });
+        }
+        if (delBtn) {
+          var key2 = delBtn.getAttribute('data-cc-del');
+          var fd2 = new FormData();
+          fd2.append('action', 'delete');
+          fd2.append('key', key2);
+          delBtn.disabled = true;
+          setMsg('Sıfırlanıyor...', true);
+          post(fd2).then(function(res){
+            if (!res.success) { setMsg(res.message || 'Hata.', false); return; }
+            setMsg('Sıfırlandı.', true);
+            fetchData();
+          }).catch(function(){ setMsg('Bağlantı hatası.', false); })
+            .finally(function(){ delBtn.disabled = false; });
+        }
+      });
+      if (search) {
+        search.addEventListener('input', function(){ render(_lastCategories, _lastItems); });
+      }
+      fetchData();
     })();
 
     // Makineler yönetimi

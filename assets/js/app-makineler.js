@@ -355,12 +355,12 @@
 
     if (resultsInfo) {
       if (!hasAnyFilter) {
-        resultsInfo.textContent = (J.pickCategory || '');
+        // Filtre yokken de toplamı göster (kullanıcı “toplam kaç makine var”ı görmek istiyor)
+        var all = (window.makineler || []).length;
+        resultsInfo.textContent = all ? fmtResults(all) : (J.pickCategory || '');
       } else {
         var total = filteredTotalCount || 0;
-        var models = filteredMakineler.length || 0;
-        // örn: "51 makine (14 model) bulundu"
-        resultsInfo.textContent = fmtResults(total) + (models && models !== total ? (' (' + String(models) + ' model)') : '');
+        resultsInfo.textContent = fmtResults(total);
       }
     }
 
@@ -422,6 +422,15 @@
       a.className = 'category-card';
       a.setAttribute('data-label', String(labelByKey[k] || categoryLabelFromKey(k)));
       var imgSrc = categoryCardImgSrc(k, groups);
+        var totalCount = (groups[k] || []).length;
+        // Admin manuel toplam override
+        try {
+          var cm = window.__categoryCounts || {};
+          if (cm && cm[k] != null && String(cm[k]).trim() !== '') {
+            var n0 = parseInt(cm[k], 10);
+            if (!isNaN(n0) && n0 >= 0) totalCount = n0;
+          }
+        } catch (e) {}
       var iconHtml = imgSrc
         ? '<img class="category-card__icon-img" src="' + escapeHtml(imgSrc) + '" alt="" loading="lazy" />'
         : '<span class="category-card__icon-fallback" aria-hidden="true">' + escapeHtml((labelByKey[k] || categoryLabelFromKey(k)).slice(0, 1)) + '</span>';
@@ -429,7 +438,7 @@
         '<div class="category-card__icon" aria-hidden="true">' + iconHtml + '</div>' +
         '<div class="category-card__body">' +
           '<div class="category-card__title">' + escapeHtml(labelByKey[k] || categoryLabelFromKey(k)) + '</div>' +
-          '<div class="category-card__meta">' + escapeHtml(String((groups[k] || []).length)) + ' ' + escapeHtml(J.machineLabel || 'makine') + '</div>' +
+            '<div class="category-card__meta">' + escapeHtml(String(totalCount)) + ' ' + escapeHtml(J.machineLabel || 'makine') + '</div>' +
         '</div>' +
         '<div class="category-card__chev" aria-hidden="true">→</div>';
       a.addEventListener('click', function() {

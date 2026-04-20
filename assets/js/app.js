@@ -229,6 +229,14 @@
       listToRender.forEach(function(k) {
         var totalCount = (groupsAll[k] || []).length;
         var stockCount = (groupsStock[k] || []).length;
+        // Admin manuel toplam override
+        try {
+          var cm = window.__categoryCounts || {};
+          if (cm && cm[k] != null && String(cm[k]).trim() !== '') {
+            var n0 = parseInt(cm[k], 10);
+            if (!isNaN(n0) && n0 >= 0) totalCount = n0;
+          }
+        } catch (e) {}
         var imgSrc = categoryCardImgSrc(k);
         var label = labelByKey[k] || categoryLabelFromKey(k);
         var href = addQuery(langPath('makineler'), 'cat', k);

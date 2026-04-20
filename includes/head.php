@@ -55,6 +55,7 @@ $gravisaHrefEn = $gravisaAbs . (function_exists('gravisa_url_for_lang') ? gravis
   'address'=>$siteSettings['address']??''
 ], JSON_UNESCAPED_UNICODE) ?>;</script>
 <script>window.__categoryImages=<?= json_encode(function_exists('gravisa_get_category_images') ? gravisa_get_category_images() : [], JSON_UNESCAPED_UNICODE) ?>;</script>
+<script>window.__categoryCounts=<?= json_encode(function_exists('gravisa_get_category_counts') ? gravisa_get_category_counts() : [], JSON_UNESCAPED_UNICODE) ?>;</script>
 <script>window.__homeCategories=<?= json_encode($siteSettings['home_categories'] ?? [], JSON_UNESCAPED_UNICODE) ?>;</script>
 <script>
 (function () {
