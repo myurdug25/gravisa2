@@ -247,7 +247,7 @@
               '<span class="machine-card-badge machine-card-badge--stock">' + esc(badgeText) + '</span>' +
             '</div>' +
             '<h3 class="machine-card-title">' + esc(label) + '</h3>' +
-            '<p class="machine-card-meta">' + esc(String(stockCount > 0 ? stockCount : totalCount)) + ' ' + esc(J.machineLabel || 'makine') + '</p>' +
+            '<p class="machine-card-meta">' + esc(String(totalCount)) + ' ' + esc(J.machineLabel || 'makine') + '</p>' +
             '<div class="machine-card-actions" style="display:grid;grid-template-columns:1fr;gap:10px">' +
               '<a href="' + esc(href) + '" class="btn btn-primary">' + esc(J.viewCategory || 'Makineleri Gör') + '</a>' +
             '</div>' +
