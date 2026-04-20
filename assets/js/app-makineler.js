@@ -54,15 +54,9 @@
       var own = safeImgSrc(m.img, m.img_mtime);
       if (own) return own;
     }
-    if (machinesWithPhoto.length === 0) return '';
-    var h = 0;
-    var idStr = String(m.id != null ? m.id : (m.tipModel || '') + (m.firma || ''));
-    for (var j = 0; j < idStr.length; j++) {
-      h = ((h << 5) - h + idStr.charCodeAt(j)) | 0;
-    }
-    var idx = Math.abs(h) % machinesWithPhoto.length;
-    var pool = machinesWithPhoto[idx];
-    return safeImgSrc(pool.img, pool.img_mtime);
+    // Görsel yoksa başka makinelerden “rastgele” görsel göstermeyelim.
+    // Kullanıcıya boş/placeholder kart gösterilir; görsel admin panelden eklenir.
+    return '';
   }
 
   function normalize(s) {

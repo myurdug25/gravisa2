@@ -46,16 +46,6 @@ $pageId = 'hakkimizda';
             <p class="content-block-text" style="font-weight: 600; color: var(--color-primary);"><?= htmlspecialchars(t('pages.hakkimizda.preface_sign'), ENT_QUOTES, 'UTF-8') ?></p>
           </div>
 
-          <!-- Başkanın Mesajı -->
-          <div class="content-block content-block-highlight" style="margin-bottom: 48px;">
-            <h2 class="content-block-title"><?= htmlspecialchars(t('pages.hakkimizda.president_h'), ENT_QUOTES, 'UTF-8') ?></h2>
-            <p class="content-block-text" style="font-style: italic; font-size: 1.05rem;">
-              "<?= nl2br(htmlspecialchars(t('pages.hakkimizda.president_quote'), ENT_QUOTES, 'UTF-8')) ?>"
-            </p>
-            <p style="margin: 24px 0 0; font-weight: 700; color: var(--color-primary);"><?= htmlspecialchars(t('pages.hakkimizda.president_name'), ENT_QUOTES, 'UTF-8') ?></p>
-            <p style="margin: 4px 0 0; font-size: 0.9rem; color: var(--color-text-muted);"><?= htmlspecialchars(t('pages.hakkimizda.president_title'), ENT_QUOTES, 'UTF-8') ?></p>
-          </div>
-
           <!-- Bizim Hikayemiz -->
           <div class="content-block" style="margin-bottom: 48px;">
             <h2 class="content-block-title"><?= htmlspecialchars(t('pages.hakkimizda.story_h'), ENT_QUOTES, 'UTF-8') ?></h2>

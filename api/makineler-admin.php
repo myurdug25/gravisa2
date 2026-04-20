@@ -32,25 +32,8 @@ function saveMachines(string $file, array $items): bool
     return file_put_contents($file, $json, LOCK_EX) !== false;
 }
 
-/**
- * Listede ve sitede tek satır: aynı kategori (tip) + aynı model (tipModel) yalnızca bir kez.
- * tipModel boşsa aynı kategorideki farklı makineleri birleştirmemek için firma/yıl/güç/kapasite de anahtara girer.
- */
-function gravisaMachineTipModelKey(array $m): string
-{
-    $tip = strtolower(trim((string) ($m['tip'] ?? '')));
-    $tm = strtolower(trim((string) ($m['tipModel'] ?? '')));
-    if ($tm !== '') {
-        return $tip . "\x1e" . $tm;
-    }
-    $guc = strtolower(str_replace(',', '.', trim((string) ($m['guc'] ?? ''))));
-    $gucBirim = strtolower(trim((string) ($m['gucBirim'] ?? '')));
-    $kap = strtolower(preg_replace('/\s+/', '', (string) ($m['kapasite'] ?? '')));
-    $firma = strtolower(trim((string) ($m['firma'] ?? '')));
-    $yil = strtolower(trim((string) ($m['modelYil'] ?? '')));
-
-    return $tip . "\x1e" . $firma . "\x1e" . $yil . "\x1e" . $guc . '|' . $gucBirim . "\x1e" . $kap;
-}
+// Not: Eskiden aynı Tip + Tip/Model için tek satır kısıtı vardı.
+// Makpark gibi listelerde aynı modelden çok adet olabildiği için bu kısıt kaldırıldı.
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $items = loadMachines($file);
@@ -167,7 +150,6 @@ if (!empty($_FILES['img']) && isset($_FILES['img']['tmp_name'])) {
     }
 }
 
-$keyNew = gravisaMachineTipModelKey($machine);
 $noNorm = trim((string) $machine['no']);
 foreach ($items as $m) {
     $otherId = (int) ($m['id'] ?? 0);
@@ -178,12 +160,6 @@ foreach ($items as $m) {
         jsonResponse([
             'success' => false,
             'message' => 'Bu envanter numarası (No) zaten kullanılıyor (ID #' . $otherId . '). Listeden o kaydı düzenleyin; yeni satır açmayın.',
-        ]);
-    }
-    if (gravisaMachineTipModelKey($m) === $keyNew) {
-        jsonResponse([
-            'success' => false,
-            'message' => 'Bu kategori ve model zaten kayıtlı (ID #' . $otherId . '). Aynı Tip + Tip/Model ile ikinci satır oluşturulamaz; mevcut kaydı düzenleyin. İki farklı ürünü ayırmak için Tip/Model alanına farklı bir metin yazın (ör. model + kısa not).',
         ]);
     }
 }
