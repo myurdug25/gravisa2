@@ -36,6 +36,8 @@
   var activeCatKey = '';
   /** Görseli olan makineler (ana sayfadaki kategori kartı mantığıyla aynı havuz) */
   var machinesWithPhoto = [];
+  // Filtrelenmiş gerçek toplam adet (tekilleştirme olmadan)
+  var filteredTotalCount = 0;
 
   /**
    * Gösterim için tekilleştirme:
@@ -305,12 +307,11 @@
       activeCatKey = tipKey(tipFilter);
     }
 
-    var src = Array.isArray(window.makinelerDisplay) && window.makinelerDisplay.length ? window.makinelerDisplay : window.makineler;
-    filteredMakineler = src.filter(function(m) {
+    function match(m) {
       if (activeCatKey) {
         if (categoryKey(m) !== activeCatKey) return false;
       }
-      var matchSearch = !searchTerm || 
+      var matchSearch = !searchTerm ||
         (m.firma || '').toLowerCase().includes(searchTerm) ||
         (m.tipModel || '').toLowerCase().includes(searchTerm) ||
         (m.tip || '').toLowerCase().includes(searchTerm) ||
@@ -330,7 +331,12 @@
       }
 
       return matchSearch && matchTip && matchFirma && matchModelYil && matchGuc;
-    });
+    }
+
+    var src = Array.isArray(window.makinelerDisplay) && window.makinelerDisplay.length ? window.makinelerDisplay : window.makineler;
+    filteredMakineler = src.filter(match);
+    // Toplam adet: tekilleştirme olmayan listeden
+    filteredTotalCount = (window.makineler || []).filter(match).length;
 
     renderResults();
     closeFiltersOnMobileIfOpen();
@@ -348,7 +354,14 @@
     var hasAnyFilter = !!(activeCatKey || searchTerm || tipFilter || firmaFilter || gucFilter || modelYilFilter);
 
     if (resultsInfo) {
-      resultsInfo.textContent = hasAnyFilter ? fmtResults(filteredMakineler.length) : (J.pickCategory || '');
+      if (!hasAnyFilter) {
+        resultsInfo.textContent = (J.pickCategory || '');
+      } else {
+        var total = filteredTotalCount || 0;
+        var models = filteredMakineler.length || 0;
+        // örn: "51 makine (14 model) bulundu"
+        resultsInfo.textContent = fmtResults(total) + (models && models !== total ? (' (' + String(models) + ' model)') : '');
+      }
     }
 
     if (!hasAnyFilter) {
