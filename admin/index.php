@@ -650,6 +650,36 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
       </div>
     </div>
 
+    <div class="card" id="makpark-import" style="margin-top: 18px;">
+      <div class="card-header">Makpark İçe Aktarım (CSV)</div>
+      <div class="body" style="padding: 24px;">
+        <p style="margin:0 0 12px; color:#64748b; font-size:0.9rem;">
+          <strong>Makpark.xlsx</strong> dosyanızı Excel’den <strong>CSV (UTF-8)</strong> olarak kaydedip buradan yükleyin. Sistem mevcut makinelerdeki <code>img</code>, <code>stok</code>, <code>teknik</code> alanlarını koruyarak listeyi günceller.
+        </p>
+        <div id="makparkMsg" style="margin:0 0 12px; font-size:0.9rem;"></div>
+        <form id="makparkForm" enctype="multipart/form-data">
+          <?php echo csrfField(); ?>
+          <div class="admin-actions-row" style="align-items:flex-end;">
+            <label style="display:block; flex:1; min-width:240px;">
+              <span style="display:block; font-weight:700; margin-bottom:6px; color:#334155;">CSV Dosyası</span>
+              <input type="file" name="file" accept=".csv,text/csv" required style="width:100%; padding:10px 12px; border:1px solid #e2e8f0; border-radius:10px; background:#fff;" />
+            </label>
+            <label style="display:block; min-width:220px;">
+              <span style="display:block; font-weight:700; margin-bottom:6px; color:#334155;">Mod</span>
+              <select name="mode" style="width:100%; padding:10px 12px; border:1px solid #e2e8f0; border-radius:10px; background:#fff;">
+                <option value="merge" selected>Birleştir (resimleri koru)</option>
+                <option value="replace">Tam değiştir (resimleri sıfırlar)</option>
+              </select>
+            </label>
+            <button type="submit" class="btn-sm" id="makparkBtn">İçe Aktar</button>
+          </div>
+        </form>
+        <div style="margin-top:10px; font-size:0.85rem; color:#64748b;">
+          İpucu: Excel’de <em>Farklı Kaydet</em> → <strong>CSV UTF-8</strong>. Başlıklar: <code>NO</code>, <code>TİP</code>, <code>FIRMA</code>, <code>TİP/PLAKA</code> veya <code>KOD</code>, <code>Model</code>, <code>S.No</code>.
+        </div>
+      </div>
+    </div>
+
     <div class="card" id="cat-images" style="margin-top: 18px;">
       <div class="card-header">Kategori Görselleri</div>
       <div class="body" style="padding: 24px;">
@@ -1532,6 +1562,33 @@ if ($tab !== 'ayarlar' && $tab !== 'makineler' && $tab !== 'saha-fotograflari') 
         });
       }
       fetchData();
+    })();
+
+    // Makpark CSV import (ayarlar sekmesi)
+    (function() {
+      var f = document.getElementById('makparkForm');
+      if (!f) return;
+      var btn = document.getElementById('makparkBtn');
+      var msg = document.getElementById('makparkMsg');
+      function setMsg(t, ok) {
+        if (!msg) return;
+        msg.textContent = t || '';
+        msg.style.color = ok ? '#0a0' : '#c00';
+      }
+      f.addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (btn) btn.disabled = true;
+        setMsg('İçe aktarılıyor...', true);
+        var fd = new FormData(f);
+        fetch('../api/makpark-import-admin.php', { method:'POST', body: fd })
+          .then(function(r){ return r.text().then(function(t){ try { return JSON.parse(t); } catch(e){ return { success:false, message:'Sunucudan beklenmeyen cevap (HTTP ' + r.status + '). ' + String(t||'').slice(0,200) }; } }); })
+          .then(function(res){
+            if (!res.success) { setMsg(res.message || 'Hata.', false); return; }
+            setMsg(res.message || 'Tamam.', true);
+          })
+          .catch(function(){ setMsg('Bağlantı hatası.', false); })
+          .finally(function(){ if (btn) btn.disabled = false; });
+      });
     })();
 
     // Makineler yönetimi
