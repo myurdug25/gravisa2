@@ -37,6 +37,39 @@
   /** Görseli olan makineler (ana sayfadaki kategori kartı mantığıyla aynı havuz) */
   var machinesWithPhoto = [];
 
+  /**
+   * Gösterim için tekilleştirme:
+   * Aynı Tip + Tip/Model tekrarlarını katalogda 50 kez kart basmayalım.
+   * Not: Sayımlar (kategori kartındaki adet) window.makineler (tüm liste) üzerinden kalır.
+   */
+  function machineDisplayKey(m) {
+    if (!m) return '';
+    var tip = normalize(m.tip || '');
+    var tm = normalize(m.tipModel || '');
+    if (tm) return tip + '\x1e' + tm;
+    var guc = normalize(String(m.guc || '').replace(',', '.'));
+    var gucB = normalize(m.gucBirim || '');
+    var kap = normalize(String(m.kapasite || '').replace(/\s+/g, ''));
+    var firma = normalize(m.firma || '');
+    var yil = normalize(m.modelYil || '');
+    return tip + '\x1e' + firma + '\x1e' + yil + '\x1e' + guc + '|' + gucB + '\x1e' + kap;
+  }
+
+  function dedupeForDisplay(items) {
+    if (!Array.isArray(items) || items.length === 0) return [];
+    var out = [];
+    var seen = {};
+    items.forEach(function (m) {
+      if (!m) return;
+      var k = machineDisplayKey(m);
+      if (!k) return;
+      if (seen[k]) return;
+      seen[k] = true;
+      out.push(m);
+    });
+    return out;
+  }
+
   function rebuildMachinesWithPhoto() {
     machinesWithPhoto = (window.makineler || []).filter(function (m) {
       return m && m.img && String(m.img).trim() !== '' && safeImgSrc(m.img, m.img_mtime);
@@ -178,8 +211,11 @@
           } catch (e) {}
           return;
         }
+        // Tüm liste (sayım ve kategori adetleri için)
         window.makineler = res.items;
-        filteredMakineler = window.makineler;
+        // Katalogda gösterilecek liste (tekilleştirilmiş)
+        window.makinelerDisplay = dedupeForDisplay(res.items);
+        filteredMakineler = window.makinelerDisplay;
         rebuildMachinesWithPhoto();
         try {
           window.dispatchEvent(new CustomEvent('gravisa-machines-loaded'));
@@ -209,9 +245,10 @@
 
   function populateFilters() {
     if (!filterTip || !filterFirma || !filterModelYil) return;
-    var tipler = [...new Set(window.makineler.map(function(m) { return m.tip; }))].sort();
-    var firmalar = [...new Set(window.makineler.map(function(m) { return m.firma; }))].sort();
-    var modelYillari = [...new Set(window.makineler.map(function(m) { return m.modelYil; }))].sort(function(a, b) { return b - a; });
+    var src = Array.isArray(window.makinelerDisplay) && window.makinelerDisplay.length ? window.makinelerDisplay : window.makineler;
+    var tipler = [...new Set(src.map(function(m) { return m.tip; }))].sort();
+    var firmalar = [...new Set(src.map(function(m) { return m.firma; }))].sort();
+    var modelYillari = [...new Set(src.map(function(m) { return m.modelYil; }))].sort(function(a, b) { return b - a; });
 
     tipler.forEach(function(tip) {
       var opt = document.createElement('option');
@@ -247,7 +284,8 @@
       activeCatKey = tipKey(tipFilter);
     }
 
-    filteredMakineler = window.makineler.filter(function(m) {
+    var src = Array.isArray(window.makinelerDisplay) && window.makinelerDisplay.length ? window.makinelerDisplay : window.makineler;
+    filteredMakineler = src.filter(function(m) {
       if (activeCatKey) {
         if (categoryKey(m) !== activeCatKey) return false;
       }
