@@ -58,14 +58,35 @@
   function dedupeForDisplay(items) {
     if (!Array.isArray(items) || items.length === 0) return [];
     var out = [];
-    var seen = {};
+    var seen = {}; // key -> index in out
+    function hasOwnImg(m) {
+      if (!m || !m.img || String(m.img).trim() === '') return false;
+      return !!safeImgSrc(m.img, m.img_mtime);
+    }
+    function score(m) {
+      // Görseli olanı öne al; sonra stok; sonra büyük ID (daha yeni kayıt)
+      var s = 0;
+      if (hasOwnImg(m)) s += 1000;
+      if (m && m.stok) s += 100;
+      var idn = parseInt(m && m.id, 10);
+      if (!isNaN(idn)) s += Math.min(99, Math.max(0, idn % 100));
+      return s;
+    }
     items.forEach(function (m) {
       if (!m) return;
       var k = machineDisplayKey(m);
       if (!k) return;
-      if (seen[k]) return;
-      seen[k] = true;
-      out.push(m);
+      if (seen[k] === undefined) {
+        seen[k] = out.length;
+        out.push(m);
+        return;
+      }
+      // Aynı key: temsilci görselsizse ve bu görselli ise (veya daha iyi skor), temsilciyi değiştir
+      var ix = seen[k];
+      var cur = out[ix];
+      if (score(m) > score(cur)) {
+        out[ix] = m;
+      }
     });
     return out;
   }
