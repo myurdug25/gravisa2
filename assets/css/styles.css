@@ -2174,6 +2174,42 @@ body.has-ambient-video #servis-ozet .servis-ozet-cta:hover {
   display: flex;
   flex-direction: column;
 }
+
+/* Ana sayfa video arkaplanı: kartları cam/şeffaf yap */
+body.has-ambient-video main.page-home--video #stokta .machine-card,
+body.has-ambient-video main.page-home--video .section-stock-top .machine-card {
+  background: rgba(255, 255, 255, 0.10);
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+body.has-ambient-video main.page-home--video #stokta .machine-card:hover,
+body.has-ambient-video main.page-home--video .section-stock-top .machine-card:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 14px 46px rgba(0, 0, 0, 0.28);
+}
+body.has-ambient-video main.page-home--video #stokta .machine-card-title,
+body.has-ambient-video main.page-home--video #stokta .machine-card-meta,
+body.has-ambient-video main.page-home--video #stokta .machine-card-spec,
+body.has-ambient-video main.page-home--video .section-stock-top .machine-card-title,
+body.has-ambient-video main.page-home--video .section-stock-top .machine-card-meta,
+body.has-ambient-video main.page-home--video .section-stock-top .machine-card-spec {
+  color: #f1f5f9;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.35);
+}
+body.has-ambient-video main.page-home--video #stokta .machine-card-badge,
+body.has-ambient-video main.page-home--video .section-stock-top .machine-card-badge {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: rgba(241, 245, 249, 0.95);
+}
+body.has-ambient-video main.page-home--video #stokta .machine-card-badge--stock,
+body.has-ambient-video main.page-home--video .section-stock-top .machine-card-badge--stock {
+  background: rgba(34, 211, 238, 0.18);
+  border-color: rgba(34, 211, 238, 0.28);
+  color: #e6fdff;
+}
 .machine-card:hover {
   border-color: var(--color-border);
   box-shadow: var(--shadow-md);
