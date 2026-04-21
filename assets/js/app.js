@@ -234,7 +234,8 @@
       var preferredExisting = preferred.filter(function(k){ return (groupsAll[k] || []).length > 0; });
       var rest = available.filter(function(k){ return preferredExisting.indexOf(k) === -1; });
       var firstScreen = preferredExisting.concat(rest);
-      var listToRender = isExpanded ? available : firstScreen.slice(0, limit);
+      // Expanded olsa bile önce admin sırası gelsin (ilk 8 soldan sağa korunur)
+      var listToRender = isExpanded ? firstScreen : firstScreen.slice(0, limit);
 
       stoktaCats.innerHTML = '';
 
